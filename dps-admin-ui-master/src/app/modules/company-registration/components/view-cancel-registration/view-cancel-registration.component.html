@@ -1,0 +1,68 @@
+<fury-page-layout>
+    <fury-page-layout-header>
+        <fury-breadcrumbs [@fadeInRight]  current="Cancel Registration"></fury-breadcrumbs>
+    </fury-page-layout-header>
+    <fury-page-layout-content>
+        <div class="actions-button-padding">
+            <mat-toolbar>
+                <mat-toolbar-row>
+                    <button *ngIf="showApprovalButton" mat-raised-button matTooltip="View Timeline" class="actions-button-padding" 
+                    color="primary" (click)="approveCancellation()">
+                        <mat-icon>Approve Request</mat-icon>
+                        <span>Approve Request</span>
+                    </button>
+                </mat-toolbar-row>
+            </mat-toolbar>
+        </div>
+        <main class="fadeInUp _delay4ms">
+            <div
+
+                labelPosition="bottom" #stepper>
+        
+                <div>
+                    <ng-template matStepLabel>
+                        <h3>Cancel Registration</h3>
+                    </ng-template>
+                    
+                    <form [formGroup]="formCancelRegistration">
+                        <div>
+
+                            <div>
+                                <h1 style="text-align: center; font-weight: bold;">CANCEL REGISTRATION</h1>
+                            </div>
+
+                            <div>
+                                <mat-form-field fxFlex="100" [ngStyle]="{'margin-right': '20px'}">
+                                    <mat-label>Reason for cancellation<span class="required-field">required</span></mat-label>
+                                    <textarea matInput 
+                                        cdkAutosizeMinRows="3"
+                                        formControlName="ReasonForCancellation">
+                                    </textarea>             
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+
+                        <section class="expand-section reduced-properties table-wrapper margin documents">
+                            <h3 class="full-width step-header" style="font-weight: bold;">Attachment</h3>
+        
+                            <div class="buttons" *ngIf="documentNotice">
+                                               
+                            </div>
+        
+                            <div  *ngIf="documentNotice && documentNotice.Base64" class="uploaded-document" matTooltip="Open Document" (click)="onReadDocument(documentNotice)">
+                                <img width="40" height="40" src="./assets/img/pdf.png" alt="">
+        
+                                <span>Document: {{ documentNotice.Name }} <span *ngIf="documentNotice.Size">  -  {{ documentNotice.Size }} Mbs</span> </span>
+                            </div>
+
+                            <p class="no-document-found" *ngIf="documentNotice && !documentNotice.Base64">No document attached</p>
+        
+                        </section>
+                    </form>
+                                
+                </div>
+            </div>    
+        </main>
+    </fury-page-layout-content>   
+</fury-page-layout>

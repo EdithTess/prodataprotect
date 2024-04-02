@@ -1,0 +1,32 @@
+<div>
+    <form [formGroup]="InvestigationFormGroup">
+        <mat-dialog-content>
+            <div class="content" fxLayout="column" fxLayoutGap="8px">
+                
+                <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px"
+                     fxLayoutGap.gt-xs="24px">
+                    <mat-form-field fxFlex="2 2 auto" appearance="fill">
+                        <mat-label>What more information is needed</mat-label>
+                        <textarea matInput
+                                  cdkTextareaAutosize
+                                  cdkAutosizeMinRows="6"
+                                  formControlName="comments"
+                                  cdkAutosizeMaxRows="10"
+                                  formControlName="Comments"></textarea>
+                        <mat-hint>Request more Information</mat-hint>
+                    </mat-form-field>
+                </div>
+            </div>
+        </mat-dialog-content><br>
+
+        <div>
+            <button mat-raised-button (click)="onSubmit()"
+                color="primary">
+            
+                <span>Submit</span>
+            </button>&nbsp;
+        </div>
+        
+    </form>
+    
+</div>

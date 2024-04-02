@@ -1,0 +1,20 @@
+<main>
+    <header>
+        <button mat-button (click)="onClose()" class="close-btn" matTooltip="Close window">
+            <mat-icon>keyboard_backspace</mat-icon>
+        </button>  
+        <h1 [innerHTML]="title"></h1>        
+    </header>
+
+    <section>
+      <!-- <app-pdf-reader
+            [showCloseBtn] = "false"
+            [src] = "url"
+            ></app-pdf-reader> -->
+
+       <object 
+            [data]="url | resourceSanitizer : 'resourceUrl'" 
+            type="application/pdf">
+        </object> 
+    </section>
+</main>

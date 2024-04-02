@@ -1,0 +1,70 @@
+<fury-page-layout>
+    <fury-page-layout-header>
+        <fury-breadcrumbs [@fadeInRight]  current="Generate PRN"></fury-breadcrumbs>
+    </fury-page-layout-header>
+    <fury-page-layout-content>
+        <div [@fadeInUp] class="">
+                    
+                    <form [formGroup]="formCreateAccount">
+                        <div>
+                            <mat-form-field fxFlex="2 2 auto" [ngStyle]="{'margin-right': '20px'}">
+                                <mat-label>Email Adress <span class="required-field">required</span></mat-label>
+                                <input appRemoveSpaces matInput  formControlName="email">
+            
+                            </mat-form-field>   
+            
+                            <mat-form-field fxFlex="2 2 auto" [ngStyle]="{'margin-right': '20px'}">
+                                <mat-label>Phone Number<span class="required-field">required</span></mat-label>
+                                <input appRemoveSpaces matInput formControlName="phone_number">                            
+
+                            </mat-form-field> 
+                        </div><br>
+  
+                    </form>
+     
+                    <div class="buttons" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="8px">
+                        <button
+                            mat-button 
+                            color="primary" 
+                            [ngClass]="{'inline-processing-btn': processing }"      
+                            class="next-btn submit-btn"                 
+                            (click)="onSubmit()"
+                            mat-raised-button>                        
+                                <span>Generate PRN</span>
+                        </button>
+                    </div>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="8px" *ngIf="showPRN ==true">
+            <h2 style="font-weight:700; ">PRN DETAILS</h2>
+        </div>
+            <br/><br/>
+            <div *ngIf="showPRN ==true">
+                <table>
+
+                    <!--- Note that these columns can be defined in any order.
+                          The actual rendered columns are set as a property on the row definition" -->
+                  
+                  
+                    <!-- PRN Column -->
+                    <tr>
+                        <th > PRN </th>
+                        <td > {{current_prn}} </td>
+                    </tr>
+                  
+                    <!-- CODE Column -->
+                    <tr>
+                        <th> SEARCH CODE </th>
+                        <td> {{current_search_code}} </td>
+                    </tr>
+                    
+              
+    
+                  </table>
+            </div>
+
+
+    </fury-page-layout-content>   
+</fury-page-layout>
+ 
+

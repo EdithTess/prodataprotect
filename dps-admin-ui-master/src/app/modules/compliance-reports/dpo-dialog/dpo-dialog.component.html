@@ -1,0 +1,24 @@
+<h2 mat-dialog-title>Add New DPO Training</h2>
+<div class="dialog-container">
+  <form [formGroup]="DPOForm" (ngSubmit)="onSubmit()">
+    <mat-form-field>
+      <mat-label>Name of Training*</mat-label>
+      <input matInput placeholder="Name of Training*" formControlName="name_of_training">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Who conducted the Training*</mat-label>
+      <input matInput placeholder="Who conducted the Training*" formControlName="who_conducted_training">
+    </mat-form-field>
+
+    
+    <mat-form-field>
+      <mat-label>Date of the Training*</mat-label>
+      <input matInput type="date" placeholder="Date of the Training*" formControlName="date_of_training" [max]="maxDate">
+    </mat-form-field>
+    
+    <div class="button-container">
+      <button mat-button type="button" (click)="onCancel()">Cancel</button>
+      <button mat-raised-button color="primary" type="submit">Add DPO Training</button>
+    </div>
+  </form>
+</div>

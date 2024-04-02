@@ -1,0 +1,90 @@
+table {
+  border:solid 1px #ddd;
+}
+table, th, td {
+  border-collapse: collapse;
+  border-spacing: 0;
+  box-sizing: border-box;
+  padding: .2em;
+}
+
+td + td {
+  border-left:solid 1px #ddd;
+}
+td {
+  padding: 15px;
+  text-align: left;
+  border-bottom:solid 1px #ddd;
+}
+
+.control-label {
+  font-weight: bold;
+}
+
+.search-field-title label {
+  padding: 0 .5em;
+}
+
+.search-fields-table {
+  table-layout: fixed ;
+  width: 100% ;
+}
+.search-fields-table td {
+  width: 33.33% ;
+  padding: .5em 0;
+}
+.search-fields-table td input[type="text"], .search-fields-table td input[type="number"] {
+  padding: .5em;
+  border:none;
+  width: 90%;
+}
+//tr:nth-child(even) {background-color: #f2f2f2;}
+
+.filter-ops {
+  box-sizing: border-box;
+  padding-left: .5em;
+}
+
+.finder-date-field input,
+.finder-date-field mat-datepicker-toggle,
+.finder-date-field mat-datepicker {
+  vertical-align: middle;
+}
+.finder-date-field input {
+  width: 75%;
+  padding-left: .5em;
+}
+
+/* General Dialog Dialog Styles */
+.dialog-header {
+  padding: .1em 1em;
+}
+
+.default-header {
+  background-color: #ABC334;
+  color: mat-color(foreground, text);
+}
+
+.alert-header {
+  background-color: #ABC334;
+  color: mat-color(#ABC334, text);
+}
+
+.dialog-header h1 {
+  font-size: 1.2em;
+  color: var(--text-with-primary);
+}
+
+.dialog-body {
+  //padding: 1em;
+}
+
+.dialog-footer {
+  padding: .7em 1em;
+  //background-color: #f8f8f8;
+}
+
+.dialog-footer button + button {
+  margin-left: .5em;
+}
+

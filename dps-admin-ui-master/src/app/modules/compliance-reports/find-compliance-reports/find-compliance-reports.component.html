@@ -1,0 +1,64 @@
+<fury-page-layout mode="card">
+    <fury-page-layout-header>
+        <fury-breadcrumbs [@fadeInRight] [crumbs]="['Compliance Reports']" current="Find Compliance Reports"></fury-breadcrumbs>
+    </fury-page-layout-header>
+
+    <fury-page-layout-content [@fadeInUp]>
+        <fury-list 
+            name="Compliance Reports" 
+            [columns]="ReportsColumns"
+            (filterChange)="onFilterChange($event)"
+            finderDialogTitle="Compliance Reports Finder"
+            [searchFields]="searchFields">
+
+            <div class="table-container">
+                <table mat-table [dataSource]="ReportsDataSource" matSort class="table">
+                    <ng-container matColumnDef="ComplianceReportID">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Compliance Report ID </th>
+                        <td mat-cell *matCellDef="let row"> {{ row.ComplianceReportID }} </td>
+                    </ng-container>
+                
+                    <ng-container matColumnDef="orgName">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Organization Name </th>
+                        <td mat-cell *matCellDef="let row"> {{ row.orgName }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="orgRegNo">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Registration Number </th>
+                        <td mat-cell *matCellDef="let row"> {{ row.orgRegNo }} </td>
+                    </ng-container>
+                
+                    <ng-container matColumnDef="CreatedDate">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Created On </th>
+                        <td mat-cell *matCellDef="let row"> {{ row.CreatedDate | date: 'MMM d, y' }} </td>
+                    </ng-container>
+                
+                    <!--<ng-container matColumnDef="OrganizationID">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Organization ID </th>
+                        <td mat-cell *matCellDef="let row"> {{ row.OrganizationID }} </td>
+                    </ng-container> -->
+
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Action </th>
+                        <td mat-cell *matCellDef="let row">
+                            <button mat-button [matMenuTriggerFor]="menu">
+                                <mat-icon>more_vert</mat-icon>
+                            </button>
+                            <mat-menu #menu="matMenu">
+                                <a [routerLink]="['/compliance-and-reports','edit-compliance-reports',row.ComplianceReportID,row.orgRegNo,row.CreatedDate]" mat-menu-item>View</a>
+                            </mat-menu>
+                        </td>
+                    </ng-container>
+                
+                    <tr mat-header-row *matHeaderRowDef="ReportsColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ReportsColumns;"></tr>
+                </table>               
+            </div>
+            <mat-paginator 
+                class="paginator" 
+                [pageSize]="pageSize">
+            </mat-paginator>
+        </fury-list>
+    </fury-page-layout-content>
+    
+</fury-page-layout>

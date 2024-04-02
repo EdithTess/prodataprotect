@@ -1,0 +1,646 @@
+<fury-page-layout mode="card">
+    <fury-page-layout-header>
+        <fury-breadcrumbs [@fadeInRight] [crumbs]="['Breaches']" current="Notification Breach"></fury-breadcrumbs>
+    </fury-page-layout-header>
+
+    <div>
+        <mat-toolbar>
+            <mat-toolbar-row *ngIf="showManageButtons == true">
+                <span class="example-spacer"></span>
+
+                <button 
+                        mat-raised-button class="actions-button-padding"
+                        color="primary"
+                        *ngIf="isDirector == true"
+                        [ngStyle]="{'margin-right':'30px'}"
+                        [disabled] = "disableResolve == true"
+                            (click)="markUnderInvestigation()">
+                        <span> Investigate</span>
+                </button>
+
+                <button mat-raised-button  
+                *ngIf="isDirector == true"
+                class="actions-button-padding" 
+                color="primary" 
+                [disabled] = "disableResolve == true"
+                (click)="markAsResolved()" >
+                    <!-- <mat-icon>thumbs-up</mat-icon> -->
+                    <span>Mark as resolved</span>
+                </button>
+
+                <button mat-raised-button
+                *ngIf="isDirector == false"
+                class="actions-button-padding" 
+                (click)="forwardComplaint()" 
+                [disabled] = "disableForward == true"
+                color="primary" 
+                [ngStyle]="{'margin-left':'30px'}">
+                    <span>Forward Breach</span>
+                </button>
+                
+                <button mat-raised-button 
+                *ngIf="isDirector == true"
+                matTooltip="View Timeline" 
+                class="actions-button-padding" 
+                [disabled] = "disableResolve == true"
+                [ngStyle]="{'margin-left':'30px'}"
+                color="primary" 
+                (click)="moreInformation()">
+                        <!-- <mat-icon>thumbs-up</mat-icon> -->
+                        <span>Request for more information</span>
+                    </button>
+
+                <button mat-raised-button 
+                *ngIf="showManageRequestInfo == true"
+                matTooltip="View Timeline" 
+                class="actions-button-padding" 
+                [ngStyle]="{'margin-left':'30px'}"
+                color="primary" 
+                (click)="manageRequestInfo()">
+                        <!-- <mat-icon>thumbs-up</mat-icon> -->
+                        <span>Manage Request for Information</span>
+                    </button>
+
+                <!-- <button mat-raised-button matTooltip="View Timeline" class="actions-button-padding"
+                        *ngIf="isOfficer" color="primary" (click)="viewApplicationTimeLine()">
+                    <mat-icon>view_timeline</mat-icon>
+                    <span>Application Timeline</span>
+                </button> -->
+            </mat-toolbar-row>
+        </mat-toolbar>
+    </div>
+
+    <fury-page-layout-content [@fadeInUp]>
+        <div [@fadeInUp] class="">
+            <mat-horizontal-stepper 
+                [linear]="true"
+                
+                labelPosition="bottom" #stepper>
+
+                <mat-step [stepControl]="OrganisationDetails">
+                    <ng-template matStepLabel>
+                        <h3></h3>
+                    </ng-template>
+
+                    <form [formGroup]="OrganisationDetails" class="form-OrganisationDetails">
+                        <div class="grouped-items">
+                            <mat-form-field fxFlex="2 2 auto" [ngStyle]="{'margin-right': '20px'}">
+                                <mat-label>Name of Organisation<span class="required-field">required</span></mat-label>
+                                <textarea matInput
+                                    cdkTextareaAutosize
+                                    #autosize="cdkTextareaAutosize"
+                                    cdkAutosizeMinRows="1"
+                                    formControlName="OrganisationName"
+                                    cdkAutosizeMaxRows="5"
+                                    [readonly]="true"></textarea>
+                                <mat-hint>Organisation that is affected</mat-hint>              
+                            </mat-form-field>           
+    
+                            <mat-form-field fxFlex="2 2 auto" [ngStyle]="{'margin-right': '20px'}">
+                                <mat-label>Registration Number</mat-label>
+                                <textarea matInput
+                                    cdkTextareaAutosize
+                                    #autosize="cdkTextareaAutosize"
+                                    cdkAutosizeMinRows="1"
+                                    formControlName="RegNo"
+                                    cdkAutosizeMaxRows="5"
+                                    [readonly]="true"></textarea>
+                                <mat-hint>The number assigned after registration</mat-hint>              
+                            </mat-form-field>
+    
+                            <!-- <mat-form-field fxFlex="2 2 auto">
+                                <mat-label>Name of DPO<span class="required-field">required</span></mat-label>
+                                <textarea matInput
+                                    cdkTextareaAutosize
+                                    #autosize="cdkTextareaAutosize"
+                                    cdkAutosizeMinRows="1"
+                                    formControlName="DPOName"
+                                    cdkAutosizeMaxRows="5"></textarea>
+                                <mat-hint>DPO of the organisation</mat-hint>              
+                            </mat-form-field> -->
+                        </div>
+
+                        <div [ngStyle]="{'margin-top': '50px'}">
+                            <mat-form-field fxFlex="2 2 auto" [ngStyle]="{'margin-right': '20px'}">
+                                <mat-label>Email Address of Organisation<span class="required-field">required</span></mat-label>
+                                <textarea matInput
+                                              cdkTextareaAutosize
+                                              #autosize="cdkTextareaAutosize"
+                                              cdkAutosizeMinRows="1"
+                                              formControlName="DPOEmail"
+                                              cdkAutosizeMaxRows="5"
+                                              [readonly]="true"></textarea>
+                                <mat-hint>Contact Email of Organisation</mat-hint>              
+                            </mat-form-field>
+
+                            <mat-form-field fxFlex="2 2 auto">
+                                <mat-label>Telephone Number of Organisation<span class="required-field">required</span></mat-label>
+                                <textarea matInput
+                                              cdkTextareaAutosize
+                                              #autosize="cdkTextareaAutosize"
+                                              cdkAutosizeMinRows="1"
+                                              formControlName="DPONumber"
+                                              cdkAutosizeMaxRows="5"
+                                              [readonly]="true"></textarea>
+                                <mat-hint>Contact Number of Organisation</mat-hint>              
+                            </mat-form-field>
+                        </div>
+
+                        <div class="button-wrapper single-button">
+                       
+                            <!-- enabled the next button for No selection -->
+                            <div class="actions" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="8px">
+                                <button (click)="stepper.reset()" [disabled]="OrganisationDetails.pristine" color="primary"
+                                        mat-button
+                                        type="button">RESET
+                                </button>
+                                <button [disabled]="OrganisationDetails.invalid" color="primary" mat-raised-button matStepperNext>
+                                    NEXT
+                                </button>
+                            </div>
+                        </div>  
+                    </form>
+                </mat-step>
+
+                <mat-step [stepControl]="breachDetails">
+                    <ng-template matStepLabel>
+                        <h3></h3>
+                        <!-- <p>Details of the person making the complaint</p> -->
+                    </ng-template>
+        
+                    <form [formGroup]="breachDetails">
+        
+                        <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+                            <mat-form-field fxFlex="">
+                                <mat-label>Select date of when incident happen?</mat-label>
+                                <input (click)="formDatepickerRef.open()"
+                                    [max]="maxDate"
+                                       (focus)="formDatepickerRef.open()"
+                                       [matDatepicker]="formDatepickerRef"
+                                       formControlName="incidentDate"
+                                       matInput
+                                       readonly>
+                                <mat-datepicker-toggle [for]="formDatepickerRef"
+                                                       matSuffix></mat-datepicker-toggle>
+                                <mat-hint>When did the incident happen?</mat-hint>
+                                <mat-datepicker #formDatepickerRef></mat-datepicker>
+                            </mat-form-field>
+                            
+                            <mat-form-field fxFlex="2 2 auto" appearance="fill">
+                                <mat-label>Likely Causes of the breach</mat-label>
+                                <mat-select formControlName="causesOfBreach" multiple>
+                                    <mat-option 
+                                            *ngFor="let type of BreachCauses"
+                                            (onSelectionChange)="onChangeOfBreachCauses($event,type )" 
+                                            [value]="type.CauseID">{{ type.CauseName }}
+                                           
+                                    </mat-option>
+                                </mat-select>
+                                <mat-hint>Please specify if any financial or sensitive personal data (special
+                                    categories*) has been affected
+                                </mat-hint>
+                            </mat-form-field>
+                        </div>
+
+                        <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px" [ngStyle]="{'margin-top': '60px'}">
+                            <mat-label>
+                                <div>
+                                    <h5>Categories of Data Subject Affected by breach</h5>
+                                </div>
+
+                                <div>
+                                    <mat-checkbox [checked]="false" formControlName="delayInReporting" (change)="AdultDataSubjectCategoryChange($event)"> Adult </mat-checkbox>
+                                </div>
+
+                                <div>
+                                    <mat-checkbox [checked]="false" formControlName="delayInReportings" (change)="ChildrenDataSubjectCategoryChange($event)"> Children </mat-checkbox>
+                                </div>
+
+                            </mat-label>
+                            
+                            
+                            <mat-form-field fxFlex="2 2 auto" appearance="fill">
+                                <mat-label>Number of data Subjects</mat-label>
+                                <input matInput
+                                          type="number"
+                                          [min]="1"
+                                          formControlName="reasonForDelay"/>
+                                <mat-hint>Subjects affected by breach</mat-hint>
+                            </mat-form-field>
+                            <mat-form-field fxFlex="2 2 auto" appearance="fill">
+                                <mat-label>Total Number of Records held</mat-label>
+                                <input matInput
+                                          type="number"
+                                          [min]="1"
+                                          formControlName="measures"/>
+                                <mat-hint>Breached records as a percentage</mat-hint>
+                            </mat-form-field>
+                        </div>
+
+                        <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="20px">
+                            <mat-form-field class="full-width margin-top" fxFlex="2 2 auto">
+                                <mat-label>Details On Likely causes of breaches<span class="required-field">required</span></mat-label>
+                                <textarea #FullDetailsOfComplaintInput class="textarea-large" placeholder="Enter here" formControlName="FullDetailsOfComplaint" matInput maxlength="1000"></textarea>
+                                    
+                            </mat-form-field>      
+                        </div>
+
+                        <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="20px">
+                            <mat-form-field class="full-width margin-top" fxFlex="2 2 auto">
+                                <mat-label>Remedial Actions taken or proposed<span class="required-field">required</span></mat-label>
+                                <textarea #DetailsOfComplaintInput class="textarea-large" placeholder="Enter here" formControlName="DetailsOfComplaint" matInput maxlength="1000"></textarea>
+                                    
+                            </mat-form-field>
+                        </div>
+
+                        <div class="actions" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="8px">
+                            <button (click)="stepper.reset()" [disabled]="breachDetails.pristine" color="primary"
+                                    mat-button
+                                    type="button">RESET
+                            </button>
+                            <button [disabled]="breachDetails.invalid" color="primary" mat-raised-button matStepperNext>
+                                NEXT
+                            </button>
+                        </div>
+                    </form>    
+                </mat-step>
+
+                <mat-step [stepControl]="personalData">
+                    <ng-template matStepLabel></ng-template>
+                    <fury-data-breach-personal-data-itemised
+                        (PersonalDataAffected)="acceptData($event)"
+                        [personalDataList]="application.personalDataAffected"
+                        [isViewOnly]="isViewOnly"
+                        (personalDataEvent)="onPersonalDataChange($event)"
+                    >
+                    </fury-data-breach-personal-data-itemised>
+                    
+                </mat-step>
+
+                <mat-step [stepControl]="containmentAndRecovery">
+                    <form [formGroup]="containmentAndRecovery">
+                        <ng-template matStepLabel>
+                            
+                        </ng-template>
+
+                        <fieldset>
+                            <legend> Containment & Recovery</legend>
+                            <div class="content" fxLayout="column" fxLayoutGap="8px">
+                                <mat-checkbox [checked]="false" formControlName="actionTaken" [value]="ActionTakenCheckboxValue" (change)="ActionTakenCheckboxChange($event)">
+                                    Has any action been taken to minimise/mitigate the effect on the affected
+                                    individuals?
+                                </mat-checkbox>
+                                <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+                                    <mat-form-field fxFlex="2 2 auto" appearance="fill" >
+                                        <mat-label>Details Of Action Taken</mat-label>
+                                        <textarea matInput
+                                                  cdkTextareaAutosize
+                                                  #autosize="cdkTextareaAutosize"
+                                                  cdkAutosizeMinRows="1"
+                                                  formControlName="detailsOfActionTaken"
+                                                  cdkAutosizeMaxRows="5"></textarea>
+                                        <mat-hint>Provide details taken to minimise/mitigate the effect.</mat-hint>
+                                    </mat-form-field>
+                                </div>
+
+                                <mat-checkbox [checked]="false" formControlName="hasDataBeenRecovered" [value]="DataRecoveredCheckboxValue" (change)="DataRecoveredCheckboxChange($event)">
+                                    Has the data placed at risk now been recovered?
+                                </mat-checkbox>
+                                <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px" [ngStyle]="{'margin-top': '20px'}">
+                                    <mat-form-field fxFlex="2 2 auto" appearance="fill">
+                                        <mat-label>Data recovery details</mat-label>
+                                        <textarea matInput
+                                                  cdkTextareaAutosize
+                                                  #autosize="cdkTextareaAutosize"
+                                                  cdkAutosizeMinRows="1"
+                                                  formControlName="detailsOfRecovery"
+                                                  cdkAutosizeMaxRows="5"></textarea>
+                                        <mat-hint>If so, please provide details of how and when this occurred.
+                                        </mat-hint>
+                                    </mat-form-field>
+                                </div>
+                                <mat-form-field fxFlex="">
+                                    <mat-label>Select date of data recovery</mat-label>
+                                    <input (click)="formDatepickerRefRecovery.open()"
+                                           (focus)="formDatepickerRefRecovery.open()"
+                                           [max]="maxDate"
+                                           [matDatepicker]="formDatepickerRefRecovery"
+                                           formControlName="dateOfRecovery"
+                                           matInput
+                                           readonly>
+                                    <mat-datepicker-toggle [for]="formDatepickerRefRecovery"
+                                                           matSuffix></mat-datepicker-toggle>
+                                    <mat-hint>When did the recovery occur?</mat-hint>
+                                    <mat-datepicker #formDatepickerRefRecovery></mat-datepicker>
+                                </mat-form-field>
+                                <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+                                    <mat-form-field fxFlex="2 2 auto" appearance="fill">
+                                        <mat-label>Prevention Steps</mat-label>
+                                        <textarea matInput
+                                                  cdkTextareaAutosize
+                                                  #autosize="cdkTextareaAutosize"
+                                                  cdkAutosizeMinRows="1"
+                                                  formControlName="preventionSteps"
+                                                  cdkAutosizeMaxRows="5"></textarea>
+                                        <mat-hint>What steps have been taken to prevent a recurrence of this incident
+                                            ?
+                                        </mat-hint>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <br>
+                 
+                        <br>
+                        <div class="actions" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="8px" [ngStyle]="{'margin-top': '20px'}">
+                            <button color="primary" mat-button matStepperPrevious type="button">PREVIOUS</button>
+                            <button [disabled]="containmentAndRecovery.invalid" color="primary" mat-raised-button
+                                    matStepperNext>
+                                NEXT
+                            </button>
+                        </div>
+                    </form>
+                </mat-step>
+
+                <mat-step [stepControl]="breachConsequences">
+
+
+                    <div [ngStyle]="{'text-align': 'center', 'font-weight': 'bold'}">
+                        <label for="Questions">Breach Consequences</label>
+                    </div>
+
+                    <mat-horizontal-stepper [linear]="isLinear" #stepper *ngIf="showManageButtons == false">
+                        
+                        <mat-step [stepControl]="breachConsequences">
+                            <form [formGroup]="breachConsequences">
+                                <div class="grouped-items">
+                                    
+                                    <div>
+                                        <table [ngStyle]="{padding: '10px'}">
+                                            <tr *ngFor="let question of BreachDescriptionQuestionsFirst">
+                                                 
+                                                 <td [ngStyle]="{width: '70%', 'padding-right':'80px'}">
+                                                     <mat-radio-group color="primary">
+                                                         {{question.BreachDescription}}  
+                                                     </mat-radio-group>
+                                                 </td>
+                                                 
+                                                 <td>
+                                                     <mat-radio-group color="primary">
+                                                         <mat-radio-button value="Yes-{{question.BreacheDescriptionID}}"
+                                                         (change)="changeBreachDescriptionValue($event, question)" [ngStyle]="{'padding-right': '70px'}">Yes</mat-radio-button>
+         
+                                                         <mat-radio-button value="No-{{question.BreacheDescriptionID}}"
+                                                         (change)="changeBreachDescriptionValue($event, question)">No</mat-radio-button> 
+                                                     </mat-radio-group>
+                                                 </td>
+                                                 
+                                            </tr>
+                                        </table>
+                                        <ng-container matColumnDef="NatureOfPersonalDataCollected">
+                                         <th mat-header-cell *matHeaderCellDef mat-sort-header> Nature of personal data collected / processed </th>
+                                         <td mat-cell *matCellDef="let row"> {{ row.NatureOfPersonalDataCollected }} </td>
+                                     </ng-container>
+                                        
+                                    </div>
+                                </div>
+                                
+                                <div class="actions" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="8px" [ngStyle]="{'margin-top': '20px'}">
+                                    <!-- <button color="primary" mat-button matStepperPrevious type="button">PREVIOUS</button> -->
+                                    <button color="primary" mat-raised-button [disabled]="(selectedBreachDescriptionQuestions.length + notSelectedBreachDescriptionQuestions.length) < breachDescriptionQuestionsCount / 2"
+                                            matStepperNext>
+                                        NEXT
+                                    </button>
+                                </div>
+                            </form>
+                        </mat-step>
+                        <mat-step [stepControl]="additionalInfo">
+                            <form [formGroup]="additionalInfo" *ngIf="notSelectedBreachDescriptionQuestions">
+                                <div class="grouped-items">
+                                    <div>
+                                        <table [ngStyle]="{padding: '10px'}">
+                                            <tr *ngFor="let question of BreachDescriptionQuestionsSecond">
+                                                    
+                                                    <td [ngStyle]="{width: '70%', 'padding-right':'80px'}">
+                                                        <mat-radio-group color="primary">
+                                                            {{question.BreachDescription}}  
+                                                        </mat-radio-group>
+                                                    </td>
+                                                    
+                                                    <td>
+                                                        <mat-radio-group color="primary">
+                                                            <mat-radio-button value="Yes-{{question.BreacheDescriptionID}}"
+                                                            (change)="changeBreachDescriptionValue($event, question)" [ngStyle]="{'padding-right': '70px'}">Yes</mat-radio-button>
+        
+                                                            <mat-radio-button value="No-{{question.BreacheDescriptionID}}"
+                                                            (change)="changeBreachDescriptionValue($event, question)">No</mat-radio-button> 
+                                                        </mat-radio-group>
+                                                    </td>
+                                                    
+                                            </tr>
+                                        </table>
+                                        <ng-container matColumnDef="NatureOfPersonalDataCollected">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nature of personal data collected / processed </th>
+                                            <td mat-cell *matCellDef="let row"> {{ row.NatureOfPersonalDataCollected }} </td>
+                                        </ng-container> 
+                                    
+                                    </div> 
+                                </div>
+                                <div class="actions" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="8px" [ngStyle]="{'margin-top': '20px'}">
+                                    <button color="primary" mat-button matStepperPrevious type="button">PREVIOUS</button>
+                                    
+                                </div>
+                            </form>
+                        </mat-step>
+                    </mat-horizontal-stepper>
+
+                    <div *ngIf="showManageButtons == true" class="flex-container" fxLayout="row" fxLayout="column">
+
+                        <form action="">
+                            <div layout="row" layout-wrap>
+                                <div class="grouped-items" *ngFor = "let question of TotalSelectedBreachDescription" flex="50">
+                                    <h3 [ngStyle]="{'font-size': '10px'}">{{question.BreachDescription}}</h3>
+                    
+                                    <mat-radio-group color="primary">
+                                        <mat-radio-button [checked] = "true" value="Yes">Yes</mat-radio-button>
+                                        <!-- <mat-radio-button value="No">No</mat-radio-button> -->
+                                    </mat-radio-group>        
+                                </div>
+                            </div>
+                
+                            
+                        </form>
+
+                        
+                    </div>
+                    
+                    <div class="actions" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="8px" [ngStyle]="{'margin-top': '20px'}">
+                        <button color="primary" mat-button matStepperPrevious type="button">PREVIOUS</button>
+                        <button color="primary" mat-raised-button [disabled]="(selectedBreachDescriptionQuestions.length + notSelectedBreachDescriptionQuestions.length) != breachDescriptionQuestionsCount"
+                            matStepperNext>
+                            NEXT
+                        </button>
+                    </div>
+                </mat-step>
+
+               
+                <mat-step [stepControl]="potentialHarms">
+
+                    <div [ngStyle]="{'text-align': 'center', 'font-weight': 'bold'}">
+                        <label for="Questions">Potential Harms</label>
+                    </div>
+
+                    <mat-horizontal-stepper *ngIf="showManageButtons == false">
+                        <mat-step [stepControl]="potentialHarms">
+                            <form [formGroup]="potentialHarms">
+                                <div class="grouped-items">
+                                    <div>
+                                        <table [ngStyle]="{padding: '10px'}">
+                                            <tr *ngFor="let question of PotentialHarmsFirst">
+                                                    
+                                                    <td [ngStyle]="{width: '70%', 'padding-right':'80px'}">
+                                                        <mat-radio-group color="primary">
+                                                            {{question.HarmDescription}}  
+                                                        </mat-radio-group>
+                                                    </td>
+                                                    
+                                                    <td>
+                                                        <mat-radio-group color="primary">
+                                                            <mat-radio-button value="Yes-{{question.HarmDescriptionID}}"
+                                                            (change)="changePotentialHarmsValue($event, question)" [ngStyle]="{'padding-right': '70px'}">Yes</mat-radio-button>
+        
+                                                            <mat-radio-button value="No-{{question.HarmDescriptionID}}"
+                                                            (change)="changePotentialHarmsValue($event, question)">No</mat-radio-button> 
+                                                        </mat-radio-group>
+                                                    </td>
+                                                    
+                                            </tr>
+                                        </table>
+                                        
+                                        <ng-container matColumnDef="NatureOfPersonalDataCollected">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nature of personal data collected / processed </th>
+                                            <td mat-cell *matCellDef="let row"> {{ row.NatureOfPersonalDataCollected }} </td>
+                                        </ng-container> 
+                                    
+                                    </div>
+              
+                                </div>
+                                
+                                <div class="actions" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="8px" [ngStyle]="{'margin-top': '20px'}">
+                                    <!-- <button color="primary" mat-button matStepperPrevious type="button">PREVIOUS</button> -->
+                                    <button color="primary" 
+                                    [disabled]="(selectedPotentialHarms.length + notSelectedPotentialHarms.length) < PotentialHarmsCount / 2"
+                                    mat-raised-button 
+                                            matStepperNext>
+                                        NEXT
+                                    </button>
+                                </div>
+                            </form>
+                        </mat-step>
+                        
+                        <mat-step [stepControl]="OtherpotentialHarms">
+                            <form [formGroup]="OtherpotentialHarms">
+                                <div class="grouped-items">
+                                    <div>
+                                       <table [ngStyle]="{padding: '10px'}">
+                                           <tr *ngFor="let question of PotentialHarmsSecond">
+                                                
+                                                <td [ngStyle]="{width: '70%', 'padding-right':'80px'}">
+                                                    <mat-radio-group color="primary">
+                                                        {{question.HarmDescription}}  
+                                                    </mat-radio-group>
+                                                </td>
+                                                
+                                                <td>
+                                                    <mat-radio-group color="primary">
+                                                        <mat-radio-button value="Yes-{{question.HarmDescriptionID}}"
+                                                        (change)="changePotentialHarmsValue($event, question)" [ngStyle]="{'padding-right': '70px'}">Yes</mat-radio-button>
+        
+                                                        <mat-radio-button value="No-{{question.HarmDescriptionID}}"
+                                                        (change)="changePotentialHarmsValue($event, question)">No</mat-radio-button> 
+                                                    </mat-radio-group>
+                                                </td>
+                                                
+                                           </tr>
+                                       </table>
+                                        <ng-container matColumnDef="NatureOfPersonalDataCollected">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nature of personal data collected / processed </th>
+                                            <td mat-cell *matCellDef="let row"> {{ row.NatureOfPersonalDataCollected }} </td>
+                                        </ng-container> 
+                                       
+                                    </div> 
+                                </div>
+                                
+                                <div class="actions" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="8px" [ngStyle]="{'margin-top': '20px'}">
+                                    <button color="primary" mat-button matStepperPrevious type="button">PREVIOUS</button>
+                                    <!-- <button color="primary" mat-raised-button 
+                                            matStepperNext>
+                                        NEXT
+                                    </button> -->
+                                </div>
+                            </form>
+                        </mat-step>
+                    </mat-horizontal-stepper>
+                    <div *ngIf="showManageButtons == true" class="flex-container" fxLayout="row" fxLayout="column">
+
+                        <form action="">
+                            <div layout="row" layout-wrap>
+                                <div class="grouped-items" *ngFor = "let question of TotalSelectedPotentialHarms" flex="50">
+                                    <h3 [ngStyle]="{'font-size': '10px'}">{{question.HarmDescription}}</h3>
+                    
+                                    <mat-radio-group color="primary">
+                                        <mat-radio-button [checked] = "true" value="Yes">Yes</mat-radio-button>
+                                        <!-- <mat-radio-button value="No">No</mat-radio-button> -->
+                                    </mat-radio-group>        
+                                </div>
+                            </div>
+                
+                            
+                        </form>
+
+                        
+                    </div>
+
+                    <div class="actions" fxLayout="row" fxLayoutGap="12px" *ngIf="showManageButtons == false">
+                        <button color="primary" mat-button matStepperPrevious type="button" style="margin-left: 50px;">PREVIOUS</button>
+
+                        <button
+                            mat-button
+                            [disabled]="(selectedPotentialHarms.length + notSelectedPotentialHarms.length) != PotentialHarmsCount"
+                            color="primary"  
+                            class="download" 
+                            matTooltip="Keep a copy of the information you have filled in"
+                            (click)="onPreviewForm(true)"
+                            >
+                            <div class="button-label">
+                                <mat-icon>sim_card_download</mat-icon>
+                                <span>Download Form</span>
+                            </div>
+                        </button>
+
+                        <button
+                            mat-button
+                            color="primary"  
+                            [disabled]="(selectedPotentialHarms.length + notSelectedPotentialHarms.length) != PotentialHarmsCount"
+                            class="preview" 
+                            matTooltip="Have a look at all the information you have filled in before sending."
+                            (click)="onPreviewForm(false)"
+                            >
+                            <div class="button-label">
+                                <mat-icon>visibility</mat-icon>
+                                <span>Preview Form</span>
+                            </div>
+                        </button>
+
+                        <button class="next-btn submit-btn" 
+                        [disabled]="(selectedPotentialHarms.length + notSelectedPotentialHarms.length) != PotentialHarmsCount"
+                        color="primary" mat-raised-button (click) = "onSubmit()"  fxLayout="row" fxLayoutAlign="end end" fxLayoutGap="8px" [ngStyle]="{'margin-top': '20px'}">
+                            SUBMIT
+                        </button>
+                    </div>   
+                </mat-step>
+
+            </mat-horizontal-stepper>  
+        </div>
+    </fury-page-layout-content>
+</fury-page-layout>

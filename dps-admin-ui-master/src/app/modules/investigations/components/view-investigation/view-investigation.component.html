@@ -1,0 +1,247 @@
+
+<fury-page-layout mode="card">
+    <fury-page-layout-header>
+        <fury-breadcrumbs [@fadeInRight] [crumbs]="['Complaints']"
+                          current="View"></fury-breadcrumbs>
+    </fury-page-layout-header>
+
+    <fury-page-layout-content [fxLayoutGap]="gap" fxLayout="column">
+        <div [fxLayoutGap]="gap" fxFlex="noshrink" fxLayout="column" fxLayout.gt-sm="row"
+             fxLayoutAlign.gt-sm="start stretch">
+            <fury-card [fxFlex.gt-sm]="col2"
+                       class="basic-forms route-animations-elements"
+                       [@fadeInUp]
+                       fxFlex="grow">
+                <fury-card-header>
+                    <fury-card-header-heading>Complaint Information</fury-card-header-heading>
+                </fury-card-header>
+                <fury-card-content fxLayout="column" class="form-padding">
+
+                    <form [formGroup]="investigationForm">
+
+                        <fieldset>
+                            <legend>Data Subject Details</legend>
+                            <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+
+                                <mat-form-field fxFlex="2 1 auto">
+                                    <mat-label>Data subject name</mat-label>
+                                    <input formControlName="dataSubjectName" matInput>
+                                </mat-form-field>
+
+                                <mat-form-field fxFlex="2 1 auto">
+                                    <mat-label>Data Subject Email</mat-label>
+                                    <input formControlName="dataSubjectEmail" matInput>
+                                </mat-form-field>
+
+                                <mat-form-field fxFlex="2 1 auto">
+                                    <mat-label>Data Subject Phone</mat-label>
+                                    <input formControlName="dataSubjectPhone" matInput>
+                                </mat-form-field>
+                            </div>
+                        </fieldset>
+
+                        <!-- <fieldset>
+                            <legend>Data Subject Organisation</legend>
+                            <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+                            <mat-form-field fxFlex="2 1 auto">
+                                <mat-label>Who are you complaining as</mat-label>
+                                <input formControlName="ComplaintCategory" matInput>
+                            </mat-form-field>
+
+                            <mat-form-field fxFlex="2 1 auto" *ngIf="application.ComplainerCategory === 'individual'">
+                                <mat-label>Organisation Complained From</mat-label>
+                                <input formControlName="OrganisationComplainedFrom" matInput>
+                            </mat-form-field>
+
+                            <mat-form-field fxFlex="2 1 auto" *ngIf="application.ComplainerCategory === 'individual'">
+                                <mat-label>Other Organisation</mat-label>
+                                <input formControlName="OtherOrganisationComplainedFrom" matInput>
+                            </mat-form-field>
+                            </div>
+                        </fieldset> -->
+
+                        <fieldset>
+                            <legend>Details Organisation complained To</legend>
+                            <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+                                <mat-form-field fxFlex="2 1 auto" >
+                                    <mat-label>Organisation Complained To</mat-label>
+                                    <input formControlName="Organisation" matInput>
+                                </mat-form-field>
+
+                                <mat-form-field fxFlex="2 1 auto" *ngIf="application.Organisation == undefined" >
+                                    <mat-label>Other Organisation Complained To</mat-label>
+                                    <input formControlName="OtherOrganisation" matInput>
+                                </mat-form-field>                                  
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Organisation Contact Person Details</legend>
+                            <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+
+                                <mat-form-field fxFlex="2 1 auto">
+                                    <mat-label>Contact First Name</mat-label>
+                                    <input formControlName="ContactFirstName" matInput>
+                                </mat-form-field>
+
+                                <mat-form-field fxFlex="2 1 auto">
+                                    <mat-label>Contact Last Name</mat-label>
+                                    <input formControlName="ContactLastName" matInput>
+                                </mat-form-field>
+
+                                <mat-form-field fxFlex="2 1 auto">
+                                    <mat-label>Contact Email</mat-label>
+                                    <input formControlName="ContactEmailAddress" matInput>
+                                </mat-form-field>
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Complaint in Brief</legend>
+                            <mat-label>Personal Data Affected</mat-label>
+                            <mat-grid-list cols="4" rowHeight="4rem">
+                                <mat-grid-tile *ngFor="let data of personalData" >
+                                    {{data.DataSubCategoryName}}
+                                </mat-grid-tile>
+                               
+                            </mat-grid-list>
+                         
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>General Complaint Info</legend>
+                            <div class="content" fxLayout="column" fxLayoutGap="8px">
+
+                                <!-- <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+                                        
+                                    <mat-form-field fxFlex="2 1 auto">
+                                    <mat-label>Type of complaint</mat-label>    
+                                    <mat-grid-list cols="4" rowHeight="4rem">
+                                        <mat-grid-tile>
+                                            <input formControlName="reasonForTheComplaint" matInput>
+                                        </mat-grid-tile>
+                                    </mat-grid-list>    
+                                    </mat-form-field>
+                                </div>           -->
+
+                                <fieldset>
+                                    <legend>Complaint Reasons</legend>
+                                    <mat-label>Reasons for complaints</mat-label>
+                                    <mat-grid-list cols="4" rowHeight="4rem">
+                                        <mat-grid-tile *ngFor="let data of investigationReasons" >
+                                            {{data.ComplaintReasonName}}
+                                        </mat-grid-tile>
+                                       
+                                    </mat-grid-list>
+                                 
+                                </fieldset>
+
+                                <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+                                    <mat-form-field fxFlex="2 1 auto" appearance="fill">
+                                        <mat-label>Complaint Details</mat-label>
+                                        <textarea matInput
+                                                  cdkTextareaAutosize
+                                                  #autosize="cdkTextareaAutosize"
+                                                  cdkAutosizeMinRows="1"
+                                                  formControlName="complaintDetails"
+                                                  cdkAutosizeMaxRows="5"></textarea>
+                                    </mat-form-field>
+                                    
+                                </div>
+                            </div>
+
+                            <!-- <section class="expand-section reduced-properties table-wrapper margin documents">
+                                <h1 class="full-width step-header">Attach Proof of Complaint</h1> -->
+            
+                                <!-- <div class="buttons">
+                                    <button 
+                                        mat-button
+                                        *ngIf="proofOfPayment && (!isViewOnly || (_hasRequestMoreInfo && _updateProofOfPayment))"
+                                        color="primary"
+                                        [disabled]="processing"
+                                        class="remove-button"
+                                        (click)="onRemoveProofOfPaymen()">
+                                        <div class="button-label">
+                                            <mat-icon>clear</mat-icon>
+                                            <span> Remove Document </span>
+                                        </div>
+                                    </button>
+                                </div> -->
+                            <fieldset>
+                                <legend>Evidence Of Complaint</legend>
+                                <div class="uploaded-document" matTooltip="Open Document" (click)="onReadDocument()">
+                                    <img src="./assets/img/pdf.png" alt="" [ngStyle]="{width: '100px', height: '100px'}">
+            
+                                    <span>Document: {{ document.Name }} <span *ngIf="document.Size">  -  {{ document.Size }} Mbs</span> </span>
+                                </div>
+    
+                                <p class="no-document-found" *ngIf="document && !document.Base64">No document found. Please attach</p>
+
+                            </fieldset>    
+            
+                                            
+                            <!-- </section> -->
+                        </fieldset>
+                    </form>
+                </fury-card-content>
+            </fury-card>
+
+        </div>
+
+        <fieldset>
+            <legend>Comments</legend>
+            <div class="content" fxLayout="column" fxLayoutGap="8px">
+
+                <fieldset>
+                    <legend>Forwarded Comments</legend>
+                    <div>
+                        <div>
+                            <mat-form-field fxFlex="2 1 auto">
+                                <mat-label>Technical Comments</mat-label>
+                                <input formControlName="TechnicalForwardedComments" matInput>
+                            </mat-form-field>
+                        </div>
+                        
+                        <div>
+                            <mat-form-field fxFlex="2 1 auto">
+                                <mat-label>Legal Comments</mat-label>
+                                <input formControlName="LegalForwardedComments" matInput>
+                            </mat-form-field>
+                        </div>
+
+                        <div>
+                            <mat-form-field fxFlex="2 1 auto">
+                                <mat-label>More Information Required</mat-label>
+                                <input formControlName="MoreInformationRequired" matInput>
+                            </mat-form-field>
+                        </div>
+                    </div> 
+                </fieldset>
+
+                <!-- <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+                        
+                    <mat-form-field fxFlex="2 1 auto">
+                    <mat-label>Type of complaint</mat-label>    
+                    <mat-grid-list cols="4" rowHeight="4rem">
+                        <mat-grid-tile>
+                            <input formControlName="reasonForTheComplaint" matInput>
+                        </mat-grid-tile>
+                    </mat-grid-list>    
+                    </mat-form-field>
+                </div>           -->
+
+                <fieldset>
+                    <legend>Investigation Comments</legend>
+                    <textarea matInput
+                        cdkTextareaAutosize
+                        #autosize="cdkTextareaAutosize"
+                        cdkAutosizeMinRows="1"
+                        formControlName="complaintDetails"
+                        cdkAutosizeMaxRows="5"
+                        >{{this.application.InvestigationComments}}</textarea>
+
+                </fieldset>
+            </div>
+        </fieldset>
+    </fury-page-layout-content>
+</fury-page-layout>

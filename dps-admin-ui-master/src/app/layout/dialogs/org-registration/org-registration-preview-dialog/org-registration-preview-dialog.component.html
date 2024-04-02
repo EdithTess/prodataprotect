@@ -1,0 +1,375 @@
+<main>
+    <button mat-button class="close-window-btn" (click)="onCloseWindow()">
+     <!---   <mat-icon>clear</mat-icon> -->
+    </button>    
+
+    <article
+        style="width: 100%; margin: 0px 0px 30px; position: relative;"
+        id="letterBodyContainer">
+
+        <button 
+            *ngIf="!downloading"
+            mat-button
+            color="primary"
+            [disabled]="downloading"
+            class="download-button"
+            (click)="onDownloadLetter()">
+            <div class="button-label">
+                <mat-icon>cloud_download</mat-icon>
+                <span>Download </span>
+            </div>
+        </button>
+
+      <!--  <div class="image-wrapper" [ngStyle]="{'margin': downloading ? '10px auto 40px' : '30px auto 40px', 'width': '200px', 'overflow': 'hidden'}">
+            <img src="./assets/icons/Final-logos-28.png" style="width: 100%; " alt="">
+        </div>        -->
+        
+        <section class="letter-body" style="padding: 0px 40px 45px;">
+
+            <h1 style="font-weight: 700; font-size: 14px; text-transform: uppercase; text-align: center; color: #000; margin-top: 0px;margin: -30px 0px 25px 0px;">
+                Application for New Registration / Renewal
+            </h1>
+
+            <h3 style="font-weight: 700; letter-spacing: 1px; font-size: 14px; text-transform: uppercase; text-align: left; color: #000; margin: 0px 0px -10px 0px;">
+                Applicant
+            </h3>
+
+            <div style="margin: 15px 0px; display: grid; grid-template-columns: repeat(auto-fit,minmax(200px, 1fr)); gap: 20px 25px;">
+
+                <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Name of Organisation</span>
+                    <b style="font-weight: 600;">{{ data.row.OrganisationName }}</b>
+                </p>
+
+                <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Category</span>
+                    <b style="font-weight: 600;margin-left: 3px;text-align: justify;">
+                        <span *ngFor="let row of data.row.OrganisationCategory; let i = index">
+                            <span style="margin-left: -3px;">{{ i > 0 ? ',' : '' }}</span> {{ row.OrganisationCategoryName }}
+                        </span>
+                    </b>                    
+                </p>
+
+                <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Type of Organisation</span>
+                    <b style="font-weight: 600;">{{ data.OrganizationType }}</b>
+                </p>
+
+                <p *ngIf="data.CountryOfIncorporation" style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Country of Incorporation</span>
+                    <b style="font-weight: 600;">{{ data.CountryOfIncorporation }}</b>
+                </p>
+
+                <p *ngIf="data.row.URSBNumber" style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Registration Number</span>
+                    <b style="font-weight: 600;">{{ data.row.URSBNumber }}</b>
+                </p>
+
+                <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Sector</span>
+                    <b style="font-weight: 600;">{{ data.Sector }}</b>
+                </p>
+
+                <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Physical Address</span>
+                    <b style="font-weight: 600;">{{ data.row.Location }}</b>
+                </p>
+
+                <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Organisation Telephone Number</span>
+                    <b style="font-weight: 600;">{{ data.row.PhoneNumber }}</b>
+                </p>
+
+                <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Organisation Email Address</span>
+                    <b style="font-weight: 600;">{{ data.row.EmailAddress }}</b>
+                </p>
+
+                <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Nature of Business Category</span>
+                    <b style="font-weight: 600;">{{ data.NatureOfBusinessCat }}</b>
+                </p>
+
+                <p style="grid-column: 1/-1;font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Nature of Business Sub-Categories</span>
+                    <b style="font-weight: 600;margin-left: 3px;text-align: justify;">
+                        <span *ngFor="let row of data.row.NatureOfBusiness; let i = index">
+                            <span style="margin-left: -3px;">{{ i > 0 ? ',' : '' }}</span> {{ row.NatureOfBusinessSubCategoryName }}
+                        </span>
+                    </b>
+                </p>
+
+            </div>         
+
+            <hr style="margin: 40px 0px; width: 100%; border: 0px;border-bottom: 1px solid #ebeced;" />
+
+            <h3 style="font-weight: 700; letter-spacing: 1px; font-size: 14px; text-transform: uppercase; text-align: left; color: #000; margin: 0px 0px -10px 0px;">
+                Data Protection Officer
+            </h3>
+
+            <div style="margin: 15px 0px; display: grid; grid-template-columns: repeat(auto-fit,minmax(200px, 1fr)); gap: 20px 25px;">
+
+                <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Do you have a designated data protection officer ?</span>
+                    <b style="font-weight: 600;">{{ data.row.DPORequired }}</b>
+                </p>
+
+                <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Name</span>
+                    <b style="font-weight: 600;">{{ data.row.DPOName }}</b>
+                </p>
+
+                <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Physical Address</span>
+                    <b style="font-weight: 600;">{{ data.row.DPOPhysicalAddress }}</b>
+                </p>
+
+                <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Telephone Number</span>
+                    <b style="font-weight: 600;"> {{ data.row.DPOPhoneNumber }} </b>
+                </p>
+
+                <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Email Address</span>
+                    <b style="font-weight: 600;">{{ data.row.DPOEmailAddress }}</b>
+                </p>
+
+                <p style="line-height: 14px; font-size: 11px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Title Held</span>
+                    <b style="font-weight: 600;">{{ data.row.DPOPositionInOrganisation }}</b>
+                </p>
+
+            </div>            
+
+            <hr style="margin: 40px 0px; width: 100%; border: 0px;border-bottom: 1px solid #ebeced;" />
+
+            <h3 style="font-weight: 700; letter-spacing: 1px; font-size: 14px; text-transform: uppercase; text-align: left; color: #000; margin: 0px 0px -10px 0px;">
+                Data Collected or Processed
+            </h3>
+
+            <div style="margin: 15px 0px; display: grid; grid-template-columns: repeat(auto-fit,minmax(200px, 1fr)); gap: 20px 25px;">
+
+                <p style="grid-column: 1/-1; font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Source of Data</span>
+
+                    <b style="font-weight: 600;margin-left: 3px;text-align: justify;">
+                        <span *ngFor="let row of data.row.SourceOfDataID; let i = index">
+                            <span style="margin-left: -3px;">{{ i > 0 ? ',' : '' }}</span> {{ row.DataSource }}
+                        </span>
+                    </b>                      
+                </p>
+
+                <p style="grid-column: 1/-1; font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Personal Data Collected or Processed</span>
+
+                    <b style="font-weight: 600;margin-left: 3px;text-align: justify;">
+                        <span *ngFor="let row of data.row.PersonalDataCollected; let i = index">
+                            <span style="margin-left: -3px;">{{ i > 0 ? ',' : '' }}</span> {{ row.DataSubCategory }}
+                        </span>
+                    </b>                        
+                </p>
+            </div>   
+
+            <div *ngIf="downloading" class="html2pdf__page-break"></div>
+
+            <hr *ngIf="!downloading" style="margin: 40px 0px 20px; width: 100%; border: 0px;border-bottom: 1px solid #ebeced;" />
+
+            <h3 style="padding-top: 20px; font-weight: 700; letter-spacing: 1px; font-size: 14px; text-transform: uppercase; text-align: left; color: #000; margin: 0px 0px -10px 0px;">
+                Purpose & Retention
+            </h3>
+
+            <div style="margin: 15px 0px; display: grid; grid-template-columns: repeat(auto-fit,minmax(200px, 1fr)); gap: 20px 25px;">
+
+                <p style="grid-column: 1/-1; font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>For What Purpose</span>
+                    <b style="font-weight: 600;margin-left: 3px;text-align: justify;">
+                        <span *ngFor="let row of data.row.Purpose; let i = index">
+                            <span style="margin-left: -3px;">{{ i > 0 ? ',' : '' }}</span> {{ row.DataPurpose }}
+                        </span>
+                    </b>
+                </p>
+
+                <p *ngIf="data.row.SpecifyTheLaw" style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Specify the Law</span>
+                    <b style="font-weight: 600;">{{ data.row.SpecifyTheLaw }}</b>
+                </p>
+
+                <p *ngIf="data.row.ServiceOrProductProvided" style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Specify the Service / Product Provided</span>
+                    <b style="font-weight: 600;">{{ data.row.ServiceOrProductProvided }}</b>
+                </p>
+
+                <p *ngIf="data.row.SpecifyLegalObligation" style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Specify the Legal Obligation</span>
+                    <b style="font-weight: 600;">{{ data.row.SpecifyLegalObligation }}</b>
+                </p>
+
+                <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Total Records</span>
+                    <b style="font-weight: 600;">{{ data.row.TotalRecordsAtRegistration }}</b>
+                </p>
+
+                <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Percentage Annual Growth</span>
+                    <b style="font-weight: 600;">{{ data.row.RecordPercentageGrowth }} %</b>
+                </p>
+
+                <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Retention period</span>
+                    <b style="font-weight: 600;">{{ data.row.RetentionPeriod }} years</b>
+                </p>
+
+            </div>   
+
+            <!-- <div *ngIf="downloading" class="html2pdf__page-break"></div> -->
+
+            <!-- <hr *ngIf="!downloading" style="margin: 40px 0px 20px; width: 100%; border: 0px;border-bottom: 1px solid #ebeced;" /> -->
+
+            <hr style="margin: 40px 0px; width: 100%; border: 0px;border-bottom: 1px solid #ebeced;" />
+
+            <h3 style="font-weight: 700; letter-spacing: 1px; font-size: 14px; text-transform: uppercase; text-align: left; color: #000; margin: 0px 0px 10px 0px;">
+                Disclosure & Transfer
+            </h3>
+
+            <div style="margin: 15px 0px; display: grid; grid-template-columns: repeat(auto-fit,minmax(200px, 1fr)); gap: 20px 25px;">
+
+                <p style="grid-column: 1/-1; font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Do you disclose Personal Data to other Persons or Bodies ?</span>
+                    <b style="font-weight: 600;">{{ data.row.PersonalDataIsForDisclosure }}</b>
+                </p>
+
+                <table *ngIf="data.row.PersonalDataIsForDisclosure === 'Yes'" style="margin: -8px 0px 0px; border-bottom: 1px solid #505a5b; border-collapse: collapse; width: calc(100%); margin: 0px; font-size: 12px; grid-column: 1/-1;">
+                    <thead>
+                        <tr style="font-size: 11px; text-align: left;">
+                            <th style="border: 1px solid #505a5b; border-bottom: none; padding: 8px 5px; text-align: center; width: 6%; letter-spacing: .5px;font-weight: 600; background-color: #505a5b; color: #fff;">#</th>
+                            <th style="border: 1px solid #505a5b; border-bottom: none; padding: 8px 5px; width: 30%; letter-spacing: .5px;font-weight: 600; background-color: #505a5b; color: #fff;">Person / Body</th>
+                            <th style="border: 1px solid #505a5b; border-bottom: none; border-left: 0px; padding: 4px 5px; width: 70px;letter-spacing: .5px;font-weight: 600; background-color: #505a5b; color: #fff;">Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody style="font-size: 11px;">
+                        <tr *ngFor="let row of data.row.ThirdParties; let i = index">
+                            <td style="border: 1px solid #505a5b; border-bottom: none; padding: 10px 5px; text-align: center; font-weight: 600; color: #000; font-weight: 600;">{{ i + 1 }}</td>
+                            <td style="border: 1px solid #505a5b; border-bottom: none; padding: 10px 5px; font-weight: 600; color: #000; font-weight: 600;">{{ row.ThirdPartyName }}</td>
+                            <td style="border: 1px solid #505a5b; border-bottom: none; padding: 10px 5px; border-left: 0px; font-weight: 600; color: #000; font-weight: 600;">{{ row.Purpose }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>   
+
+            <!-- <hr style="margin: 40px 0px; width: 100%; border: 0px; border-bottom: 1px solid #ebeced;" /> -->
+            <!-- <div *ngIf="download" class="html2pdf__page-break"></div> -->
+
+            <div style="margin: 28px 0px 15px; display: grid; grid-template-columns: repeat(auto-fit,minmax(200px, 1fr)); gap: 20px 25px;">
+
+                <p style="grid-column: 1/-1; font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Do you Transfer personal data outside Uganda ?</span>
+                    <b style="font-weight: 600;">{{ data.row.StoreDataOutsideCountry }}</b>
+                </p>
+
+                <table *ngIf="data.row.StoreDataOutsideCountry === 'Yes'" style="margin: -8px 0px 0px; border-bottom: 1px solid #505a5b; border-collapse: collapse; width: calc(100%); margin: 0px; font-size: 12px; grid-column: 1/-1;">
+                    <thead>
+                        <tr style="font-size: 11px; text-align: left;">
+                            <th style="border: 1px solid #505a5b; border-bottom: none; padding: 8px 5px; text-align: center; width: 6%; letter-spacing: .5px;font-weight: 600; background-color: #505a5b; color: #fff;">#</th>
+                            <th style="border: 1px solid #505a5b; border-bottom: none; padding: 8px 5px; width: 20%; letter-spacing: .5px;font-weight: 600; background-color: #505a5b; color: #fff;">Country</th>
+                            <th style="border: 1px solid #505a5b; border-bottom: none; border-left: 0px; padding: 4px 5px; width: 70px;letter-spacing: .5px;font-weight: 600; background-color: #505a5b; color: #fff;">Purpose</th>
+                            <th style="border: 1px solid #505a5b; border-bottom: none; border-left: 0px; padding: 4px 5px; width: 70px;letter-spacing: .5px;font-weight: 600; background-color: #505a5b; color: #fff;">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody style="font-size: 11px;">
+                        <tr *ngFor="let row of data.row.Countries; let i = index">
+                            <td style="border: 1px solid #505a5b; border-bottom: none; padding: 10px 5px; text-align: center; font-weight: 600; color: #000; font-weight: 600;">{{ i + 1 }}</td>
+                            <td style="border: 1px solid #505a5b; border-bottom: none; padding: 10px 5px; font-weight: 600; color: #000; font-weight: 600;">{{ row.Country }}</td>
+                            <td style="border: 1px solid #505a5b; border-bottom: none; padding: 10px 5px; border-left: 0px; font-weight: 600; color: #000; font-weight: 600;">{{ row.Purpose }}</td>
+                            <td style="border: 1px solid #505a5b; border-bottom: none; padding: 10px 5px; border-left: 0px; font-weight: 600; color: #000; font-weight: 600;">{{ row.Description }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>   
+
+            <div *ngIf="downloading" class="html2pdf__page-break"></div>
+
+            <hr *ngIf="!downloading" style="margin: 40px 0px 20px; width: 100%; border: 0px;border-bottom: 1px solid #ebeced;" />
+
+            <h3 style="padding-top: 20px; font-weight: 700; letter-spacing: 1px; font-size: 14px; text-transform: uppercase; text-align: left; color: #000; margin: 0px 0px 10px 0px;">
+                Security Information
+            </h3>            
+
+            <div style="margin: 10px 0px 15px; display: grid; grid-template-columns: repeat(auto-fit,minmax(200px, 1fr)); gap: 20px 25px;">
+
+                <table style="margin: -8px 0px 0px; border-bottom: 1px solid #505a5b; border-collapse: collapse; width: calc(100%); margin: 0px; font-size: 12px; grid-column: 1/-1;">
+                    <thead>
+                        <tr style="font-size: 11px; text-align: left;">
+                            <th style="border: 1px solid #505a5b; border-bottom: none; padding: 8px 5px; text-align: center; width: 6%; letter-spacing: .5px;font-weight: 600; background-color: #505a5b; color: #fff;">#</th>
+                            <th style="border: 1px solid #505a5b; border-bottom: none; border-left: 0px; padding: 4px 5px; width: 70px;letter-spacing: .5px;font-weight: 600; background-color: #505a5b; color: #fff;">Security Measure</th>
+                        </tr>
+                    </thead>
+                    <tbody style="font-size: 11px;">
+                        <tr *ngFor="let row of data.row.SecurityMeasures; let i = index">
+                            <td style="border: 1px solid #505a5b; border-bottom: none; padding: 10px 5px; text-align: center; font-weight: 600; color: #000; font-weight: 600;">{{ i + 1 }}</td>
+                            <td style="border: 1px solid #505a5b; border-bottom: none; padding: 10px 5px; border-left: 0px; font-weight: 600; color: #000; font-weight: 600;">{{ row.SecurityMeasure }}</td>
+                        </tr>
+                    </tbody>
+                </table>      
+
+            </div>      
+            
+            <!-- <hr style="margin: 40px 0px 10px; width: 100%; border: 0px;border-bottom: 1px solid #ebeced;" /> -->
+
+            <h3 *ngIf="data.Attachment" style="grid-column: 1/-1; padding-top: 20px; font-weight: 700; letter-spacing: 1px; font-size: 14px; text-transform: uppercase; text-align: left; color: #000; margin: 30px 0px 10px 0px;">
+                Supporting Documentation
+            </h3>
+
+            <div *ngIf="data.Attachment" style="grid-column: 1/-1; display: grid; grid-template-columns: 25px auto;align-content: center;align-items: center;gap: 5px;">
+                <img src="./assets/images/pdf.png" style="width: 100%;" alt="">
+
+                <span style="font-size: 11px; font-weight: 600; line-height: 23px; text-align: justify;">
+                    Document: {{ data.Attachment.Name }}
+                    <span>  -  {{ data.Attachment.Size }} Mbs</span>
+                </span>
+            </div>       
+            
+            <!-- <hr style="margin: 40px 0px 10px; width: 100%; border: 0px;border-bottom: 1px solid #ebeced;" /> -->
+
+            <h3 style="grid-column: 1/-1; padding-top: 20px; font-weight: 700; letter-spacing: 1px; font-size: 14px; text-transform: uppercase; text-align: left; color: #000; margin: 30px 0px 10px 0px;">
+                Form 3
+            </h3>
+
+            <div style="grid-column: 1/-1; display: grid;grid-template-columns: 25px auto;align-content: center;align-items: center;gap: 5px;">
+                <img src="./assets/images/pdf.png" style="width: 100%;" alt="">
+
+                <span style="font-size: 11px; font-weight: 600; line-height: 23px; text-align: justify;">
+                    Document: {{ data.Form3.Name }}
+                    <span>  -  {{ data.Form3.Size }} Mbs</span>
+                </span>
+            </div> 
+
+            <h3 style="grid-column: 1/-1; padding-top: 20px; font-weight: 700; letter-spacing: 1px; font-size: 14px; text-transform: uppercase; text-align: left; color: #000; margin: 30px 0px 10px 0px;">
+                Proof of Payment
+            </h3>
+
+            <div style="grid-column: 1/-1; display: grid;grid-template-columns: 25px auto;align-content: center;align-items: center;gap: 5px;">
+                <img src="./assets/images/pdf.png" style="width: 100%;" alt="">
+
+                <span style="font-size: 11px; font-weight: 600; line-height: 23px; text-align: justify;">
+                    Document: {{ data.ProofOfPayment.Name }}
+                    <span>  -  {{ data.ProofOfPayment.Size }} Mbs</span>
+                </span>
+            </div> 
+            
+            <div style="margin: 70px 0px 15px; display: grid; grid-template-columns: repeat(auto-fit,minmax(200px, 1fr)); gap: 20px 25px;">
+
+                <p style="font-size: 12px;line-height: 25px;font-weight: 400;color: #000;text-align: left;margin: 0px;">
+                    I, 
+                    <i style="  border-bottom: 1px dashed; padding: 0px 40px; font-weight: 600; color: #000;"> {{ data.row.RegistrationDoneBy }} </i>
+                    certify that the above information is correct and complete and here by apply to be registered as 
+                    data collector/ data processor / data controller (This shall be based on th category selected) 
+                    under the data Protection and Privacy Act.
+                </p>
+
+            </div>               
+
+        </section>
+
+    </article>
+</main>

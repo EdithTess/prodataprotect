@@ -1,0 +1,33 @@
+<main>
+    <header>
+        <h1>Notice</h1>
+
+        <button mat-button (click)="onCloseDialog()">
+            <mat-icon>clear</mat-icon>
+        </button>
+    </header>
+
+    <article>
+
+        <p>
+
+        </p>
+
+    </article>
+
+    <section>
+        <!-- <button color="warn" mat-button (click)="form.reset()" [disabled]="processing">
+            Clear Form
+        </button> -->
+
+        <button 
+            [ngClass]="{'inline-processing-btn': processing}" 
+            color="primary" 
+            mat-raised-button 
+            (click)="onSave()" 
+            [disabled]="form.invalid || processing">
+            <app-inline-mat-spinner *ngIf="processing"></app-inline-mat-spinner>                  
+            <span>I agree</span>
+        </button>
+    </section>
+</main>

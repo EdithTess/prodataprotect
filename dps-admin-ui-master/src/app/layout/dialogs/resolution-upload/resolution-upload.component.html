@@ -1,0 +1,59 @@
+<main>
+    <div class="mat-progress-bar-container">
+        <mat-progress-bar *ngIf="processing" mode="indeterminate"></mat-progress-bar>
+    </div>
+
+    <header>
+        <h1>Upload A Document</h1>
+        
+        <button mat-button (click)="onCloseDialog()">
+            <mat-icon>clear</mat-icon>
+        </button>
+    </header>
+    
+    <form [formGroup]="form" class="attach-document-wrapper">
+        <button 
+            mat-raised-button
+            [disabled]="processing"
+            color="primary"
+            (click)="onAttachDocument()">
+            {{ data.multiple ? 'Browse For Documents' : 'Browse For A Document' }}
+        </button>            
+
+        <div class="upload-document-input">
+            <input 
+                formControlName="Document"
+                id="file" 
+                #attachDocumentInput
+                type="file" 
+                [multiple]="data.multiple"
+                accept=".pdf" 
+                (change)="onFileChange($event)">
+
+            <div *ngIf="(f.Document.touched && f.Document.invalid) || !documents.length">
+                <div class="error-msg">Please select the document. Maximum of {{ data.maxSize ? data.maxSize : 40 }} Mbs. (.pdf Format)</div>
+            </div>
+        </div>  
+        
+        <article *ngIf="documents.length">
+
+            <div *ngFor="let d of documents; let i = index" class="fadeInUp _delay{{ i + 1}}ms">
+                <span>{{ d.name }}</span>
+                <span> -  {{ size }} Mbs </span>
+            </div>
+    
+        </article>
+
+        <div class="file-error-msg" *ngIf="errorMessage">{{ errorMessage }}</div>
+    </form>
+    
+    <div class="last-step-btn-container">
+        <button 
+            color="primary" 
+            mat-raised-button 
+            [disabled]="form.invalid || processing || errorMessage" 
+            (click)="onAttach()">
+            Attach
+        </button>
+    </div>     
+</main>

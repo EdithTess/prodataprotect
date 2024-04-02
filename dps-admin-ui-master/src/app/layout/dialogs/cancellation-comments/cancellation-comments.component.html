@@ -1,0 +1,30 @@
+<div>
+    <form [formGroup]="CancelRegistrationFormGroup">
+        <mat-dialog-content>
+            <div class="content" fxLayout="column" fxLayoutGap="8px">
+                
+                
+                <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px"
+                     fxLayoutGap.gt-xs="24px">
+                    <mat-form-field fxFlex="2 2 auto" appearance="fill">
+                        <mat-label>Provide Comments</mat-label>
+                        <textarea matInput
+                                  cdkTextareaAutosize
+                                  cdkAutosizeMinRows="6"
+                                  formControlName="comments"
+                                  cdkAutosizeMaxRows="10"
+                                  formControlName="Comments"></textarea>
+                       
+                    </mat-form-field>
+                </div>
+            </div>
+        </mat-dialog-content>
+
+        <button mat-raised-button (click)="onSubmit()"
+                color="primary">
+            
+            <span>Submit</span>
+        </button>&nbsp;
+    </form>
+    
+</div>

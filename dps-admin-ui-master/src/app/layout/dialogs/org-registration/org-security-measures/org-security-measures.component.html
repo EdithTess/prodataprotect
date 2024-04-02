@@ -1,0 +1,33 @@
+<main>
+    <header>
+        <h1>{{ data === null ? 'Add A Security Measure' : 'Make Changes To The Information' }}</h1>
+
+        <button mat-button (click)="onCloseDialog()">
+            <mat-icon>clear</mat-icon>
+        </button>
+    </header>
+
+    <form [formGroup]="form">   
+        <mat-form-field class="full-width">
+            <mat-label>Enter Here<span class="required-field">required</span></mat-label>
+            <textarea #Input matInput maxlength="3000" formControlName="SecurityMeasure"></textarea>
+            <mat-hint align="end">{{ Input.value.length }} / 3000</mat-hint>
+        </mat-form-field>  
+    </form>
+
+    <section>
+        <button color="warn" mat-button (click)="form.reset()" [disabled]="processing">
+            Clear Form
+        </button>
+
+        <button 
+            [ngClass]="{'inline-processing-btn': processing}" 
+            color="primary" 
+            mat-raised-button 
+            (click)="onSave()" 
+            [disabled]="form.invalid || processing">
+            <app-inline-mat-spinner *ngIf="processing"></app-inline-mat-spinner>                  
+            <span> {{ data === null ? 'Save' : 'Save  Changes'  }} </span>
+        </button>
+    </section>
+</main>

@@ -1,0 +1,67 @@
+<main>
+    <button mat-button [disabled]="downloading" class="close-window-btn" (click)="onCloseWindow()">
+        <mat-icon>clear</mat-icon>
+    </button>
+
+    <article
+        style="width: 100%; margin: 0px 0px 30px; position: relative;"
+        id="letterBodyContainer">
+        
+        <section class="letter-body" style="padding: 65px 40px 45px;font-family: none;">
+
+            <h1 style="text-align: right; font-weight: 700; color: #000; font-size: 17px; font-family: none;">Regulation 45(2)</h1>
+
+            <div>
+                <h1 style="text-align: center; font-weight: 700; font-size: 17px; color: #000;">FORM 12</h1>
+                <h1 style="font-weight: 700;font-size: 17px;text-transform: uppercase;text-align: center;font-family: none;color: #000;margin-top: 0px;">
+                    DECISION ON COMPLAINT OF COMPLAINT CONCERNING INFRINGEMENT OR VIOLATION OF THE ACT
+                </h1>
+            </div>
+
+            <div>
+                <p style="font-size: 15px;font-family: none;line-height: 21px;color: #000000;">
+                    TO: {{ parent_data.complaint.FirstName }} {{ parent_data.complaint.LastName }} 
+                </p>
+
+                <p style="font-size: 15px;font-family: none;line-height: 21px;color: #000000;">
+                    Having reviewed your complaint lodged with the Personal Data Protection Office on {{ parent_data.complaint.CreatedAt}}, concerning; 
+                    <sup style="font-size: 14px; font-family: none; margin: -3px 5px 0px 2px;text-transform: lowercase;"></sup>
+                </p>
+
+                <p style="font-size: 15px;font-family: none;line-height: 21px;color: #000000;">
+                    {{parent_data.complaint.FullDetailsOfComplaint}}.
+                </p>
+
+                <p style="font-size: 15px;font-family: none;line-height: 21px;color: #000000;">
+                    The decision of the Office is as follows; 
+                    {{parent_data.data.Comments}}
+                </p>
+                
+            </div> 
+            
+            <div>
+                <p>
+                    Date of the Decision: {{todayWithPipe }}
+                    <sup style="font-size: 14px; font-family: none; margin: -3px 5px 0px 2px;text-transform: lowercase;"></sup>
+               
+                </p>
+                
+            </div>
+
+            <div>
+                <p style="font-size: 15px;font-family: none;line-height: 21px;color: #000000; text-align: center;">
+                    ......................................................................................
+                </p>
+                <p style="font-size: 15px;font-family: none;line-height: 21px;color: #000000; text-align: center;" *ngIf="parent_data.isDirector == false">
+                    For: National Personal Data Protection Director
+                </p>
+
+                <p style="font-size: 15px;font-family: none;line-height: 21px;color: #000000; text-align: center;" *ngIf="parent_data.isDirector == true">
+                    National Personal Data Protection Director
+                </p>
+            </div>
+            
+        </section>
+
+    </article>
+</main>

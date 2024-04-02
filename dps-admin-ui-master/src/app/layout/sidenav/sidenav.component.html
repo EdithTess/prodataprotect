@@ -1,0 +1,31 @@
+<div class="sidenav" fxLayout="column">
+    <div class="sidenav-toolbar" fxLayout="row" fxLayoutAlign="start center">
+        <div class="sidenav-toolbar-icon"  *ngIf="collapsed">
+            <img src="./assets/img/logo.png" width="40" alt="">
+        </div>
+        <div [routerLink]="['/']" class="sidenav-toolbar-logo" *ngIf="!collapsed">
+          <img src="./assets/img/logo_.png" width="100" alt="">
+        </div>
+
+
+        <span fxFlex><!-- fill space --></span>
+
+        <div fxFlexAlign="center" fxHide fxShow.gt-md>
+            <button (click)="toggleCollapsed()" class="sidenav-toolbar-collapse-toggle" mat-icon-button>
+                <mat-icon *ngIf="!collapsed" class="sidenav-toolbar-collapse-icon" style="font-size:34px;">menu</mat-icon>
+                <mat-icon *ngIf="collapsed" class="sidenav-toolbar-collapse-icon" style="font-size:34px;">sort</mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <fury-scrollbar class="sidenav-items" fxFlex="auto">
+        <div *ngIf="sidenavUserVisible$ | async" class="sidenav-user">
+            <h4 class="sidenav-user-name">{{userProfile?.firstName }}  {{userProfile?.lastName}}</h4>
+            <h5 class="sidenav-user-email" style="margin: 0px;">{{userProfile?.organisation_name }}</h5>
+            <h5 class="sidenav-user-email">{{realmRole === 'organisation' ? 'Data Protection Officer' : realmRole | uppercase }}</h5>
+        </div>
+
+        <fury-sidenav-item *ngFor="let item of items$ | async" [item]="item" [level]="0"></fury-sidenav-item>
+    </fury-scrollbar>
+
+</div>

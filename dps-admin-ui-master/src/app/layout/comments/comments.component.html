@@ -1,0 +1,60 @@
+<form [formGroup]="commentsFormGroup" *ngIf="!isViewOnly">
+    <mat-form-field fxFlex="2 2 auto" appearance="fill">
+        <textarea matInput placeholder="Comment" type="text" rows="3" formControlName="commentCtrl"></textarea>
+        <mat-error *ngIf="commentsFormGroup.get('commentCtrl').hasError('required')" align="end">Comment required
+        </mat-error>
+    </mat-form-field>
+    <div *ngIf="!isViewOnly" style="text-align: right; padding-top: 5px; padding-bottom: 5px;">
+        <button mat-raised-button (click)="addOrUpdateComment(isEditingComment?2:1)" color="primary"
+                [disabled]="!commentsFormGroup.valid">
+            <mat-icon>{{commentButtonIcon}}</mat-icon>
+            <span>{{commentButtonLabel}}</span>
+        </button>&nbsp;
+    </div>
+</form>
+
+
+<!--
+   LIST OF COMMENTS
+ -->
+<fury-list [hideHeader]="true" class="list comments-table">
+    <table mat-table [dataSource]="list" mat-table matSort>
+        <ng-container matColumnDef="nber">
+            <th mat-header-cell *matHeaderCellDef style="width: 5%" class="tableFontSize firstColumnTable">#</th>
+            <td mat-cell *matCellDef="let element; let j=index;" class="tableFontSize firstColumnTable"> {{j + 1}}</td>
+        </ng-container>
+        <ng-container matColumnDef="comment">
+            <th mat-header-cell *matHeaderCellDef class="tableFontSize " style="width: 50%"> Comment</th>
+            <td mat-cell *matCellDef="let element" class="tableFontSize "> {{element.comment}}</td>
+        </ng-container>
+        <ng-container matColumnDef="creationDate">
+            <th mat-header-cell *matHeaderCellDef style="width: 25%"> Date</th>
+            <td mat-cell *matCellDef="let element" class="tableFontSize"> {{element.creationDate}}</td>
+        </ng-container>
+        <ng-container matColumnDef="username">
+            <th mat-header-cell *matHeaderCellDef style="width: 10%"> User</th>
+            <td mat-cell *matCellDef="let element" class="tableFontSize"> {{element.username}}</td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef style="width: 10%"></th>
+            <td mat-cell *matCellDef="let element; let j=index" class="actions">
+                <ng-container *ngIf="!isViewOnly && isCommentAuthor(j)">
+                    <a class="link" (click)="manageComment(2,j)">
+                        <mat-icon color="primary">edit</mat-icon>
+                    </a>&nbsp;&nbsp;
+                    <a class="link" (click)="deleteComment(j)">
+                        <mat-icon color="warn">delete</mat-icon>
+                    </a>
+                </ng-container>
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="noData">
+            <td mat-footer-cell *matFooterCellDef colspan="5">
+                There is no comments in the application!
+            </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <tr mat-footer-row *matFooterRowDef="['noData']" [ngClass]="{'hide':!(list?.length==0)}"></tr>
+    </table>
+</fury-list>

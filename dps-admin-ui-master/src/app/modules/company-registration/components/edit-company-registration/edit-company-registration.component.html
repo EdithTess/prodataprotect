@@ -1,0 +1,390 @@
+<fury-page-layout mode="card">
+    <fury-page-layout-header>
+        <fury-breadcrumbs [@fadeInRight] [crumbs]="['Company Registration']"
+                          current="{{application.RegTrackingNo}}"></fury-breadcrumbs>
+    </fury-page-layout-header>
+
+    <fury-page-layout-content [@fadeInUp]>
+        <div class="actions-button-padding">
+            <mat-toolbar
+                    *ngIf="permittedActions.length > 0 || application.CurrentStepName === 'Certificate Issued' || isOfficer ">
+                <mat-toolbar-row>
+                    <ng-container *ngFor="let operation of permittedActions">
+                        <button mat-raised-button [color]="operation.ActionColor" class="actions-button-padding"
+                                (click)="performAction(operation)">
+                            <mat-icon>{{operation.ActionIcon}}</mat-icon>
+                            <span> {{operation.ActionName}}</span>
+                        </button>
+                    </ng-container>
+                    <span class="example-spacer"></span>
+                    <button mat-raised-button matTooltip="Print Certificate"
+                            *ngIf="application.CurrentStepName === 'Certificate Issued'" color="primary"
+                            (click)="previewCert()">
+                        <mat-icon>print</mat-icon>
+                        <span> Print Certificate </span>
+                    </button>
+                 
+                    <button mat-raised-button matTooltip="View Timeline" class="actions-button-padding"
+                            *ngIf="isOfficer" color="primary" (click)="viewApplicationTimeLine()">
+                        <mat-icon>view_timeline</mat-icon>
+                        <span>Application Timeline</span>
+                    </button>
+                </mat-toolbar-row>
+            </mat-toolbar>
+        </div>
+        <div [@fadeInUp] class="">
+            <fury-card>
+                <mat-tab-group mat-stretch-tabs>
+                    <mat-tab>
+                        <ng-template mat-tab-label>
+                            <mat-icon>info</mat-icon>
+                            Applicant Info
+                        </ng-template>
+                        <fury-card-content class="padding-top">
+                            <form [formGroup]="applicantDetails">
+                                <div class="content" fxLayout="column" fxLayoutGap="8px">
+
+                                    <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px"
+                                         fxLayoutGap.gt-xs="24px">
+                                        <mat-form-field fxFlex="2 1 auto">
+                                            <mat-label>Organisation Name</mat-label>
+                                            <input formControlName="organizationName" matInput>
+                                        </mat-form-field>
+
+                                        <mat-form-field fxFlex="2 1 auto">
+                                            <mat-label>Category <span class="required-field">required</span></mat-label>
+                                            <mat-select (selectionChange)="filter($event)" multiple
+                                                        formControlName="DPPActCategory">
+                                                <mat-option *ngFor="let actor of dataActors"
+                                                            [value]="actor.OrganisationCategoryId ">
+                                                    {{actor.OrganisationCategoryName }}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+
+                                        <mat-form-field fxFlex="2 1 auto">
+                                            <mat-label>Type of Organisation <span class="required-field">required</span>
+                                            </mat-label>
+                                            <mat-select formControlName="OrganizationTypeID">
+                                                <mat-option *ngFor="let type of typesOfOrganisation"
+                                                            [value]="type.value.id">{{ type.value.name }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px"
+                                         fxLayoutGap.gt-xs="24px">
+
+                                        <mat-form-field fxFlex="2 1 auto">
+                                            <mat-label>Sector <span class="required-field">required</span></mat-label>
+                                            <mat-select formControlName="SectorID">
+                                                <mat-option *ngFor="let sector of $sectors" [value]="sector.SectorID">
+                                                    {{ sector.Sector }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+
+
+                                        <mat-form-field fxFlex="2 1 auto">
+                                            <mat-label>Physical Address</mat-label>
+                                            <input formControlName="Location" matInput>
+                                        </mat-form-field>
+
+                                        <mat-form-field fxFlex="2 1 auto">
+                                            <mat-label>Organisation Telephone Number</mat-label>
+                                            <input formControlName="PhoneNumber" matInput>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px"
+                                         fxLayoutGap.gt-xs="24px">
+                                        <mat-form-field fxFlex="2 1 auto">
+                                            <mat-label>Organisation Email Address</mat-label>
+                                            <input formControlName="EmailAddress" matInput>
+                                        </mat-form-field>
+
+                                        <mat-form-field fxFlex="2 1 auto">
+                                            <mat-label>Nature Of Business</mat-label>
+                                            <mat-select formControlName="NatureOfBusinessCat">
+                                                <mat-option *ngFor="let business of $natureOfBusiness"
+                                                            [value]="business.NatureOfBusinessCatId">
+                                                    {{ business.NatureOfBusinessCategoryName }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px"
+                                         fxLayoutGap.gt-xs="24px">
+                                        <mat-form-field fxFlex="2 1 auto" hintLabel="">
+                                            <mat-label>Nature of Business Sub-Categories
+                                            </mat-label>
+                                            <mat-select formControlName="NatureOfBusinessSubCat" multiple>
+                                                <mat-option *ngFor="let subCat of $natureOfBusinessCat"
+                                                            [value]="subCat.NatureOfBusinessSubCatId">
+                                                    {{ subCat.NatureOfBusinessSubCategoryName }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+                            </form>
+                        </fury-card-content>
+                    </mat-tab>
+                    <mat-tab>
+                        <ng-template mat-tab-label>
+                            <mat-icon>admin_panel_settings</mat-icon>
+                            Data Protection Officer
+                        </ng-template>
+
+                        <fury-card-content class="padding-top">
+                            <fieldset>
+                                <legend>Data Protection Officer Details</legend>
+                                <form [formGroup]="dataProtectionOfficerFormGroup">
+                                    <div class="content" fxLayout="column" fxLayoutGap="8px">
+
+                                        <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px"
+                                             fxLayoutGap.gt-xs="24px">
+                                            <mat-label>Are you required by Law to designate a data protection Officer ?
+                                            </mat-label>
+                                            <mat-radio-group
+                                                    color="primary"
+                                                    formControlName="DPORequired"
+                                                    aria-label="Pick one">
+                                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                <mat-radio-button value="No">No</mat-radio-button>
+                                            </mat-radio-group>
+
+                                            <mat-form-field fxFlex="2 1 auto" *ngIf="application.DPORequired === 'YES'">
+                                                <mat-label> Name</mat-label>
+                                                <input formControlName="DPOName" matInput>
+                                            </mat-form-field>
+
+                                            <mat-form-field fxFlex="2 1 auto" *ngIf="application.DPORequired === 'YES'">
+                                                <mat-label>Physical Address</mat-label>
+                                                <input formControlName="DPOPhysicalAddress" matInput>
+                                            </mat-form-field>
+
+                                            <mat-form-field fxFlex="2 1 auto" *ngIf="application.DPORequired === 'YES'">
+                                                <mat-label>Phone</mat-label>
+                                                <input formControlName="DPOPhoneNumber" matInput>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px"
+                                             fxLayoutGap.gt-xs="24px">
+
+                                            <mat-form-field fxFlex="2 1 auto" *ngIf="application.DPORequired === 'YES'">
+                                                <mat-label>Email Address</mat-label>
+                                                <input formControlName="DPOEmailAddress" matInput>
+                                            </mat-form-field>
+
+                                            <mat-form-field fxFlex="2 1 auto" *ngIf="application.DPORequired === 'YES'">
+                                                <mat-label>Title Held</mat-label>
+                                                <input formControlName="DPOPositionInOrganisation" matInput>
+                                            </mat-form-field>
+
+                                        </div>
+                                    </div>
+                                </form>
+                            </fieldset>
+                        </fury-card-content>
+                    </mat-tab>
+                    <mat-tab label="">
+                        <ng-template mat-tab-label>
+                            <mat-icon>folder_shared</mat-icon>
+                            Data Collected or Processed
+                        </ng-template>
+
+                        <fury-card-content class="padding-top">
+                            <fieldset>
+                                <legend>Data Collected / Processed</legend>
+                                <form [formGroup]="personalDataHeldFormGroup">
+                                    <ng-template matStepLabel>Personal Data Held</ng-template>
+                                    <div class="content" fxLayout="column" fxLayoutGap="8px">
+                                        <mat-form-field hintLabel="Choose all that apply." class="full-width">
+                                            <mat-label>Source of Data
+                                            </mat-label>
+                                            <mat-select multiple formControlName="SourceOfDataID">
+                                                <mat-option *ngFor="let source of $dataSources"
+                                                            [value]="source.DataSourceID">
+                                                    {{ source.DataSource }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <section *ngFor="let category of refDataSourcesCat; let i = index"
+                                                 class="expand-section categories">
+
+                                            <h3 [innerHTML]="category.DataCategory"></h3>
+                                            <br>
+
+                                            <ng-container *ngFor="let item of category.SubCategories">
+                                                <mat-checkbox formControlName="PersonalDataCollected"
+                                                              [(ngModel)]="item.checked"
+                                                >
+                                                    {{item.DataSubCategory}}
+                                                </mat-checkbox>
+                                            </ng-container>
+
+<!--                                            <mat-checkbox formControlName="PersonalDataCollected"-->
+<!--                                                          *ngFor="let SubCategory of category.SubCategories"-->
+<!--                                                          [(ngModel)]="SubCategory.checked"-->
+<!--                                                          [ngClass]="{'full-width': category.SubCategories.length === 1}"-->
+<!--                                                          color="primary"-->
+<!--                                                          (change)="onChangeSubCategory($event,SubCategory)"-->
+<!--                                                          [required]="'false'">-->
+<!--                                                {{ SubCategory.DataSubCategory }}-->
+<!--                                            </mat-checkbox>-->
+                                        </section>
+                                    </div>
+                                </form>
+                            </fieldset>
+
+                        </fury-card-content>
+                    </mat-tab>
+                    <mat-tab label="">
+                        <ng-template mat-tab-label>
+                            <mat-icon>verified_user</mat-icon>
+                            Purpose & Retention
+                        </ng-template>
+                        <fury-card-content class="padding-top">
+                            <fieldset>
+                                <legend>Purpose & Retention Details</legend>
+                                <form [formGroup]="purposeRetentionFormGroup">
+                                    <div class="content" fxLayout="column" fxLayoutGap="8px">
+                                        <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px"
+                                             fxLayoutGap.gt-xs="24px">
+                                            <mat-form-field fxFlex="2 1 auto"
+                                                            hintLabel="Why do you collect personal Data?">
+                                                <mat-label>For What Purpose ?<span
+                                                        class="required-field">required</span>
+                                                </mat-label>
+                                                <mat-select formControlName="Purpose" multiple>
+                                                    <mat-option *ngFor="let purpose of $dataPurposes"
+                                                                [value]="purpose.DataPurposeID">
+                                                        {{ purpose.DataPurpose }}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+
+                                            <mat-form-field fxFlex="2 1 auto"
+                                                            hintLabel="If the purpose is Collection / Processing is required by Law."
+                                            >
+                                                <mat-label>Specify the Law
+                                                </mat-label>
+                                                <input matInput maxlength="14" formControlName="SpecifyTheLaw">
+                                            </mat-form-field>
+
+                                            <mat-form-field fxFlex="2 1 auto"
+                                                            hintLabel="If the purpose is to provide services / products to Individuals."
+                                            >
+                                                <mat-label>Specify the Service / Product Provided</mat-label>
+                                                <input matInput maxlength="14"
+                                                       formControlName="ServiceOrProductProvided">
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px"
+                                             fxLayoutGap.gt-xs="24px">
+                                            <mat-form-field fxFlex="2 1 auto"
+                                                            hintLabel="If the purpose is for Complience with a Legal Obligation."
+                                            >
+                                                <mat-label>Specify the Legal Obligation</mat-label>
+                                                <input matInput maxlength="14" formControlName="SpecifyLegalObligation">
+                                            </mat-form-field>
+
+                                            <mat-form-field fxFlex="2 1 auto"
+                                                            hintLabel="Approximate number of Personal Data Records held.">
+                                                <mat-label>Total Records
+                                                </mat-label>
+                                                <input appCurrencyDirective matInput maxlength="14"
+                                                       formControlName="TotalRecordsAtRegistration">
+                                            </mat-form-field>
+
+                                            <mat-form-field fxFlex="2 1 auto"
+                                                            hintLabel="The percentage annual growth of Personal Records held">
+                                                <mat-label>Percentage Annual Growth</mat-label>
+                                                <input appCurrencyDirective matInput maxlength="3"
+                                                       formControlName="RecordPercentageGrowth">
+                                                <span matSuffix>%</span>
+                                            </mat-form-field>
+
+                                            <mat-form-field fxFlex="2 1 auto"
+                                                            hintLabel="Duration for which personal data shall be kept (Years).">
+                                                <mat-label>Retention period
+                                                </mat-label>
+                                                <input appCurrencyDirective matInput maxlength="5"
+                                                       formControlName="RetentionPeriod">
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                </form>
+                            </fieldset>
+
+                        </fury-card-content>
+                    </mat-tab>
+                    <mat-tab label="">
+                        <ng-template mat-tab-label>
+                            <mat-icon>group_add</mat-icon>
+                            DisClosure & Transfer
+                        </ng-template>
+                        <fury-card-content class="padding-top">
+                            <form [formGroup]="disclosureFormGroup">
+                                <div class="content" fxLayout="column" fxLayoutGap="8px">
+
+                                    <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px"
+                                         fxLayoutGap.gt-xs="24px">
+                                        <mat-label>List of persons or Bodies to whom personal data may be disclosed
+                                            Do you disclose Personal Data to other Persons or Bodies ?
+                                        </mat-label>
+                                        <mat-radio-group color="primary" aria-label="Pick one"
+                                                         formControlName="disclosePersonalData">
+                                            <mat-radio-button value="Yes"> Yes</mat-radio-button>
+                                            <mat-radio-button value="No"> No</mat-radio-button>
+                                        </mat-radio-group>
+                                    </div>
+                                    <div fxFlex="2 2 auto">
+                                        <fury-third-parties
+                                                [disclosePersonalData]="application.PersonalDataIsForDisclosure"
+                                                [thirdParties]="application.ThirdParties"
+                                                [isViewOnly]="true"
+                                                (thirdPartiesEvent)="onDataThirdPartiesChange($event)">
+                                        </fury-third-parties>
+                                    </div>
+                                    <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px"
+                                         fxLayoutGap.gt-xs="24px">
+                                        <mat-label>Do you Transfer personal data outside Uganda
+                                        </mat-label>
+                                        <mat-radio-group color="primary" aria-label="Pick one"
+                                                         formControlName="StoreDataOutsideCountry">
+                                            <mat-radio-button value="Yes"> Yes</mat-radio-button>
+                                            <mat-radio-button value="No"> No</mat-radio-button>
+                                        </mat-radio-group>
+                                    </div>
+                                    <fury-countries
+                                            [storeDataOutSideCountry]="application.StoreDataOutsideCountry"
+                                            [countries]="application.Countries"
+                                            [isViewOnly]="true"
+                                            (countryEvent)="onCountriesChange($event)"
+                                    ></fury-countries>
+                                </div>
+                            </form>
+                        </fury-card-content>
+                    </mat-tab>
+                    <mat-tab label="">
+                        <ng-template mat-tab-label>
+                            <mat-icon>admin_panel_settings</mat-icon>
+                            Security Information
+                        </ng-template>
+                        <fury-card-content class="padding-top">
+                            <fury-security-measures
+                                    [securityMeasures]="application.SecurityMeasure"
+                                    [isViewOnly]="true"
+                                    (securityEvent)="onSecurityModelChange($event)"
+                            ></fury-security-measures>
+                        </fury-card-content>
+                    </mat-tab>
+                </mat-tab-group>
+            </fury-card>
+        </div>
+    </fury-page-layout-content>
+</fury-page-layout>

@@ -1,0 +1,14 @@
+<main [ngClass]="{'status-true': data.status === true, 'status-false': data.status === false}">
+<div class="center-content">
+    <mat-icon color="warn">warning</mat-icon>
+    <header>
+      <h1 mat-dialog-title>{{ data.title }}</h1>
+      <p>{{ data.message }}</p>
+        <button mat-raised-button (click)="onNoClick()">No</button>&nbsp;&nbsp;
+        <button mat-raised-button (click)="onYesClick()" color="accent" cdkFocusInitial>Yes I Confirm</button>
+        <br><br>
+    </header>
+    
+    
+  </div>
+</main>

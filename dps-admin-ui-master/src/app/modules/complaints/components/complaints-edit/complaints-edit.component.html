@@ -1,0 +1,500 @@
+
+<fury-page-layout mode="card">
+    <fury-page-layout-header>
+        <fury-breadcrumbs [@fadeInRight] [crumbs]="['Complaints']" current="Manage"></fury-breadcrumbs>
+    </fury-page-layout-header>
+
+    <fury-page-layout-content [fxLayoutGap]="gap" fxLayout="column">
+        <!-- buttons added on the manage file -->
+        <div class="actions-button-padding" *ngIf="isDirector == false">
+            <mat-toolbar>
+                <mat-toolbar-row>
+                    <span class="example-spacer"></span>
+
+                    <button mat-raised-button matTooltip="View Timeline" [disabled] = "disableResolve == true" class="actions-button-padding" 
+                    color="primary" (click)="markAsResolved()">
+                        <!-- <mat-icon>thumbs-up</mat-icon> -->
+                        <span>Mark as resolved</span>
+                    </button>
+
+                    <button mat-raised-button class="actions-button-padding" [disabled] = "disableForward == true"(click)="forwardComplaint()" color="primary" [ngStyle]="{'margin-left':'30px'}">
+            
+                        <span>Forward Complaint</span>
+                    </button> 
+
+
+                    <button mat-raised-button *ngIf="manageRequestForInfo == true" class="actions-button-padding" (click)="manageRequestForMoreInfo()" color="primary" [ngStyle]="{'margin-left':'30px'}">
+            
+                        <span>Manage request for  more information</span>
+                    </button> 
+
+                    <button mat-raised-button  class="actions-button-padding" *ngIf="application.ComplaintSourceID == 1"  (click)="onSave()" color="primary" [ngStyle]="{'margin-left': '500px'}">
+                        
+                        <span>Save Changes</span>
+                    </button>
+                </mat-toolbar-row>
+            </mat-toolbar>
+        </div>
+
+        <div class="actions-button-padding" *ngIf="isDirector == true">
+            <mat-toolbar>
+                <mat-toolbar-row>
+
+                    <button 
+                        mat-raised-button class="actions-button-padding"
+                        color="primary"
+                        [ngStyle]="{'margin-right':'30px'}"
+                        [disabled]="disableResolve == true"
+                            (click)="markUnderInvestigation()">
+                        <span> Investigate </span>
+                    </button>
+                    
+
+                    <button mat-raised-button matTooltip="View Timeline" [disabled] = "disableResolve == true" class="actions-button-padding" 
+                    color="primary" (click)="markAsResolved()">
+                        <!-- <mat-icon>thumbs-up</mat-icon> -->
+                        <span>Mark as resolved</span>
+                    </button>
+
+                    <button mat-raised-button matTooltip="View Timeline" [disabled] = "disableResolve == true" class="actions-button-padding" [ngStyle]="{'margin-left':'30px'}"
+                    color="primary" (click)="moreInformation()">
+                        <!-- <mat-icon>thumbs-up</mat-icon> -->
+                        <span>Request for more information</span>
+                    </button>   
+                </mat-toolbar-row>
+            </mat-toolbar>
+        </div>
+        <div [fxLayoutGap]="gap" fxFlex="noshrink" fxLayout="column" fxLayout.gt-sm="row"
+             fxLayoutAlign.gt-sm="start stretch">
+            <fury-card [fxFlex.gt-sm]="col2"
+                       class="basic-forms route-animations-elements"
+                       [@fadeInUp]
+                       fxFlex="grow">
+                <fury-card-header>
+                    <fury-card-header-heading>Complaint Information</fury-card-header-heading>
+                </fury-card-header>
+                <fury-card-content fxLayout="column" class="form-padding">
+
+                    <form [formGroup]="complaintForm">
+
+                        <fieldset>
+                            <legend>Data Subject Details</legend>
+                            <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+                                <mat-form-field fxFlex="2 1 auto">
+                                    <mat-label>Data subject name</mat-label>
+                                    <input formControlName="dataSubjectName" matInput>
+                                </mat-form-field>
+
+                                <mat-form-field fxFlex="2 1 auto">
+                                    <mat-label>Data Subject Email</mat-label>
+                                    <input formControlName="dataSubjectEmail" matInput>
+                                </mat-form-field>
+
+                                <mat-form-field fxFlex="2 1 auto">
+                                    <mat-label>Data Subject Phone</mat-label>
+                                    <input formControlName="dataSubjectPhone" matInput>
+                                </mat-form-field>
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Data Subject Organisation</legend>
+                            <mat-form-field fxFlex="2 1 auto" *ngIf="application.ComplaintSourceID == 2">
+                                <mat-label>Who are you complaining as</mat-label>
+                                <input formControlName="ComplaintCategory" matInput>
+                            </mat-form-field>
+
+                            <mat-form-field fxFlex="2 1 auto" *ngIf="application.ComplaintSourceID == 1">
+                                <mat-label>Who are you complaining as</mat-label>
+                                <input value="Individual" matInput [disabled]="true">
+                            </mat-form-field>
+
+                            <mat-form-field fxFlex="2 1 auto" *ngIf="application.ComplainerCategory === 'individual'">
+                                <mat-label>Organisation Complained From</mat-label>
+                                <input formControlName="OrganisationComplainedFrom" matInput>
+                            </mat-form-field>
+
+                            <mat-form-field fxFlex="2 1 auto" *ngIf="application.ComplainerCategory === 'individual'">
+                                <mat-label>Other Organisation</mat-label>
+                                <input formControlName="OtherOrganisationComplainedFrom" matInput>
+                            </mat-form-field>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Organisation Contact Person Details</legend>
+                            <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+
+                                <mat-form-field fxFlex="2 1 auto">
+                                    <mat-label>Contact First Name</mat-label>
+                                    <input formControlName="ContactFirstName" matInput>
+                                </mat-form-field>
+
+                                <mat-form-field fxFlex="2 1 auto">
+                                    <mat-label>Contact Last Name</mat-label>
+                                    <input formControlName="ContactLastName" matInput>
+                                </mat-form-field>
+
+                                <mat-form-field fxFlex="2 1 auto">
+                                    <mat-label>Contact Email</mat-label>
+                                    <input formControlName="ContactEmailAddress" matInput>
+                                </mat-form-field>
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Details Organisation Complained To</legend>
+                            <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+                                <mat-form-field fxFlex="2 1 auto" >
+                                    <mat-label>Organisation Complained To</mat-label>
+                                    <input formControlName="OrganisationComplainedTo" matInput>
+                                </mat-form-field>
+
+                                <mat-form-field fxFlex="2 1 auto" *ngIf="application.OrganisationComplainedToName == undefined organisation" >
+                                    <mat-label>Other Organisation Complained To</mat-label>
+                                    <input formControlName="OtherOrganisationComplainedTo" matInput>
+                                </mat-form-field>  
+                            </div>
+                        </fieldset>
+
+                        <fieldset *ngIf="application.ComplaintSourceID == 2">
+                            <legend>Complaint in Brief</legend>
+                            <mat-label>Personal Data Affected</mat-label>
+                            <mat-grid-list cols="4" rowHeight="4rem">
+                                <mat-grid-tile *ngFor="let data of personalData" >
+                                    {{data.DataSubCategoryName}}
+                                </mat-grid-tile>
+                               
+                            </mat-grid-list>
+                        </fieldset>
+
+                        <!--<fieldset *ngIf="application.ComplaintSourceID == 1">
+                            <legend>Personal Data Affected</legend>
+                            <ng-container *ngIf="!isViewOnly">
+                                <form [formGroup]="personalDataFormGroup">
+                                    <ng-template matStepLabel>Personal Data</ng-template>
+
+                                    <div class="content" fxLayout="column" fxLayoutGap="8px">
+                                        <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+                                            <mat-form-field fxFlex="2 2 auto" appearance="fill">
+                                                <mat-label>Affected Data Category</mat-label>
+                                                <mat-select formControlName="dataCategory"  (selectionChange)="onSelectCategory($event)">
+                                                    <mat-option 
+                                                                *ngFor="let type of $dataCategories"
+                                                                [value]="type">{{ type.name }}
+                                                    </mat-option>
+                                                </mat-select>  
+                                            </mat-form-field>
+                                            <mat-form-field fxFlex="2 2 auto" appearance="fill">
+                                                <mat-label>SubCategories</mat-label>
+                                                <mat-select formControlName="dataSubCategory" multiple>
+                                                    <mat-option
+                                                            *ngFor="let type of $subCategories"
+                                                            [value]="type">{{ type.value }}
+                                                    </mat-option>
+                                                </mat-select>
+                                                
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="!isViewOnly" style="text-align: right; padding-top: 5px; padding-bottom: 5px;">
+                                        <button mat-raised-button
+                                                (click)="addOrUpdatePersonalData(isEditingPersonalData?2:1)" color="primary"
+                                                >
+                                            
+                                            <span>Add</span>
+                                        </button>&nbsp;
+                                        <span class="example-spacer"></span>
+                                        <button mat-raised-button (click)="resetPolicy()" color="warn">
+                                            
+                                            <span>Cancel</span>
+                                        </button>
+                                    </div>
+                                </form>
+                                 <div *ngIf="!isViewOnly" style="text-align: right; padding-top: 5px; padding-bottom: 5px;">
+                                    <button mat-raised-button
+                                            (click)="addOrUpdatePersonalData(isEditingPersonalData?2:1)" color="primary"
+                                            [disabled]="!isValidForm()">
+                                        
+                                        <span>Add</span>
+                                    </button>&nbsp;
+                                    <span class="example-spacer"></span>
+                                    <button mat-raised-button (click)="resetPolicy()" color="warn">
+                                        
+                                        <span>Cancel</span>
+                                    </button>
+                                </div> 
+                            </ng-container>
+                             <div class="content" fxLayout="column" fxLayoutGap="8px">
+                                <table mat-table [dataSource]="list">
+                                    <ng-container matColumnDef="nber">
+                                        <th mat-header-cell *matHeaderCellDef style="width: 5%"
+                                            class="tableFontSize firstColumnTable alignCenter">#
+                                        </th>
+                                        <td mat-cell *matCellDef="let element; let j=index;"
+                                            class="tableFontSize firstColumnTable alignCenter">
+                                            {{j + 1}}
+                                        </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="personalDataCategory">
+                                        <th mat-header-cell *matHeaderCellDef class="tableFontSize " style="width: 20%"> Data Category</th>
+                                        <td mat-cell *matCellDef="let element" class="tableFontSize "> {{element.dataCategory.name}}</td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="personalDataSubCategory">
+                                        <th mat-header-cell *matHeaderCellDef class="tableFontSize " style="width: 20%"> Data SubCategories
+                                        </th>
+                                        <td mat-cell *matCellDef="let element"
+                                            class="tableFontSize ">
+                                            <div *ngFor="let p of element.dataSubCategory">
+                                                {{p.value}},
+                                            </div>
+                                        </td>
+                                    </ng-container>
+                                    
+                                    <ng-container matColumnDef="actions">
+                                        <th mat-header-cell *matHeaderCellDef style="width: 5%"></th>
+                                        <td mat-cell *matCellDef="let element; let j=index" class="actions">
+                                            <ng-container *ngIf="!isViewOnly">
+                                                <a class="link" (click)="managePersonalData(2,j)">
+                                                    <mat-icon color="primary" class="material-icons-outlined" matTooltip="Edit item">edit
+                                                    </mat-icon>
+                                                </a>&nbsp;&nbsp;
+                                                <a class="link" (click)="deleteItem(j)">
+                                                    <mat-icon color="warn" class="material-icons-outlined" matTooltip="Delete item">delete
+                                                    </mat-icon>
+                                                </a>
+                                            </ng-container>
+                                        </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="noData">
+                                        <td mat-footer-cell *matFooterCellDef colspan="7">
+                                            There is no data!
+                                        </td>
+                                    </ng-container>
+                                    <tr mat-header-row *matHeaderRowDef="displayColumns;sticky:true"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: displayColumns;"></tr>
+                                    <tr mat-footer-row *matFooterRowDef="['noData']" [ngClass]="{'hide':!(list?.length==0)}"></tr>
+                                </table>
+                            </div>
+                        </fieldset> -->
+
+                        <fieldset>
+                            <legend>General Complaint Info</legend>
+                            <div class="content" fxLayout="column" fxLayoutGap="8px">
+
+                                <!-- <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+                                        
+                                    <mat-form-field fxFlex="2 1 auto">
+                                    <mat-label>Type of complaint</mat-label>    
+                                    <mat-grid-list cols="4" rowHeight="4rem">
+                                        <mat-grid-tile>
+                                            <input formControlName="reasonForTheComplaint" matInput>
+                                        </mat-grid-tile>
+                                    </mat-grid-list>    
+                                    </mat-form-field>
+                                </div>           -->
+
+                                <fieldset>
+                                    <legend>Complaint Reasons</legend>
+                                    <mat-label>Reasons for complaints</mat-label>
+                                    <mat-grid-list cols="4" rowHeight="4rem">
+                                        <mat-grid-tile *ngFor="let data of complaintReasons" >
+                                                
+                                        </mat-grid-tile>
+                                       
+                                    </mat-grid-list>
+                                 
+                                </fieldset>
+
+                                <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+                                    <mat-form-field fxFlex="2 1 auto" appearance="fill">
+                                        <mat-label>Complaint Details</mat-label>
+                                        <textarea matInput
+                                                  cdkTextareaAutosize
+                                                  #autosize="cdkTextareaAutosize"
+                                                  cdkAutosizeMinRows="1"
+                                                  formControlName="complaintDetails"
+                                                  cdkAutosizeMaxRows="5"></textarea>
+                                    </mat-form-field>
+                                </div>
+
+                                <fieldset *ngIf="application.ComplaintSourceID == 2" >
+                                    <legend>Evidence Of Complaint</legend>
+                                    <div class="uploaded-document" matTooltip="Open Document" (click)="onReadDocument()">
+                                        <img src="./assets/img/pdf.png" alt="" [ngStyle]="{width: '100px', height: '100px'}">
+                
+                                        <span *ngIf="ComplaintEvidence && ComplaintEvidence.Name">Document: {{ ComplaintEvidence.Name }} <span *ngIf="ComplaintEvidence && ComplaintEvidence.Size">  -  {{ ComplaintEvidence.Size }} Mbs</span> </span>
+                                    </div>
+        
+                                    <p class="no-document-found" *ngIf="ComplaintEvidence && !ComplaintEvidence.Base64">No document found. Please attach</p>
+    
+                                </fieldset>
+                                <fieldset *ngIf="application.ComplaintSourceID == 1" >
+                                   
+                    
+                                        <div class="buttons">
+                                            <button 
+                                                mat-button
+                                                color="primary"
+                                                [disabled]="processing"
+                                                class="add-item-button"
+                                                (click)="onUploadAttachments()">
+                                                <div class="button-label">
+                                                    <mat-icon>add</mat-icon>                            
+                                                    <span> {{ ComplaintEvidence.Base64 ? 'Replace Document' : 'Upload Attachment' }} </span>
+                                                </div>
+                                            </button>
+                        
+                                            <button 
+                                                mat-button
+                                                *ngIf="ComplaintEvidence.Base64"
+                                                color="primary"
+                                                [disabled]="processing"
+                                                class="remove-button"
+                                                (click)="onRemoveDocument()">
+                                                <div class="button-label">
+                                                    <mat-icon>clear</mat-icon>
+                                                    <span> Remove Document </span>
+                                                </div>
+                                            </button>
+                                        </div>
+                    
+                                        <div *ngIf="ComplaintEvidence.Base64" class="uploaded-document" matTooltip="Open Document" (click)="onReadDocument(ComplaintEvidence)">
+                                            <img src="./assets/img/pdf.png" alt="">
+                    
+                                            <span>Document: {{ ComplaintEvidence.Name }} <span>  -  {{ ComplaintEvidence.Size }} Mbs</span></span>
+                                        </div>
+                    
+                                </fieldset>
+                            </div> 
+                        </fieldset>
+                        <fieldset>
+                            <legend>Forwarded Comments</legend>
+                            <div>
+                                <div>
+                                    <mat-form-field fxFlex="2 1 auto">
+                                        <mat-label>Technical Comments</mat-label>
+                                        <input formControlName="TechnicalForwardedComments" matInput [disabled]="true"/>
+                                    </mat-form-field>
+                                </div>
+                                
+                                <div>
+                                    <mat-form-field fxFlex="2 1 auto">
+                                        <mat-label>Legal Comments</mat-label>
+                                        <input formControlName="LegalForwardedComments" matInput [disabled]="true"/>
+                                    </mat-form-field>
+                                </div>
+
+                                <fieldset>
+                                    <legend>More Information</legend>
+                                    <mat-label>Requested Information</mat-label>
+                                    <mat-grid-list cols="4" rowHeight="10rem" gutterSize="20px" *ngIf="RequestedInforamationTrack.length > 0">
+                                        test
+                                        <mat-grid-tile *ngFor="let data of RequestedInforamationTrack" style="background-color: rgb(153, 216, 245)">
+                                            <mat-grid-tile-header>
+                                                {{data.Comments}}
+                                            <span *ngIf="data.ComplaintStatus == 8">(To, Technical)</span>
+                                            <span *ngIf="data.ComplaintStatus == 9">(To, Legal)</span>
+                                            </mat-grid-tile-header>
+
+                                            <p>
+                                                {{data.Feedback}}
+                                            </p>
+                                            
+                                        </mat-grid-tile>
+                                       
+                                    </mat-grid-list>
+                                </fieldset>
+                            </div> 
+                        </fieldset>
+        
+                    </form>
+                </fury-card-content>
+            </fury-card>
+
+        </div>
+        
+        <fieldset>
+            <legend>Comments</legend>
+            <div class="content" fxLayout="column" fxLayoutGap="8px">
+
+                <fieldset>
+                    <legend>Investigation Comments</legend>
+                    <textarea matInput
+                        cdkTextareaAutosize
+                        #autosize="cdkTextareaAutosize"
+                        cdkAutosizeMinRows="1"
+                        cdkAutosizeMaxRows="5"
+                        >{{this.application.InvestigationComments}}</textarea>
+                        
+                    <!-- <fury-comments
+                        [applicationComments]="this.application.InvestigationComments"
+                        [isViewOnly]="isViewOnly"
+                        (commentChange)="onCommentChange($event)">
+                    </fury-comments> -->
+                 
+                </fieldset>
+
+                <fieldset>
+                    <legend>Resolution Comments</legend>
+                    <textarea matInput
+                        cdkTextareaAutosize
+                        #autosize="cdkTextareaAutosize"
+                        cdkAutosizeMinRows="1"
+                        cdkAutosizeMaxRows="5">{{this.application.ResolutionComments}}</textarea>
+
+                        <div>
+                            <fieldset>
+                                <legend>Resolution Document</legend>
+                                <div class="uploaded-document" matTooltip="Open Document" (click)="onReadDocument()">
+                                    <img src="./assets/img/pdf.png" alt="" [ngStyle]="{width: '100px', height: '100px'}">
+            
+                                    <span *ngIf="document && document.Name">Document: {{ document.Name }} <span *ngIf="document.Size">  -  {{ document.Size }} Mbs</span> </span>
+                                </div>
+    
+                                <p class="no-document-found" *ngIf="document && !document.Base64">No document found. Please attach</p>
+
+                            </fieldset>
+                        </div>
+
+                </fieldset>
+
+                <!-- <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+                    <mat-form-field fxFlex="2 1 auto" appearance="fill">
+                        <mat-label>Complaint Details</mat-label>
+                        <textarea matInput
+                                  cdkTextareaAutosize
+                                  #autosize="cdkTextareaAutosize"
+                                  cdkAutosizeMinRows="1"
+                                  formControlName="complaintDetails"
+                                  cdkAutosizeMaxRows="5"></textarea>
+                    </mat-form-field>
+                </div> -->
+            </div>
+        </fieldset>
+        <div class="buttons">
+            <button
+                mat-button
+                color="primary" 
+                class="download" 
+                matTooltip="Keep a copy of the information you have filled in"
+                (click)="onPreviewForm(true)">
+                <div class="button-label">
+                    <mat-icon>sim_card_download</mat-icon>
+                    <span>Download</span>
+                </div>
+            </button>
+
+            <button
+                mat-button
+                color="primary" 
+                class="preview" 
+                matTooltip="Have a look at all the information you have filled in before sending."
+                (click)="onPreviewForm(false)">
+                <div class="button-label">
+                    <mat-icon>visibility</mat-icon>
+                    <span>Preview</span>
+                </div>
+            </button>
+            </div>
+    </fury-page-layout-content>
+</fury-page-layout>

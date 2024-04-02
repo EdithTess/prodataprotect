@@ -1,0 +1,30 @@
+<div mat-dialog-title>Application Timeline</div>
+
+<mat-dialog-content>
+    <mgl-timeline [toggle]="toggle" [alternate]="alternate" [side]="side">
+        <mgl-timeline-entry *ngFor="let entry of entries; let i = index;" (expand)="onExpandEntry($event, i)">
+            <mgl-timeline-entry-header (click)="onHeaderClick($event)"> {{entry.StepName}}</mgl-timeline-entry-header>
+            <mgl-timeline-entry-content [expandAnimationTiming]="contentAnimation ? '200ms ease' : '0ms'" [collapseAnimationTiming]="contentAnimation ? '100ms ease' : '0ms'">
+                <ng-container *ngFor="let action of entry.ActionsHistory">
+                    <div><b>Action Name:</b> {{action.ActionName}}</div>
+                    <div><b>Remark:</b>  {{action.ActionRemark}}</div>
+                    <div><b>Action Performed At:</b>  {{action.ActionDate | date: 'medium' }}</div>
+                    <div><b>Performed By:</b>  {{action.PerformedBy}}</div>
+                    <div>---------------------------------------------------------------------------</div>
+<!--                    <hr></hr>-->
+                </ng-container>
+            </mgl-timeline-entry-content>
+            <mgl-timeline-entry-dot [class]="entry.IsCurrent ? 'primary' : 'accent'"
+                                    [size]="size"
+                                    (click)="onDotClick($event)"
+                                    [expandAnimationTiming]="dotAnimation ? '200ms ease' : '0ms'"
+                                    [collapseAnimationTiming]="dotAnimation ? '100ms ease' : '0ms'"
+            ></mgl-timeline-entry-dot>
+            <mgl-timeline-entry-side></mgl-timeline-entry-side>
+        </mgl-timeline-entry>
+    </mgl-timeline>
+
+</mat-dialog-content>
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center">
+<!--    <button mat-button [disabled]="!reviewCommentFormGroup.valid">Submit Review</button>-->
+</mat-dialog-actions>

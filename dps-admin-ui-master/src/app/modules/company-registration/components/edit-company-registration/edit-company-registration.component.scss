@@ -1,0 +1,141 @@
+//@import "var";
+//
+////:host {
+////  background: url('/assets/img/backgrounds/form-wizard.jpg');
+////  background-size: cover;
+////  display: block;
+////}
+//
+//.title {
+//  color: white;
+//}
+//
+//.card {
+//  margin: $spacing;
+//  max-width: 100%;
+//  border-radius: $border-radius;
+//  overflow: hidden;
+//
+//  @include mat-elevation(10);
+//
+//  .heading {
+//    font: var(--font-title);
+//  }
+//
+//  .subheading {
+//    font: var(--font-subheading-1);
+//  }
+//
+//  .content {
+//    margin: $spacing/2 0;
+//
+//    .checkbox {
+//      margin-top: $spacing/2;
+//    }
+//  }
+//
+//  .actions {
+//    margin-top: $spacing;
+//    padding: $spacing $spacing/3 0;
+//  }
+//}
+@import "var";
+
+.source {
+  margin-bottom: $spacing/2;
+  margin-left: -$spacing;
+  margin-right: -$spacing;
+}
+
+.result {
+
+  .description {
+    margin: 0 0 $spacing/3 0;
+  }
+}
+
+fieldset {
+  border-width: 1px!important;
+  border-color: #f5f5f5!important;
+}
+legend {
+  padding: 5px;
+}
+
+.mat-input-element:disabled, .mat-form-field-type-mat-native-select.mat-form-field-disabled .mat-form-field-infix::after {
+  color: rgba(0, 0, 0, 0.58);
+}
+
+
+.full-width {
+  grid-column: 1/-1;
+}
+
+mat-ink-bar.mat-tab-link {
+  background-color: #ABC334;
+}
+
+section.expand-section {
+  height: 100%;
+  // border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 20px;
+}
+
+section.categories {
+  // border: 1px solid red;
+  // background-color: whitesmoke;
+  padding: 20px;
+
+  h3 {
+    font-family: 'Montserrat';
+    font-weight: 600;
+    text-transform: uppercase;
+    // margin: 15px 0px -10px;
+    margin: 30px 0px -10px;
+
+    &:first-child {
+      margin-top: 10px;
+    }
+  }
+
+  hr {
+    border: 0px;
+    border-bottom: 1px solid #e0e0e0;
+    margin: 25px 0px -5px;
+  }
+
+  &:first-child {
+    margin-top: 100px;
+  }
+
+  &:nth-child(even) {
+    background-color: whitesmoke;
+  }
+}
+
+section.categories.step-one {
+
+  h3 {
+    margin: 30px 0px 0px;
+    text-transform: capitalize;
+  }
+}
+
+mat-checkbox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  letter-spacing: .5px;
+  font-size: 13px;
+  font-weight: 300;
+  grid-column: span 2;
+}
+
+
+
+//.copyright {
+//  position: absolute;
+//  bottom: $spacing;
+//  right: $spacing;
+//  color: white;
+//}

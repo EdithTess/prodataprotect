@@ -1,0 +1,11 @@
+<main>
+    <header>
+        <button mat-button matTooltip="Close window" class="close-window-btn" (click)="onCloseDialog()">
+            <mat-icon>clear</mat-icon>
+        </button>  
+                
+        <h1>{{ data.row.Title }}</h1>
+    </header>
+
+    <article [innerHTML]="data.row.Body"></article>
+</main>

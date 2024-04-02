@@ -1,0 +1,378 @@
+<fury-page-layout mode="card">
+    <fury-page-layout-header>
+        <fury-breadcrumbs [@fadeInRight] [crumbs]="['Investigations']" current="Manage"></fury-breadcrumbs>
+    </fury-page-layout-header>
+
+    <fury-page-layout-content [fxLayoutGap]="gap" fxLayout="column">
+        <!-- buttons added on the manage file -->
+        <div class="actions-button-padding">
+            <mat-toolbar>
+                <mat-toolbar-row>
+                    <span class="example-spacer"></span>
+
+                    <button mat-raised-button matTooltip="View Timeline"  
+                    *ngIf="ResolveInvestigation == true"
+                    class="actions-button-padding" 
+                    color="primary" (click)="markAsResolved()">
+                        <span>Close file</span>
+                    </button>
+
+                    <button mat-raised-button class="actions-button-padding" (click)="forwardInvestigation()" 
+                            color="primary" 
+                            *ngIf="CanForwardToDPP == true"
+                            [ngStyle]="{'margin-left':'10px'}">
+                        <span>Forward To ODPP</span>
+                    </button>
+
+                    <button mat-raised-button 
+                        matTooltip="View Timeline" 
+                        class="actions-button-padding" 
+                        [ngStyle]="{'margin-left':'10px'}"
+                        color="primary" 
+                        (click)="moreInformation()">
+                        <!-- <mat-icon>thumbs-up</mat-icon> -->
+                        <span>Request for further investigation</span>
+                    </button>
+
+                    <button mat-raised-button  class="actions-button-padding"   (click)="makeNotes()" color="primary" [ngStyle]="{'margin-left': '300px'}">
+                        
+                        <span>Make Notes</span>
+                    </button>
+
+                    <button mat-raised-button matTooltip="View Timeline" class="actions-button-padding" [ngStyle]="{'margin-left':'10px'}"
+                             color="primary" (click)="viewApplicationTimeLine()">
+                        <mat-icon>view_timeline</mat-icon>
+                        <span>Application Timeline</span>
+                    </button> 
+                </mat-toolbar-row>
+            </mat-toolbar>
+        </div>
+
+        <div [fxLayoutGap]="gap" fxFlex="noshrink" fxLayout="column" fxLayout.gt-sm="row"
+             fxLayoutAlign.gt-sm="start stretch"
+             *ngIf="application[0].InvestigationComplaintID !== null">
+            <fury-card [fxFlex.gt-sm]="col2"
+                       class="basic-forms route-animations-elements"
+                       [@fadeInUp]
+                       fxFlex="grow">
+                <fury-card-header>
+                    <fury-card-header-heading>Investigation Information</fury-card-header-heading>
+                </fury-card-header>
+                <fury-card-content fxLayout="column" class="form-padding">
+
+                    <form [formGroup]="investigationForm">
+
+                        <fieldset>
+                            <legend>Data Subject Details</legend>
+                            <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+                                <mat-form-field fxFlex="2 1 auto">
+                                    <mat-label>Data subject name</mat-label>
+                                    <input formControlName="dataSubjectName" matInput>
+                                </mat-form-field>
+
+                                <mat-form-field fxFlex="2 1 auto">
+                                    <mat-label>Data Subject Email</mat-label>
+                                    <input formControlName="dataSubjectEmail" matInput>
+                                </mat-form-field>
+
+                                <mat-form-field fxFlex="2 1 auto">
+                                    <mat-label>Data Subject Phone</mat-label>
+                                    <input formControlName="dataSubjectPhone" matInput>
+                                </mat-form-field>
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Organisation</legend>
+                            <mat-form-field fxFlex="2 1 auto">
+                                <mat-label>Organisation under investigation</mat-label>
+                                <input formControlName="Organisation" matInput>
+                            </mat-form-field>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Organisation Contact Person Details</legend>
+                            <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+
+                                <mat-form-field fxFlex="2 1 auto">
+                                    <mat-label>Contact First Name</mat-label>
+                                    <input formControlName="ContactFirstName" matInput>
+                                </mat-form-field>
+
+                                <mat-form-field fxFlex="2 1 auto">
+                                    <mat-label>Contact Last Name</mat-label>
+                                    <input formControlName="ContactLastName" matInput>
+                                </mat-form-field>
+
+                                <mat-form-field fxFlex="2 1 auto">
+                                    <mat-label>Contact Email</mat-label>
+                                    <input formControlName="ContactEmailAddress" matInput>
+                                </mat-form-field>
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>General Investigation Info</legend>
+                            <div class="content" fxLayout="column" fxLayoutGap="8px">
+
+                                <fieldset>
+                                    <legend>Initial Investigation Notes</legend>
+                                    <mat-label>PDPO Director's investigation notes</mat-label>
+                                    <mat-grid-list cols="4" rowHeight="4rem">
+                                        <mat-grid-tile>
+                                            <textarea matInput
+                                            cdkTextareaAutosize
+                                            #autosize="cdkTextareaAutosize"
+                                            cdkAutosizeMinRows="1"
+                                            formControlName="InvestigationDetails"
+                                            cdkAutosizeMaxRows="5"></textarea>
+                                        </mat-grid-tile>
+                                       
+                                    </mat-grid-list>
+                                 
+                                </fieldset>
+
+                                <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+                                    <mat-form-field fxFlex="2 1 auto" appearance="fill">
+                                        <mat-label>Police Investigation Notes</mat-label>
+                                        <div *ngFor="let notes of InvestigationNotes">
+                                            <p>{{notes.InvestigationNotes}}</p>
+                                            <br/>
+                                            <span>{{notes.FirstName}}  {{notes.LastName}}</span>
+                                        </div>
+                                        <textarea matInput
+                                                  cdkTextareaAutosize
+                                                  #autosize="cdkTextareaAutosize"
+                                                  cdkAutosizeMinRows="1"
+                                                  formControlName="PoliceNotes"
+                                                  cdkAutosizeMaxRows="5"></textarea>
+                                    </mat-form-field>
+                                </div>
+                                <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+                                    <mat-form-field fxFlex="2 1 auto" appearance="fill">
+                                        <mat-label>DPP Investigation Notes</mat-label>
+                                        <textarea matInput
+                                                  cdkTextareaAutosize
+                                                  #autosize="cdkTextareaAutosize"
+                                                  cdkAutosizeMinRows="1"
+                                                  formControlName="DPPNotes"
+                                                  cdkAutosizeMaxRows="5"></textarea>
+                                    </mat-form-field>
+                                </div>
+
+                                <fieldset>
+                                    <legend>Evidence Of Investigation</legend>
+                                    <div class="uploaded-document" matTooltip="Open Document" (click)="onReadDocument()">
+                                        <img src="./assets/img/pdf.png" alt="" [ngStyle]="{width: '100px', height: '100px'}">
+                
+                                        <span *ngIf="document && document.Name">Document: {{ document.Name }} <span *ngIf="document && document.Size">  -  {{ document.Size }} Mbs</span> </span>
+                                    </div>
+        
+                                    <p class="no-document-found" *ngIf="document && !document.Base64">No document found. Please attach</p>
+    
+                                </fieldset>
+                            </div>
+                        </fieldset>
+                    </form>
+                </fury-card-content>
+            </fury-card>
+
+        </div>
+        <div 
+        *ngIf = "application[0].InvestigationDataBreachID !== null">
+
+            <fury-card [fxFlex.gt-sm]="col2"
+                       class="basic-forms route-animations-elements"
+                       [@fadeInUp]
+                       fxFlex="grow">
+                <fury-card-header>
+                    <fury-card-header-heading>Investigation Information</fury-card-header-heading>
+                </fury-card-header>
+                <fury-card-content fxLayout="column" class="form-padding">
+
+                    <form [formGroup]="investigationForm">
+
+                        <fieldset>
+                            <legend>Organisation</legend>
+                            <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+                                <mat-form-field fxFlex="2 2 auto" [ngStyle]="{'margin-right': '20px'}">
+                                    <mat-label>Name of Organisation<span class="required-field">required</span></mat-label>
+                                    <textarea matInput
+                                        cdkTextareaAutosize
+                                        #autosize="cdkTextareaAutosize"
+                                        cdkAutosizeMinRows="1"
+                                        formControlName="OrganisationName"
+                                        cdkAutosizeMaxRows="5"></textarea>
+                                    <mat-hint>Organisation that is affected</mat-hint>              
+                                </mat-form-field>
+                                <mat-form-field fxFlex="2 2 auto" [ngStyle]="{'margin-right': '20px'}">
+                                    <mat-label>Registration Number</mat-label>
+                                    <textarea matInput
+                                        cdkTextareaAutosize
+                                        #autosize="cdkTextareaAutosize"
+                                        cdkAutosizeMinRows="1"
+                                        formControlName="RegNo"
+                                        cdkAutosizeMaxRows="5"></textarea>
+                                    <mat-hint>The number assigned after registration</mat-hint>              
+                                </mat-form-field>
+                                <mat-form-field fxFlex="2 2 auto" [ngStyle]="{'margin-right': '20px'}">
+                                    <mat-label>Email Address of Organisation<span class="required-field">required</span></mat-label>
+                                    <textarea matInput
+                                                  cdkTextareaAutosize
+                                                  #autosize="cdkTextareaAutosize"
+                                                  cdkAutosizeMinRows="1"
+                                                  formControlName="OrganisationEmail"
+                                                  cdkAutosizeMaxRows="5"></textarea>
+                                    <mat-hint>Contact Email of Organisation</mat-hint>              
+                                </mat-form-field>
+                                <mat-form-field fxFlex="2 2 auto">
+                                    <mat-label>Telephone Number of Organisation<span class="required-field">required</span></mat-label>
+                                    <textarea matInput
+                                                  cdkTextareaAutosize
+                                                  #autosize="cdkTextareaAutosize"
+                                                  cdkAutosizeMinRows="1"
+                                                  formControlName="OrganisationNumber"
+                                                  cdkAutosizeMaxRows="5"></textarea>
+                                    <mat-hint>Contact Number of Organisation</mat-hint>              
+                                </mat-form-field>
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Causes of Breach</legend>
+                            <mat-form-field fxFlex="2 2 auto" appearance="fill">
+                                <mat-label>Likely Causes of the breach</mat-label>
+                                <textarea matInput
+                                    cdkTextareaAutosize
+                                    #autosize="cdkTextareaAutosize"
+                                    cdkAutosizeMinRows="1"
+                                    formControlName="BreachCauses"
+                                    cdkAutosizeMaxRows="5">
+                                </textarea>
+                                <mat-hint>Please specify if any financial or sensitive personal data that has been affected
+                                </mat-hint>
+                            </mat-form-field>
+                            <mat-form-field fxFlex="2 2 auto" appearance="fill">
+                                <mat-label>Number of data Subjects</mat-label>
+                                <textarea matInput
+                                          cdkTextareaAutosize
+                                          #autosize="cdkTextareaAutosize"
+                                          cdkAutosizeMinRows="1"
+                                          formControlName="DataSubjects"
+                                          cdkAutosizeMaxRows="5"></textarea>
+                                <mat-hint>Subjects affected by breach</mat-hint>
+                            </mat-form-field>
+                            <mat-form-field fxFlex="2 2 auto" appearance="fill">
+                                <mat-label>Total Number of Records held</mat-label>
+                                <textarea matInput
+                                          cdkTextareaAutosize
+                                          #autosize="cdkTextareaAutosize"
+                                          cdkAutosizeMinRows="1"
+                                          formControlName="measures"
+                                          cdkAutosizeMaxRows="5"></textarea>
+                                <mat-hint>Breached records as a percentage</mat-hint>
+                            </mat-form-field>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Recovery Details</legend>
+                            <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+
+                                <mat-form-field fxFlex="2 2 auto" appearance="fill">
+                                    <mat-label>Data recovery details</mat-label>
+                                    <textarea matInput
+                                              cdkTextareaAutosize
+                                              #autosize="cdkTextareaAutosize"
+                                              cdkAutosizeMinRows="1"
+                                              formControlName="detailsOfRecovery"
+                                              cdkAutosizeMaxRows="5"></textarea>
+                                    <mat-hint>If so, please provide details of how and when this occurred.
+                                    </mat-hint>
+                                </mat-form-field>
+                                <mat-form-field fxFlex="2 2 auto" appearance="fill">
+                                    <mat-label>Prevention Steps</mat-label>
+                                    <textarea matInput
+                                              cdkTextareaAutosize
+                                              #autosize="cdkTextareaAutosize"
+                                              cdkAutosizeMinRows="1"
+                                              formControlName="preventionSteps"
+                                              cdkAutosizeMaxRows="5"></textarea>
+                                    <mat-hint>What steps have been taken to prevent a recurrence of this incident
+                                        ?
+                                    </mat-hint>
+                                </mat-form-field>
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>General Investigation Info</legend>
+                            <div class="content" fxLayout="column" fxLayoutGap="8px">
+
+                                <fieldset>
+                                    <legend>Initial Investigation Notes</legend>
+                                    <mat-label>PDPO Director's investigation notes</mat-label>
+                                    <mat-grid-list cols="4" rowHeight="4rem">
+                                        <mat-grid-tile>
+                                            <textarea matInput
+                                            cdkTextareaAutosize
+                                            #autosize="cdkTextareaAutosize"
+                                            cdkAutosizeMinRows="1"
+                                            formControlName="investigationDetails"
+                                            cdkAutosizeMaxRows="5"></textarea>
+                                        </mat-grid-tile>
+                                       
+                                    </mat-grid-list>
+                                 
+                                </fieldset>
+
+                                <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+                                    
+                                    <mat-form-field fxFlex="2 1 auto" appearance="fill">
+                                        <mat-label>Police Investigation Notes</mat-label>
+                                        <div *ngFor="let notes of InvestigationNotes">
+                                            <p>{{notes.InvestigationNotes}}</p>
+                                            <br/>
+                                            <span>{{notes.FirstName}}  {{notes.LastName}}</span>
+                                        </div>
+                                        <textarea matInput
+                                                  cdkTextareaAutosize
+                                                  #autosize="cdkTextareaAutosize"
+                                                  cdkAutosizeMinRows="1"
+                                                  formControlName="PoliceNotes"
+                                                  cdkAutosizeMaxRows="5"></textarea>
+                                    </mat-form-field>
+                                   
+                                </div>
+                                <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+                                    <mat-form-field fxFlex="2 1 auto" appearance="fill">
+                                        <mat-label>DPP Investigation Notes</mat-label>
+                                        <textarea matInput
+                                                  cdkTextareaAutosize
+                                                  #autosize="cdkTextareaAutosize"
+                                                  cdkAutosizeMinRows="1"
+                                                  formControlName="DPPNotes"
+                                                  cdkAutosizeMaxRows="5"></textarea>
+                                    </mat-form-field>
+                                </div>
+
+                                <fieldset>
+                                    <legend>Evidence Of Investigation</legend>
+                                    <div class="uploaded-document" matTooltip="Open Document" (click)="onReadDocument()">
+                                        <img src="./assets/img/pdf.png" alt="" [ngStyle]="{width: '100px', height: '100px'}">
+                
+                                        <span *ngIf="document && document.Name">Document: {{ document.Name }} <span *ngIf="document && document.Size">  -  {{ document.Size }} Mbs</span> </span>
+                                    </div>
+        
+                                    <p class="no-document-found" *ngIf="document && !document.Base64">No document found. Please attach</p>
+    
+                                </fieldset>
+                            </div>
+                        </fieldset>
+                    </form>
+                </fury-card-content>
+            </fury-card>
+        </div>
+    </fury-page-layout-content>
+</fury-page-layout>        
+        
+        

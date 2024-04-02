@@ -1,0 +1,1516 @@
+
+<fury-page-layout mode="card">
+    <fury-page-layout-header>
+        <fury-breadcrumbs 
+            [@fadeInRight] 
+            [crumbs]="[application ? application.OrganisationName : 'New Application']"
+            [current]=" application ? application.RegTrackingNo : 'New Application' ">
+        </fury-breadcrumbs>
+    </fury-page-layout-header>
+
+    <fury-page-layout-content [@fadeInUp]>
+        
+        <div class="actions-button-padding">
+            <mat-toolbar
+                    *ngIf="permittedActions.length > 0 || application.CurrentStepName === 'Certificate Issued' || isOfficer ">
+                <mat-toolbar-row>
+                    <ng-container *ngFor="let operation of permittedActions">
+                        <button 
+                            [disabled]="application.CurrentStepID == _StepRequestingForMoreInfo"
+                            mat-raised-button [color]="operation.ActionColor" class="actions-button-padding"
+                                (click)="performAction(operation)">
+                            <mat-icon>{{operation.ActionIcon}}</mat-icon>
+                            <span> {{operation.ActionName}}</span>
+                        </button>
+                    </ng-container>
+
+                    <span class="example-spacer"></span>
+
+                    <button mat-raised-button matTooltip="Print Certificate" [disabled]="!canDownloadCertificate"
+                        *ngIf="application.CurrentStepName === 'Certificate Issued'" color="primary"
+                        (click)="previewCert()">
+                        <mat-icon>print</mat-icon>
+                        <span> Print Certificate </span>
+                    </button>
+
+                    <button mat-raised-button matTooltip="View Timeline" class="actions-button-padding" 
+                    color="primary" (click)="viewApplicationTimeLine()">
+                        <mat-icon>view_timeline</mat-icon>
+                        <span>Application Timeline</span>
+                    </button>
+
+                    <!-- <button mat-raised-button matTooltip="View Timeline" class="actions-button-padding"
+                            *ngIf="isOfficer" color="primary" (click)="viewApplicationTimeLine()">
+                        <mat-icon>view_timeline</mat-icon>
+                        <span>Application Timeline</span>
+                    </button> -->
+                </mat-toolbar-row>
+            </mat-toolbar>
+        </div>
+
+        <main class="fadeInUp _delay4ms">
+
+            <!-- <app-page-breadcrumb [title]="'Application for New Registration / Renewal'"></app-page-breadcrumb> -->
+        
+            <mat-horizontal-stepper 
+                [linear]="isLinear"
+                [selectedIndex]="selectedIndex"
+                labelPosition="bottom" #stepper>
+        
+                <mat-step [stepControl]="formGeneralInformation">
+                    <ng-template matStepLabel>
+                        <h3>Applicant</h3>
+
+                        <span class="request-for-more-info-count" *ngIf="formFieldSections[0].Count">{{ formFieldSections[0].Count }}</span>
+                    </ng-template>
+        
+                    <form [formGroup]="formGeneralInformation">
+                        <h1 class="full-width step-header">Details of the applicant which could be an organisation or Individual that collects or processes Personal Data </h1>
+        
+                        <mat-form-field>
+                            <mat-label>Name of Organisation <span class="required-field">required</span></mat-label>
+                            <input appUppercase matInput formControlName="OrganizationName">       
+                            <mat-error *ngIf="formGeneralInformation.get('OrganizationName').invalid">{{ getOrganizationNameErrorMessage() }}</mat-error>
+                        </mat-form-field>  
+        
+                        <!-- <mat-form-field [hintLabel]="'Data Protection & Privacy Act Categories'"> -->
+                        <!-- <mat-form-field [hintLabel]="'Are you a Data Collector/ Data Processor / Data Controller ?'"> -->
+                        <mat-form-field [hintLabel]="'Choose all that apply'">
+                            <mat-label>Category <span class="required-field">required</span></mat-label>
+                            <mat-select multiple formControlName="DPPActCategory">
+                                <mat-option *ngFor="let cat of organisationCategories" [value]="cat.OrganisationCategoryId">
+                                    {{ cat.OrganisationCategoryName }}
+                                </mat-option>
+                            </mat-select>   
+                            <mat-error *ngIf="formGeneralInformation.get('DPPActCategory').invalid">{{ getSelectErrorMessage() }}</mat-error> 
+                        </mat-form-field>                             
+        
+                        <mat-form-field>
+                            <mat-label>Type of Organisation <span class="required-field">required</span></mat-label>
+                            <mat-select formControlName="OrganizationTypeID" #typeOfOrganisation>
+                                <mat-option *ngFor="let type of organisationTypes" (click)="OrganizationType = type.OrganisationType" [value]="type.OrganisationTypeID">
+                                    {{ type.OrganisationType }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="formGeneralInformation.get('OrganizationTypeID').invalid">{{ getSelectErrorMessage() }}</mat-error> 
+                        </mat-form-field>                   
+        
+                        <mat-form-field *ngIf="typeOfOrganisation.value && typeOfOrganisation.value !== 4">
+                            <mat-label>Country of Incorporation <span class="required-field">required</span></mat-label>
+                            <mat-select formControlName="CountryOfIncorporation">
+                                <mat-option *ngFor="let country of countries" (click)="CountryOfIncorporation = country.Name" [value]="country.CountryID">
+                                    {{ country.Name }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="formGeneralInformation.get('CountryOfIncorporation').invalid">{{ getSelectErrorMessage() }}</mat-error> 
+                        </mat-form-field>        
+        
+                        <mat-form-field *ngIf="typeOfOrganisation.value && typeOfOrganisation.value !== 4">
+                            <mat-label>Registration Number <span class="required-field">required</span></mat-label>
+                            <input appUppercase appRemoveSpaces matInput maxlength="25" formControlName="URSBNumber"> 
+                            <mat-error *ngIf="formGeneralInformation.get('URSBNumber').invalid">{{ getURSBNumberErrorMessage() }}</mat-error>
+                        </mat-form-field>     
+                        
+                        <mat-form-field>
+                            <mat-label>Sector <span class="required-field">required</span></mat-label>
+                            <mat-select formControlName="SectorID" #Sector>
+                                <mat-option *ngFor="let sector of sectors" (click)="SectorName = sector.Sector" [value]="sector.SectorID">
+                                    {{ sector.Sector }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="formGeneralInformation.get('SectorID').invalid">{{ getSelectErrorMessage() }}</mat-error>
+                        </mat-form-field>        
+                        
+                        <mat-form-field hintLabel="If Other, Please specify the Sector." *ngIf="Sector.value === 14">
+                            <mat-label>Specify Sector <span class="required-field">required</span></mat-label>
+                            <input appUppercase matInput maxlength="50" formControlName="OtherSector">    
+                            <mat-error *ngIf="formGeneralInformation.get('OtherSector').invalid">{{ getOtherSectorErrorMessage() }}</mat-error>
+                        </mat-form-field>                 
+        
+                        <!-- <mat-form-field *ngIf="formGeneralInformation.get('PublicBodyTypeID').value === '6'">
+                            <mat-label>Type of Local Government <span class="required-field">required</span></mat-label>
+                            <mat-select formControlName="LocalGovernmentType">
+                                <mat-option value="1">Body Corporate or otherwise established by Act of Parliament</mat-option>
+                                <mat-option value="2">Cabinet</mat-option>
+                                <mat-option value="3">Court</mat-option>
+                                <mat-option value="4">Commission established by Act of Parliament</mat-option>
+                                <mat-option value="5">Government Department</mat-option>
+                                <mat-option value="6">Local Government Adminstration</mat-option>
+                            </mat-select>
+                        </mat-form-field>                    -->
+                        
+                        <!-- <mat-form-field *ngIf="formGeneralInformation.get('PublicBodyTypeID').value === '6'">
+                            <mat-label>Statute <span class="required-field">required</span></mat-label>
+                            <input appUppercase appRemoveSpaces matInput maxlength="255" formControlName="Statute">                            
+                        </mat-form-field>    
+                         -->
+                        <mat-form-field>
+                            <mat-label>Physical Address <span class="required-field">required</span></mat-label>
+                            <input appUppercase matInput maxlength="255" formControlName="Location">            
+                            <mat-error *ngIf="formGeneralInformation.get('Location').invalid">{{ getLocationErrorMessage() }}</mat-error>                
+                        </mat-form-field>  
+        
+                        <!-- <mat-form-field>
+                            <mat-label>Name of Head of Organisation <span class="required-field">required</span></mat-label>
+                            <input appUppercase appRemoveSpaces matInput maxlength="255" formControlName="HeadOfOrganization">                            
+                        </mat-form-field>    
+        
+                        <mat-form-field>
+                            <mat-label>Title of Head of Organisation <span class="required-field">required</span></mat-label>
+                            <input appUppercase appRemoveSpaces matInput maxlength="255" formControlName="TitleOfOrganizationHead">                            
+                        </mat-form-field>     -->
+        
+                        <!-- <mat-form-field>
+                            <mat-label>Postal Address <span class="optional-field">optional</span></mat-label>
+                            <input appUppercase appRemoveSpaces matInput maxlength="255" formControlName="PostalAddress">                            
+                        </mat-form-field>     -->
+        
+                        <!-- Improve the country code to be dynamic -->
+                        <!-- <mat-form-field>
+                            <span matPrefix>+256 &nbsp;</span>
+                            <mat-label>Organisation Telephone Number <span class="required-field">required</span></mat-label>
+                            <input appTelephoneFormaterDirective maxlength="11" matInput formControlName="PhoneNumber">           
+                        </mat-form-field>    -->
+        
+                        <div class="telephone-code-number-wrapper">
+                            <mat-form-field class="fadeInUp _delay2ms">
+                                <mat-label>Pick one </mat-label>
+                                <mat-select formControlName="PhoneNumberCode">
+                                    <mat-option selected *ngIf="!selected" value="256">+256</mat-option>
+                                    <!-- <mat-option selected *ngIf="!selected" value="256">+256 - Uganda</mat-option> -->
+                                    <mat-option *ngFor="let code of countries" [value]="code.PhoneCode" (click)="selected = true">
+                                        +{{ code.PhoneCode }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+        
+                            <!-- <mat-form-field class="fadeInUp _delay2ms" [hintLabel]="'Organisation Telephone Number.'"> -->
+                            <mat-form-field class="fadeInUp _delay2ms">
+                                <mat-label>Organisation Telephone Number <span class="required-field">required</span></mat-label>
+                                <input type="text" maxlength="11" matInput appTelephoneFormaterDirective formControlName="PhoneNumber" placeholder="Ex. 414 318 111">
+                                <mat-error *ngIf="formGeneralInformation.get('PhoneNumber').invalid">{{ getTelephoneNumberErrorMessage() }}</mat-error>
+                            </mat-form-field> 
+                        </div>                
+        
+                        <!-- <mat-form-field>
+                            <span matPrefix>+256 &nbsp;</span>
+                            <mat-label>Land Line <span class="optional-field">optional</span></mat-label>
+                            <input appTelephoneFormaterDirective maxlength="11" matInput formControlName="Landline">           
+                        </mat-form-field>    -->
+        
+                        <mat-form-field>
+                            <mat-label>Organisation Email Address <span class="required-field">required</span></mat-label>
+                            <input appRemoveSpaces matInput formControlName="EmailAddress">
+                            <mat-error *ngIf="formGeneralInformation.get('EmailAddress').invalid">{{ getEmailAddressErrorMessage() }}</mat-error>
+                        </mat-form-field>   
+        
+                        <!-- <mat-form-field hintLabel="Select all the roles performed">
+                            <mat-label>Nature of Business <span class="required-field">required</span></mat-label>
+                            <mat-select multiple formControlName="RolesPerformedID">
+                                <mat-option value="1">Protection of National Security</mat-option>
+                                <mat-option value="2">Public revenue collection</mat-option>
+                                <mat-option value="3">Enforcement of law which imposes a pecuniary penalty</mat-option>
+                                <mat-option value="4">Conduct proceedings before any court</mat-option>
+                            </mat-select>    
+                        </mat-form-field>     -->
+        
+                        <mat-form-field>
+                            <mat-label>Nature of Business Categories<span class="required-field">required</span></mat-label>
+                            <mat-select formControlName="NatureOfBusinessCat">
+                                <mat-option *ngFor="let cat of natureOfBusinessCat" (click)="NatureOfBusinessCat = cat.NatureOfBusinessCategoryName" [value]="cat.NatureOfBusinessCatId">
+                                    {{ cat.NatureOfBusinessCategoryName }}
+                                </mat-option>
+                            </mat-select>    
+                            <mat-error *ngIf="formGeneralInformation.get('NatureOfBusinessCat').invalid">{{ getSelectErrorMessage() }}</mat-error>
+                        </mat-form-field>                   
+        
+                        <mat-form-field [hintLabel]="'Choose all that apply'" *ngIf="_hasRequestMoreInfo && !isOfficer && formGeneralInformation.get('NatureOfBusinessSubCat').enabled">
+                            <mat-label>Nature of Business Sub-Categories <span class="required-field">required</span></mat-label>
+                            <mat-select multiple formControlName="NatureOfBusinessSubCat">
+                                <mat-option *ngFor="let sub of natureOfBusinessSubCat" [value]="sub.NatureOfBusinessSubCatId" [matTooltip]="sub.NatureOfBusinessSubCategoryName">
+                                    {{ sub.NatureOfBusinessSubCategoryName }}
+                                </mat-option>
+                            </mat-select> 
+                            <mat-error *ngIf="formGeneralInformation.get('NatureOfBusinessSubCat').invalid">{{ getSelectErrorMessage() }}</mat-error>   
+                        </mat-form-field>      
+                        
+                        <!-- For viewing purposes only -->
+                        <mat-form-field class="span-2-columns" [hintLabel]="'Choose all that apply'" *ngIf="!_hasRequestMoreInfo || (_hasRequestMoreInfo && formGeneralInformation.get('NatureOfBusinessSubCat').disabled) || isOfficer">
+                            <mat-label>Nature of Business Sub-Categories ?<span class="required-field">required</span></mat-label>
+                            <textarea matInput [value]="getSelectedNatureOfBusinessSubCat()" disabled class="textarea-small"></textarea>
+                        </mat-form-field>                          
+        
+                        <!-- <mat-form-field class="full-width" hintLabel="What are the main activities of the organisation ?">
+                            <mat-label>Nature of Business<span class="required-field">required</span></mat-label>
+                            <textarea #CaseTitleInput matInput maxlength="1000" formControlName="NatureOfBusiness" placeholder=""></textarea>
+                            <mat-hint align="end">{{ CaseTitleInput.value.length }} / 1000</mat-hint>
+                        </mat-form-field>                      -->
+                        
+                        <!-- <section class="expand-section reduced-properties table-wrapper">
+                            <button 
+                                mat-button
+                                color="primary"
+                                [disabled]="processing"
+                                class="add-item-button"
+                                (click)="onAddMainActivity()">
+                                <div class="button-label">
+                                    <mat-icon>add</mat-icon>                            
+                                    <span>Add A Main Activity</span>
+                                </div>
+                            </button>
+        
+                            <p class="description">What are the main activities of the organisation ?</p>
+                            
+                            <div class="table-wrapper">
+                                <table 
+                                    mat-table 
+                                    #dpoMatSort="matSort"
+                                    matSortDisableClear="true"
+                                    [dataSource]="mainActivitiesDataSource"
+                                    matSort>
+                    
+                                    <ng-container matColumnDef="Count">
+                                        <th mat-header-cell *matHeaderCellDef> # </th>
+                                        <td mat-cell *matCellDef="let index = index"> {{ index + 1 }} </td>
+                                    </ng-container>
+                    
+                                    <ng-container matColumnDef="MainActivity">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Main Activities </th>
+                                        <td mat-cell *matCellDef="let row">{{ row.Activity }}</td>
+                                    </ng-container>                      
+                    
+                                    <ng-container matColumnDef="Actions">
+                                        <th mat-header-cell *matHeaderCellDef> Actions </th>
+                                        <td mat-cell *matCellDef="let row; let index = index">
+                                            <button 
+                                                mat-button 
+                                                class="action-btn"
+                                                [matMenuTriggerFor]="menu" 
+                                                (click)="$event.stopPropagation()"
+                                                matTooltip="See more options">
+                                                <mat-icon>more_vert</mat-icon>
+                                            </button>
+                    
+                                            <mat-menu yPosition="below" #menu="matMenu" class="more-options-mat-menu">
+                    
+                                                <button 
+                                                    mat-menu-item 
+                                                    (click)="$event.stopPropagation();onEditMainActivity(row)">
+                                                    <mat-icon>edit</mat-icon>
+                                                    <span>Make Changes</span>
+                                                </button>
+                                                      
+                                                <hr />
+                    
+                                                <button 
+                                                    mat-menu-item 
+                                                    (click)="$event.stopPropagation();onRemoveMainActivity(row)">
+                                                    <mat-icon color="warn">delete</mat-icon>
+                                                    <span>Remove</span>
+                                                </button>
+                    
+                                            </mat-menu>                                                  
+                                        </td>
+                                    </ng-container>
+                    
+                                    <tr mat-header-row *matHeaderRowDef="MainActivitiesDisplayedColumns"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: MainActivitiesDisplayedColumns;" class="mat-data-row"></tr>
+                                </table>
+        
+                                <mat-paginator 
+                                    #dpoPaginator
+                                    [pageSize]="10"
+                                    [pageSizeOptions]="[5, 10]">
+                                </mat-paginator>                    
+                            </div>                
+                        </section>                      -->
+                        
+                    </form>
+        
+                    <div class="button-wrapper single-button">
+                        <button  *ngIf="!isViewOnly"
+                            mat-button 
+                            color="primary" >
+                            Save as Draft
+                        </button>       
+        
+                        <button 
+                            [disabled]="formGeneralInformation.invalid"
+                            mat-button 
+                            class="next-btn" 
+                            color="primary" 
+                            matStepperNext>
+                            Next
+                        </button>
+                    </div>             
+                </mat-step>
+        
+                <mat-step [stepControl]="formOrganisationDetails">
+                    <ng-template matStepLabel>
+                        <h3>Data Protection <br />Officer</h3>
+
+                        <span class="request-for-more-info-count" *ngIf="formFieldSections[1].Count">{{ formFieldSections[1].Count }}</span>
+                    </ng-template>
+        
+                    <form [formGroup]="formOrganisationDetails">     
+        
+                        <h1 class="full-width step-header">Details of Data Protection Officer </h1>    
+                        
+                        <!-- If yes... all the fields should be required. -->
+        
+                        <div class="grouped-items" [ngClass]="{'full-width': formOrganisationDetails.get('DPORequired').value !== 'Yes'}">
+                            <h3>Do you have a designated data protection officer ? </h3>
+        
+                            <mat-radio-group 
+                                color="primary" 
+                                formControlName="DPORequired" 
+                                aria-label="Pick one">
+                                <mat-radio-button [ngClass]="{'selected-radio-btn': formOrganisationDetails.get('DPORequired').value === 'Yes' }" value="Yes">Yes</mat-radio-button>
+                                <mat-radio-button [ngClass]="{'selected-radio-btn': formOrganisationDetails.get('DPORequired').value === 'No' }" value="No">No</mat-radio-button>
+                            </mat-radio-group>        
+                        </div>                  
+                        
+                        <mat-form-field *ngIf="formOrganisationDetails.get('DPORequired').value === 'Yes'">
+                            <mat-label>Name <span class="required-field">required</span></mat-label>
+                            <input formControlName="DPOName" matInput>
+                            <mat-error *ngIf="formOrganisationDetails.get('DPOName').invalid">{{ getDPONameErrorMessage() }}</mat-error>
+                        </mat-form-field>
+                
+                        <mat-form-field *ngIf="formOrganisationDetails.get('DPORequired').value === 'Yes'">
+                            <mat-label>Physical Address <span class="required-field">required</span></mat-label>
+                            <input formControlName="DPOPhysicalAddress" maxlength="255" matInput>
+                            <mat-error *ngIf="formOrganisationDetails.get('DPOPhysicalAddress').invalid">{{ getDPOPhysicalAddressErrorMessage() }}</mat-error>
+                        </mat-form-field>
+        
+                        <!-- <mat-form-field >
+                            <span matPrefix>+256 &nbsp;</span>
+                            <mat-label>Telephone Number <span class="required-field">required</span></mat-label>
+                            <input appTelephoneFormaterDirective maxlength="11" matInput formControlName="DPOPhoneNumber">           
+                        </mat-form-field>  -->
+                        
+                        <div class="telephone-code-number-wrapper" *ngIf="formOrganisationDetails.get('DPORequired').value === 'Yes'">
+                            <mat-form-field class="fadeInUp _delay2ms">
+                                <mat-label>Pick one </mat-label>
+                                <mat-select formControlName="PhoneNumberCode">
+                                    <mat-option selected *ngIf="!DPOSelected" value="256">+256</mat-option>
+                                    <!-- <mat-option selected *ngIf="!selected" value="256">+256 - Uganda</mat-option> -->
+                                    <mat-option *ngFor="let code of countries" [value]="code.PhoneCode" (click)="DPOSelected = true">
+                                        +{{ code.PhoneCode }}
+                                    </mat-option>
+                                </mat-select>
+                                <!-- <mat-error *ngIf="formGeneralInformation.get('PhoneNumberCode').invalid">{{ getSelectInputErrorMessage() }}</mat-error>      -->
+                            </mat-form-field>
+        
+                            <!-- <mat-form-field class="fadeInUp _delay2ms" [hintLabel]="'Organisation Telephone Number.'"> -->
+                            <mat-form-field class="fadeInUp _delay2ms">
+                                <mat-label>Telephone Number <span class="required-field">required</span></mat-label>
+                                <input type="text" maxlength="11" matInput appTelephoneFormaterDirective formControlName="DPOPhoneNumber" placeholder="Ex. 414 318 111">
+                                <mat-error *ngIf="formOrganisationDetails.get('DPOPhoneNumber').invalid">{{ getDPOPhoneNumberErrorMessage() }}</mat-error>
+                            </mat-form-field> 
+                        </div>                  
+                
+                        <mat-form-field *ngIf="formOrganisationDetails.get('DPORequired').value === 'Yes'">
+                            <mat-label>Email Address <span class="required-field">required</span></mat-label>
+                            <input appRemoveSpaces formControlName="DPOEmailAddress" matInput>
+                            <mat-error *ngIf="formOrganisationDetails.get('DPOEmailAddress').invalid">{{ getDPOEmailAddressErrorMessage() }}</mat-error>
+                        </mat-form-field>       
+        
+                        <mat-form-field *ngIf="formOrganisationDetails.get('DPORequired').value === 'Yes'" class="full-width" hintLabel="Any other title held apart from DPO (Data Protection Officer).">
+                            <mat-label>Title Held <span class="required-field">required</span></mat-label>
+                            <textarea #PositionInput matInput formControlName="DPOPositionInOrganisation" maxlength="1000"></textarea>
+                            <mat-hint align="end">{{ PositionInput.value.length }} / 1000</mat-hint>
+                            <mat-error *ngIf="formOrganisationDetails.get('DPOPositionInOrganisation').invalid">{{ getDPOPositionInOrganisationErrorMessage() }}</mat-error>
+                        </mat-form-field>                  
+                    </form>
+        
+                    <div class="button-wrapper">       
+                        <button mat-button class="back-btn" matStepperPrevious>Back</button>   
+                        <button  *ngIf="!isViewOnly"
+                            mat-button 
+                            color="primary" >
+                            Save as Draft
+                        </button>  
+                        <button 
+                            [disabled]="formOrganisationDetails.invalid"
+                            mat-button 
+                            class="next-btn" 
+                            color="primary" 
+                            matStepperNext>
+                            Next
+                        </button>
+                    </div>             
+                </mat-step>
+        
+                <mat-step [stepControl]="formPersonalDataHeld">
+                    <ng-template matStepLabel>
+                        <h3>Data Collected <br /> or Processed</h3>
+
+                        <span class="request-for-more-info-count" *ngIf="formFieldSections[2].Count">{{ formFieldSections[2].Count }}</span>
+                    </ng-template>
+        
+                    <form [formGroup]="formPersonalDataHeld" class="personal-data-affected">       
+                        
+                        <h1 class="full-width step-header">Description of Data collected or processed </h1>
+        
+                        <mat-form-field hintLabel="Choose all that apply." class="full-width">
+                            <mat-label>Source of Data <span class="required-field">required</span></mat-label>
+                            <mat-select multiple formControlName="SourceOfDataID">
+                                <mat-option *ngFor="let source of dataSources" [value]="source.DataSourceID">
+                                    {{ source.DataSource }}
+                                </mat-option>
+                            </mat-select>    
+                            <mat-error *ngIf="formPersonalDataHeld.get('SourceOfDataID').invalid">{{ getSelectErrorMessage() }}</mat-error> 
+                        </mat-form-field>        
+                        
+                        <!-- <div class="grouped-items" class="span-2-columns">
+                            <h3>Do you collect personal data relating to Children?</h3>
+            
+                            <mat-radio-group color="primary" aria-label="Pick one" formControlName="CollectChildrenData">
+                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                <mat-radio-button value="No">No</mat-radio-button>
+                            </mat-radio-group>        
+                        </div>   -->
+        
+                        <!-- <mat-form-field class="full-width personal-data-affected-field" hintLabel="Choose all that apply">
+                            <mat-label>Personal Data Collected Or Processed <span class="required-field">required</span></mat-label>
+                            <mat-select [formControl]="dataCategory" multiple>
+                                <mat-option 
+                                    *ngFor="let category of dataCategories" 
+                                    [value]="category.Name">
+                                    {{ category.Name }}
+                            </mat-option>
+                            </mat-select>
+                        </mat-form-field> -->
+        
+                        <h1 class="full-width heading">Personal Data Collected Or Processed</h1>
+                        
+                        <section 
+                            *ngFor="let category of dataCategories; let i = index" 
+                            class="expand-section categories">        
+
+                            <div>
+                                <h3 [innerHTML]="category.DataCategory"></h3>
+                                <mat-icon matTooltipPosition="right"  [matTooltip]="category.DataDescription">info</mat-icon>
+                            </div>
+
+                            <mat-checkbox [disabled]="isViewOnly && !personalDataCollectedCheckBoxEnabled"
+                                *ngFor="let SubCategory of category.SubCategories" 
+                                [ngClass]="{'full-width': category.SubCategories.length === 1, 'selected-checkbox': SubCategory.IsChecked}"
+                                color="primary"
+                                [checked]="SubCategory.IsChecked"
+                                (change)="onChangeSubCategory($event,SubCategory)"
+                                [required]="'false'">
+                                {{ SubCategory.DataSubCategory }}
+                            </mat-checkbox>
+                            
+                        </section>                            
+                    </form>
+        
+                    <div class="button-wrapper">       
+                        <button mat-button class="back-btn" matStepperPrevious>Back</button>
+        
+                        <button *ngIf="!isViewOnly"
+                            mat-button 
+                            color="primary" >
+                            Save as Draft
+                        </button> 
+
+                        <button 
+                            [disabled]="formPersonalDataHeld.invalid || selectedDataSubCategory.length === 0"
+                            mat-button 
+                            class="next-btn" 
+                            color="primary" 
+                            matStepperNext>
+                            Next
+                        </button>
+                    </div>             
+                </mat-step>
+
+                <mat-step [stepControl]="formChildrenData">
+                    <ng-template matStepLabel>
+                        <h3>Children's Data</h3>
+                    </ng-template>
+
+                    <form [formGroup]="formChildrenData">
+                        
+                        <div class="grouped-items">
+                            <h3>Do you collect personal data relating to Children?<span class="required-field">required</span></h3>
+            
+                            <mat-radio-group color="primary" aria-label="Pick one" formControlName="CollectChildrenData" (change)="updateCollecthildrenData($event)">
+                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                <mat-radio-button value="No">No</mat-radio-button>
+                            </mat-radio-group>        
+                        </div>  
+        
+                        <mat-form-field *ngIf="showChildrenDataFields == true">
+                            <mat-label>Reason / Purpose for collecting children's data<span class="required-field">required</span> </mat-label>
+                        
+                            <mat-select multiple formControlName="PurposeForCollection">
+                                <mat-option *ngFor="let child of childDataPurposes" [value]="child.ChildDataID">
+                                    {{ child.ChildDataPurpose }}
+                                </mat-option>
+                            </mat-select>  
+                        </mat-form-field>                  
+                        
+                                    
+        
+                    </form>
+
+                    <div class="button-wrapper">       
+                        <button mat-button class="back-btn" matStepperPrevious>Back</button>
+        
+                        <button 
+                            *ngIf="!isViewOnly"
+                            mat-button 
+                            class="save-draft-btn"
+                            [disabled]="processing"
+                            (click)="onSaveDraft()"
+                            color="primary">
+                            Save
+                        </button> 
+
+                        <button 
+                            [disabled]="formChildrenData.invalid"
+                            mat-button 
+                            class="next-btn" 
+                            color="primary" 
+                            matStepperNext>
+                            Next
+                        </button>
+                    </div>          
+
+                </mat-step>
+        
+        
+                <mat-step [stepControl]="formPurposeRetention">
+                    <ng-template matStepLabel>
+                        <h3>Purpose & Retention</h3>
+
+                        <span class="request-for-more-info-count" *ngIf="formFieldSections[3].Count">{{ formFieldSections[3].Count }}</span>
+                    </ng-template>
+        
+                    <form [formGroup]="formPurposeRetention">       
+                        
+                        <h1 class="full-width step-header">Description of Purpose for which data is collected or processed </h1>
+        
+                        <!-- <mat-form-field hintLabel="Why do you collect personal Data?">
+                            <mat-label>For What Purpose ?<span class="required-field">required</span></mat-label>
+                            <mat-select formControlName="Purpose" multiple>
+                                <mat-option *ngFor="let purpose of dataPurposes" [value]="purpose.DataPurposeID">
+                                    {{ purpose.DataPurpose }}
+                                </mat-option>
+                            </mat-select>  
+                            <mat-error *ngIf="formPurposeRetention.get('Purpose').invalid">{{ getSelectErrorMessage() }}</mat-error>   
+                        </mat-form-field> -->
+        
+                        <!-- For editing purposes only -->
+                        <mat-form-field *ngIf="_hasRequestMoreInfo && !isOfficer && formPurposeRetention.get('Purpose').enabled" hintLabel="Why do you collect personal Data?">
+                            <mat-label>For What Purpose ?<span class="required-field">required</span></mat-label>
+                            <mat-select formControlName="Purpose" multiple>
+                                <mat-option *ngFor="let purpose of dataPurposes" [value]="purpose.DataPurposeID">
+                                    {{ purpose.DataPurpose }}
+                                </mat-option>
+                            </mat-select>  
+                            <mat-error *ngIf="formPurposeRetention.get('Purpose').invalid">{{ getSelectErrorMessage() }}</mat-error>   
+                        </mat-form-field>
+
+                        <!-- For viewing purposes only -->
+                        <mat-form-field class="full-width" *ngIf="!_hasRequestMoreInfo || (_hasRequestMoreInfo && formPurposeRetention.get('Purpose').disabled) || isOfficer" hintLabel="Why do you collect personal Data?">
+                            <mat-label>For What Purpose ?<span class="required-field">required</span></mat-label>
+                            <textarea matInput [value]="getSelectedPurpose()" disabled class="textarea-small"></textarea>
+                        </mat-form-field>   
+
+        
+                        <!-- For Edits -->
+                        <mat-form-field hintLabel="If the purpose is Collection / Processing is required by Law." *ngIf="SpecifyTheLaw && _hasRequestMoreInfo && !isOfficer && formPurposeRetention.get('SpecifyTheLaw').enabled">
+                            <mat-label>Specify the Law <span class="required-field">required</span></mat-label>
+                            <input matInput #SpecifyTheLawInput maxlength="1000" formControlName="SpecifyTheLaw">        
+                            <mat-hint align="end">{{ SpecifyTheLawInput.value.length }} / 1000</mat-hint>    
+                            <mat-error *ngIf="formPurposeRetention.get('SpecifyTheLaw').invalid">{{ getRequiredErrorMessage() }}</mat-error>
+                        </mat-form-field>  
+        
+                        <!-- For viewing only -->
+                        <mat-form-field class="full-width" *ngIf="SpecifyTheLaw && (!_hasRequestMoreInfo || (_hasRequestMoreInfo && formPurposeRetention.get('SpecifyTheLaw').disabled) || isOfficer)" hintLabel="If the purpose is Collection / Processing is required by Law.">
+                            <mat-label>Specify the Law<span class="required-field">required</span></mat-label>
+                            <textarea matInput formControlName="SpecifyTheLaw" disabled class="textarea-small"></textarea>
+                        </mat-form-field>                             
+        
+
+                        <!-- For Edits -->
+                        <mat-form-field hintLabel="If the purpose is to provide services / products to Individuals." *ngIf="ServiceOrProductProvided && _hasRequestMoreInfo && !isOfficer && formPurposeRetention.get('ServiceOrProductProvided').enabled">
+                            <mat-label>Specify the Service / Product Provided<span class="required-field">required</span></mat-label>
+                            <input matInput #ServiceOrProductProvidedInput maxlength="1000" formControlName="ServiceOrProductProvided">     
+                            <mat-hint align="end">{{ ServiceOrProductProvidedInput.value.length }} / 1000</mat-hint>    
+                            <mat-error *ngIf="formPurposeRetention.get('ServiceOrProductProvided').invalid">{{ getRequiredErrorMessage() }}</mat-error>
+                        </mat-form-field>  
+                        
+                        <!-- For viewing only -->
+                        <mat-form-field class="full-width" *ngIf="ServiceOrProductProvided && (!_hasRequestMoreInfo || (_hasRequestMoreInfo && formPurposeRetention.get('ServiceOrProductProvided').disabled) || isOfficer)" hintLabel="If the purpose is to provide services / products to Individuals.">
+                            <mat-label>Specify the Service / Product Provided<span class="required-field">required</span></mat-label>
+                            <textarea matInput formControlName="ServiceOrProductProvided" disabled class="textarea-small"></textarea>
+                        </mat-form-field>                              
+
+                        <!-- For Edits -->
+                        <mat-form-field hintLabel="If the purpose is for Compliance with a Legal Obligation." *ngIf="SpecifyLegalObligation && _hasRequestMoreInfo && !isOfficer && formPurposeRetention.get('SpecifyLegalObligation').enabled">
+                            <mat-label>Specify the Legal Obligation<span class="required-field">required</span></mat-label>
+                            <input matInput #SpecifyLegalObligationInput maxlength="50" formControlName="SpecifyLegalObligation">  
+                            <mat-hint align="end">{{ SpecifyLegalObligationInput.value.length }} / 50</mat-hint>    
+                            <mat-error *ngIf="formPurposeRetention.get('SpecifyLegalObligation').invalid">{{ getRequiredErrorMessage() }}</mat-error>
+                        </mat-form-field>  
+
+                        <!-- For viewing only -->
+                        <mat-form-field class="full-width" *ngIf="SpecifyLegalObligation && (!_hasRequestMoreInfo || (_hasRequestMoreInfo && formPurposeRetention.get('SpecifyLegalObligation').disabled) || isOfficer)" hintLabel="If the purpose is Collection / Processing is required by Law.">
+                            <mat-label>Specify the Legal Obligation<span class="required-field">required</span></mat-label>
+                            <textarea matInput formControlName="SpecifyLegalObligation" disabled class="textarea-small"></textarea>
+                        </mat-form-field>                              
+                        
+                        <mat-form-field hintLabel="Approximate number of Personal Data Records held.">
+                            <mat-label>Total Records <span class="optional-field">optional</span></mat-label>
+                            <input appCurrencyDirective matInput maxlength="14" formControlName="TotalRecordsAtRegistration">                            
+                            <mat-error *ngIf="formPurposeRetention.get('TotalRecordsAtRegistration').invalid">{{ getPatternErrorMessage() }}</mat-error>
+                        </mat-form-field>  
+                        
+                        <mat-form-field hintLabel="The % annual growth of Personal Records held">
+                            <mat-label>Percentage Annual Growth <span class="optional-field">optional</span></mat-label>
+                            <input appCurrencyDirective matInput max="100" maxlength="3" formControlName="RecordPercentageGrowth">                            
+                            <mat-error *ngIf="formPurposeRetention.get('RecordPercentageGrowth').invalid">{{ getRecordPercentageGrowthErrorMessage() }}</mat-error>
+                            <mat-hint align="end">Max. 100%</mat-hint>      
+                            <span matSuffix>%</span>
+                        </mat-form-field>   
+        
+                        <mat-form-field hintLabel="Duration for which personal data shall be kept (Years).">
+                            <mat-label>Retention period <span class="required-field">required</span></mat-label>
+                            <input appCurrencyDirective max="100" matInput maxlength="3" formControlName="RetentionPeriod">                          
+                            <mat-error *ngIf="formPurposeRetention.get('RetentionPeriod').invalid">{{ getRetentionPeriodErrorMessage() }}</mat-error>
+                            <mat-hint align="end">Max. 100 years</mat-hint>      
+                            <span matSuffix>Year(s)</span>
+                        </mat-form-field>                            
+        
+                        <!-- <div class="grouped-items">
+                            <h3>Did you get consent from the Data Subject ?</h3>
+            
+                            <mat-radio-group color="primary" aria-label="Pick one" formControlName="GetConsent">
+                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                <mat-radio-button value="No">No</mat-radio-button>
+                            </mat-radio-group>        
+                        </div>                 -->
+        
+                        <!-- <mat-form-field hintLabel="The nature of processing carried out on the personal data.">
+                            <mat-label>Nature of Processing <span class="optional-field">optional</span></mat-label>
+                            <mat-select multiple formControlName="NatureOfProcessing">
+                                <mat-option value="">Organized, adapted or altered for use in fulfilling organizations mandate and role</mat-option>
+                                <mat-option value="">Data is stored and retrieved and used for internal consultation or verification</mat-option>
+                                <mat-option value="">Data is disseminated or disclosed</mat-option>
+                            </mat-select>    
+                        </mat-form-field>     -->
+        
+                        <!-- <div class="grouped-items">
+                            <h3>Do you process or store personal data outside Uganda ?</h3>
+            
+                            <mat-radio-group color="primary" aria-label="Pick one" formControlName="StoreDataOutsideCountry">
+                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                <mat-radio-button value="No">No</mat-radio-button>
+                            </mat-radio-group>        
+                        </div>    
+        
+                        <mat-form-field hintLabel="Where the personal data was obtained from.">
+                            <mat-label>Countries <span class="required-field">required</span></mat-label>
+                            <mat-select multiple formControlName="CountriesStoringYourData">
+                                <mat-option value="1">Kenya</mat-option>
+                                <mat-option value="2">Tanzania</mat-option>
+                                <mat-option value="3">United States</mat-option>
+                            </mat-select>    
+                        </mat-form-field>                     -->
+        <!--                 
+                        <section class="expand-section reduced-properties table-wrapper">
+                            <h1>Identifiers</h1>
+        
+                            <mat-checkbox
+                                color="primary"
+                                [required]="'false'">
+                                Name
+                            </mat-checkbox>    
+        
+                            <mat-checkbox
+                                color="primary"
+                                [required]="'false'">
+                                Nationality
+                            </mat-checkbox>    
+        
+                            <mat-checkbox
+                                color="primary"
+                                [required]="'false'">
+                                Age
+                            </mat-checkbox>      
+        
+                        </section>    
+                         -->
+                        <!-- <section class="expand-section reduced-properties table-wrapper">
+                            <h1>Individual Commercial Information</h1>
+        
+                            <mat-checkbox
+                                color="primary"
+                                [required]="'false'">
+                                Name
+                            </mat-checkbox>    
+        
+                            <mat-checkbox
+                                color="primary"
+                                [required]="'false'">
+                                Nationality
+                            </mat-checkbox>    
+        
+                            <mat-checkbox
+                                color="primary"
+                                [required]="'false'">
+                                Age
+                            </mat-checkbox>      
+        
+                        </section>     -->
+        
+                    </form>
+        
+                    <div class="button-wrapper">       
+                        <button mat-button class="back-btn" matStepperPrevious>Back</button>
+        
+                        <!-- <button  *ngIf="!isViewOnly"
+                            mat-button 
+                            color="primary" >
+                            Save as Draft
+                        </button>  -->
+
+                        <button 
+                            [disabled]="formPurposeRetention.invalid"
+                            mat-button 
+                            class="next-btn" 
+                            color="primary" 
+                            matStepperNext>
+                            Next
+                        </button>
+                    </div>             
+                </mat-step>
+                <!-- <mat-step [stepControl]="form">
+                    <ng-template matStepLabel>
+                        <h3>Profile <br /></h3>
+                    </ng-template>
+        
+                    <form [formGroup]="form">
+                        
+                    </form>
+        
+                    <div class="button-wrapper">
+                        <button mat-button class="back-btn" matStepperPrevious>Back</button>
+        
+                        <button 
+                            mat-button 
+                            [disabled]="form.invalid || processing" 
+                            class="next-btn" 
+                            color="primary" 
+                            matStepperNext>
+                            Next
+                        </button>
+                    </div>
+                </mat-step> -->
+        
+                <mat-step [stepControl]="formThirdParties">
+                    <ng-template matStepLabel>
+                        <h3>Disclosure & Transfer</h3>
+
+                        <span class="request-for-more-info-count" *ngIf="formFieldSections[4].Count">{{ formFieldSections[4].Count }}</span>
+                    </ng-template>
+        
+                    <form [formGroup]="formThirdParties">
+        
+                        <h1 class="full-width step-header">List of persons or Bodies to whom personal data may be disclosed</h1>
+                        
+                        <div class="grouped-items full-width">
+                            <h3>Do you disclose Personal Data to other Persons or Bodies ?</h3>
+            
+                            <mat-radio-group 
+                                color="primary" 
+                                aria-label="Pick one" 
+                                formControlName="PersonalDataIsForDisclosure">
+                                <mat-radio-button [ngClass]="{'selected-radio-btn': formThirdParties.get('PersonalDataIsForDisclosure').value === 'Yes' }" value="Yes">Yes</mat-radio-button>
+                                <mat-radio-button [ngClass]="{'selected-radio-btn': formThirdParties.get('PersonalDataIsForDisclosure').value === 'No' }" value="No">No</mat-radio-button>
+                            </mat-radio-group>        
+                        </div>    
+        
+                        <section 
+                            *ngIf="formThirdParties.get('PersonalDataIsForDisclosure').value === 'Yes'"
+                            class="expand-section reduced-properties table-wrapper fadeInUp _delay3ms">
+                            <button *ngIf="!isViewOnly || (!isOfficer && _hasRequestMoreInfo && thirdPartiesEnabled)"
+                                mat-button
+                                color="primary"
+                                [disabled]="processing"
+                                class="add-item-button"
+                                (click)="onAddAThirdParty()">
+                                <div class="button-label">
+                                    <mat-icon>add</mat-icon>                            
+                                    <span>Add Person / Body</span>
+                                </div>
+                            </button>
+                            
+                            <div class="table-wrapper">
+                                <table 
+                                    mat-table 
+                                    #thirdPartyMatSort="matSort"
+                                    matSortDisableClear="true"
+                                    [dataSource]="thirdPartyDataSource"
+                                    matSort>
+                    
+                                    <ng-container matColumnDef="Count">
+                                        <th mat-header-cell *matHeaderCellDef> # </th>
+                                        <td mat-cell *matCellDef="let index = index"> {{ index + 1 }} </td>
+                                    </ng-container>
+                    
+                                    <ng-container matColumnDef="NameOfThirdParty">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Person / Body </th>
+                                        <td mat-cell *matCellDef="let row">{{ row.ThirdPartyName }}</td>
+                                    </ng-container>          
+                    
+                                    <ng-container matColumnDef="Purpose">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Purpose </th>
+                                        <td mat-cell *matCellDef="let row">{{ row.Purpose }}</td>
+                                    </ng-container>                                 
+                    
+                                    <!-- Actions Column -->
+                                    <ng-container matColumnDef="Actions">
+                                        <th mat-header-cell *matHeaderCellDef> Actions </th>
+                                        <td mat-cell *matCellDef="let row; let index = index">
+                                            <button 
+                                                mat-button 
+                                                class="action-btn"
+                                                [disabled]="!_hasRequestMoreInfo || isOfficer || (_hasRequestMoreInfo && !thirdPartiesEnabled)"
+                                                [matMenuTriggerFor]="menu" 
+                                                (click)="$event.stopPropagation()"
+                                                matTooltip="See more options">
+                                                <mat-icon>more_vert</mat-icon>
+                                            </button>
+                    
+                                            <mat-menu yPosition="below" #menu="matMenu" class="more-options-mat-menu">
+                    
+                                                <button 
+                                                    mat-menu-item 
+                                                    (click)="$event.stopPropagation();onEditThirdParty(row)">
+                                                    <mat-icon>edit</mat-icon>
+                                                    <span>Make Changes</span>
+                                                </button>
+                                                      
+                                                <hr />
+                    
+                                                <button 
+                                                    mat-menu-item 
+                                                    (click)="$event.stopPropagation();onRemoveThirdParty(row)">
+                                                    <mat-icon color="warn">delete</mat-icon>
+                                                    <span>Remove</span>
+                                                </button>
+                    
+                                            </mat-menu>                                                  
+                                        </td>
+                                    </ng-container>
+                    
+                                    <tr mat-header-row *matHeaderRowDef="thirdPartyDisplayedColumns"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: thirdPartyDisplayedColumns;" class="mat-data-row"></tr>
+                                </table>
+        
+                                <mat-paginator 
+                                    #thirdPartyPaginator
+                                    [pageSize]="10"
+                                    [pageSizeOptions]="[5, 10]">
+                                </mat-paginator>                    
+                            </div>                
+                        </section>    
+                        
+                        <hr class="full-width" />
+        
+                        <div class="grouped-items full-width">
+                            <h3>Do you Transfer personal data outside Uganda ?</h3>
+            
+                            <mat-radio-group color="primary" aria-label="Pick one" formControlName="StoreDataOutsideCountry">
+                                <mat-radio-button [ngClass]="{'selected-radio-btn': formThirdParties.get('StoreDataOutsideCountry').value === 'Yes' }" value="Yes">Yes</mat-radio-button>
+                                <mat-radio-button [ngClass]="{'selected-radio-btn': formThirdParties.get('StoreDataOutsideCountry').value === 'No' }" value="No">No</mat-radio-button>
+                            </mat-radio-group>        
+                        </div> 
+        
+                        <section 
+                            *ngIf="formThirdParties.get('StoreDataOutsideCountry').value === 'Yes'"
+                            class="expand-section reduced-properties table-wrapper">
+                            <button *ngIf="!isViewOnly || (!isOfficer && _hasRequestMoreInfo && countriesOfTransferEnabled)"
+                                mat-button
+                                color="primary"
+                                [disabled]="processing"
+                                class="add-item-button"
+                                (click)="onAddACountry()">
+                                <div class="button-label">
+                                    <mat-icon>add</mat-icon>                            
+                                    <span>Add A Country</span>
+                                </div>
+                            </button>
+                            
+                            <div class="table-wrapper">
+                                <table 
+                                    mat-table 
+                                    #countryOfTransferMatSort="matSort"
+                                    matSortDisableClear="true"
+                                    [dataSource]="countriesDataSource"
+                                    matSort>
+                    
+                                    <ng-container matColumnDef="Count">
+                                        <th mat-header-cell *matHeaderCellDef> # </th>
+                                        <td mat-cell *matCellDef="let index = index"> {{ index + 1 }} </td>
+                                    </ng-container>
+                    
+                                    <ng-container matColumnDef="Country">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Country </th>
+                                        <td mat-cell *matCellDef="let row">{{ row.Country }}</td>
+                                    </ng-container>          
+                    
+                                    <ng-container matColumnDef="Purpose">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Purpose </th>
+                                        <td mat-cell *matCellDef="let row">{{ row.Purpose }}</td>
+                                    </ng-container>                                 
+                    
+                                    <ng-container matColumnDef="Description">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Description </th>
+                                        <td mat-cell *matCellDef="let row">{{ row.Description }}</td>
+                                    </ng-container>                                 
+                    
+                                    <!-- Actions Column -->
+                                    <ng-container matColumnDef="Actions">
+                                        <th mat-header-cell *matHeaderCellDef> Actions </th>
+                                        <td mat-cell *matCellDef="let row; let index = index">
+                                            <button 
+                                                mat-button 
+                                                class="action-btn"
+                                                [disabled]="!_hasRequestMoreInfo || isOfficer || (_hasRequestMoreInfo && !countriesOfTransferEnabled)"
+                                                [matMenuTriggerFor]="menu" 
+                                                (click)="$event.stopPropagation()"
+                                                matTooltip="See more options">
+                                                <mat-icon>more_vert</mat-icon>
+                                            </button>
+                    
+                                            <mat-menu yPosition="below" #menu="matMenu" class="more-options-mat-menu">
+                    
+                                                <button 
+                                                    mat-menu-item 
+                                                    (click)="$event.stopPropagation();onEditCountry(row)">
+                                                    <mat-icon>edit</mat-icon>
+                                                    <span>Make Changes</span>
+                                                </button>
+                                                      
+                                                <hr />
+                    
+                                                <button 
+                                                    mat-menu-item 
+                                                    (click)="$event.stopPropagation();onRemoveCountry(row)">
+                                                    <mat-icon color="warn">delete</mat-icon>
+                                                    <span>Remove</span>
+                                                </button>
+                    
+                                            </mat-menu>                                                  
+                                        </td>
+                                    </ng-container>
+                    
+                                    <tr mat-header-row *matHeaderRowDef="countryDisplayedColumns"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: countryDisplayedColumns;" class="mat-data-row"></tr>
+                                </table>
+        
+                                <mat-paginator 
+                                    #countryOfTransferPaginator
+                                    [pageSize]="10"
+                                    [pageSizeOptions]="[5, 10]">
+                                </mat-paginator>                    
+                            </div>                
+                        </section>                   
+        
+                    </form>
+        
+                    <div class="button-wrapper">
+                        <button mat-button class="back-btn" matStepperPrevious>Back</button>
+                        <button  *ngIf="!isViewOnly"
+                            mat-button 
+                            color="primary" >
+                            Save as Draft
+                        </button> 
+                        <button 
+                            mat-button 
+                            [disabled]="formThirdParties.invalid 
+                            || processing 
+                            || ((formThirdParties.get('PersonalDataIsForDisclosure').value === 'Yes') && (thirdParties.length === 0)) 
+                            || ((formThirdParties.get('StoreDataOutsideCountry').value === 'Yes') && (countries.length === 0))" 
+                            class="next-btn" 
+                            color="primary" 
+                            matStepperNext>
+                            Next
+                        </button>
+                    </div>
+                </mat-step>
+        
+                <mat-step [stepControl]="formSecurityMeasures">
+                    <ng-template matStepLabel>
+                        <h3>Security Information</h3>
+
+                        <span class="request-for-more-info-count" *ngIf="formFieldSections[5].Count">{{ formFieldSections[5].Count }}</span>
+                    </ng-template>
+        
+                    <form [formGroup]="formSecurityMeasures">
+        
+                        <h1 class="full-width step-header">State security measures in place to safeguard personal data collected or processed.</h1>
+        
+                        <section class="expand-section reduced-properties table-wrapper no-padding">
+                            <button *ngIf="!isViewOnly || securityMeasuresEnabled"
+                                mat-button
+                                color="primary"
+                                [disabled]="processing"
+                                class="add-item-button"
+                                (click)="onAddSecurityMeasure()">
+                                <div class="button-label">
+                                    <mat-icon>add</mat-icon>                            
+                                    <span>Add A Security Measure</span>
+                                </div>
+                            </button>
+                            
+                            <div class="table-wrapper">
+                                <table 
+                                    mat-table 
+                                    #securityMeasureMatSort="matSort"
+                                    matSortDisableClear="true"
+                                    [dataSource]="securityMeasureDataSource"
+                                    matSort>
+                    
+                                    <ng-container matColumnDef="Count">
+                                        <th mat-header-cell *matHeaderCellDef> # </th>
+                                        <td mat-cell *matCellDef="let index = index"> {{ index + 1 }} </td>
+                                    </ng-container>
+                    
+                                    <ng-container matColumnDef="SecurityMeasure">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Security Measure </th>
+                                        <td mat-cell *matCellDef="let row">{{ row.SecurityMeasure }}</td>
+                                    </ng-container>                                  
+                    
+                                    <!-- Actions Column -->
+                                    <ng-container matColumnDef="Actions">
+                                        <th mat-header-cell *matHeaderCellDef> Actions </th>
+                                        <td mat-cell *matCellDef="let row; let index = index">
+                                            <button 
+                                                mat-button 
+                                                class="action-btn"
+                                                [disabled]="!_hasRequestMoreInfo || isOfficer || (_hasRequestMoreInfo && !securityMeasuresEnabled)"
+                                                [matMenuTriggerFor]="menu" 
+                                                (click)="$event.stopPropagation()"
+                                                matTooltip="See more options">
+                                                <mat-icon>more_vert</mat-icon>
+                                            </button>
+                    
+                                            <mat-menu yPosition="below" #menu="matMenu" class="more-options-mat-menu">
+                
+                                                <button 
+                                                    mat-menu-item 
+                                                    (click)="$event.stopPropagation();onEditSecurityMeasure(row)">
+                                                    <mat-icon>edit</mat-icon>
+                                                    <span>Make Changes</span>
+                                                </button>
+                                                      
+                                                <hr />
+                    
+                                                <button 
+                                                    mat-menu-item 
+                                                    (click)="$event.stopPropagation();onRemoveSecurityMeasure(row)">
+                                                    <mat-icon color="warn">delete</mat-icon>
+                                                    <span>Remove</span>
+                                                </button>                                        
+                    
+                                            </mat-menu>                                                  
+                                        </td>
+                                    </ng-container>
+                    
+                                    <tr mat-header-row *matHeaderRowDef="securityMeasuresDisplayedColumns"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: securityMeasuresDisplayedColumns;" [ngClass]="{'selected-mat-data-row': selectedSpouse === row}" class="mat-data-row"></tr>
+                                </table>
+        
+                                <mat-paginator 
+                                    #securityMeasurePaginator
+                                    [pageSize]="10"
+                                    [pageSizeOptions]="[5, 10]">
+                                </mat-paginator>                    
+                            </div>                
+                        </section>    
+                        
+                        <section class="expand-section reduced-properties table-wrapper margin documents">
+                            <h1 class="full-width step-header">Attach supporting documentation eg approved information security policy.</h1>
+        
+                            <div class="buttons" *ngIf="!isViewOnly || (_hasRequestMoreInfo && _updateAttachment)">
+                                <button *ngIf="!isViewOnly || (_hasRequestMoreInfo && _updateAttachment)"
+                                    mat-button
+                                    color="primary"
+                                    [disabled]="processing"
+                                    class="add-item-button"
+                                    (click)="onUploadAttachments()">
+                                    <div class="button-label">
+                                        <mat-icon>add</mat-icon>                            
+                                        <span> {{ document ? 'Replace Document' : 'Upload Attachment' }} </span>
+                                    </div>
+                                </button>
+            
+                                <button 
+                                    mat-button
+                                    *ngIf="document && (!isViewOnly || (_hasRequestMoreInfo && _updateAttachment))"
+                                    color="primary"
+                                    [disabled]="processing"
+                                    class="remove-button"
+                                    (click)="onRemoveDocument()">
+                                    <div class="button-label">
+                                        <mat-icon>clear</mat-icon>
+                                        <span> Remove Document </span>
+                                    </div>
+                                </button>
+                            </div>
+        
+                            <div *ngIf="document && document.Base64" class="uploaded-document" matTooltip="Open Document" (click)="onReadDocument(document)">
+                                <img src="./assets/img/pdf.png" alt="">
+        
+                                <span>Document: {{ document.Name }} <span *ngIf="document.Size">  -  {{ document.Size }} Mbs</span></span>
+                            </div>
+
+                            <p class="no-document-found" *ngIf="document && !document.Base64">No document found. Please attach</p>
+        
+                        </section>
+        
+                        <hr class="full-width" />
+        
+                        <section class="expand-section reduced-properties table-wrapper margin documents">
+                            <h1 class="full-width step-header">Attach Form 3</h1>
+        
+                            <div class="buttons" *ngIf="!isViewOnly || (_hasRequestMoreInfo && _updateForm3Attachment)">
+                                <!-- <a 
+                                    mat-button
+                                    color="accent"
+                                    [disabled]="processing"
+                                    target="_blank"
+                                    download="Form 3 -  Undertaking Not to Process or Store Personal Data"
+                                    class="add-item-button"
+                                    href="./assets/docs/Form 3 -  Undertaking Not to Process or Store Personal Data.pdf">
+                                    <div class="button-label">
+                                        <mat-icon>sim_card_download</mat-icon>                            
+                                        <span>Download Form 3</span>
+                                    </div>
+                                </a> -->
+        
+                                <button
+                                    mat-button
+                                    *ngIf="!isViewOnly || (_hasRequestMoreInfo && _updateForm3Attachment)"
+                                    color="accent"
+                                    class="download-form"                           
+                                    (click)="onDownloadForm3()">
+                                    <div class="button-label">
+                                        <mat-icon>sim_card_download</mat-icon>                            
+                                        <span>Download Form 3</span>
+                                    </div>                        
+                                </button>
+        
+                                <button *ngIf="!isViewOnly || (_hasRequestMoreInfo && _updateForm3Attachment)"
+                                    mat-button
+                                    color="primary"
+                                    [disabled]="processing"
+                                    class="add-item-button"
+                                    (click)="onUploadForm3Attachments()">
+                                    <div class="button-label">
+                                        <mat-icon>add</mat-icon>                            
+                                        <span> {{ documentForm3 ? 'Replace Form 3' : 'Upload Form 3' }} </span>
+                                    </div>
+                                </button>
+            
+                                <button *ngIf="documentForm3 && (!isViewOnly || (_hasRequestMoreInfo && _updateForm3Attachment))"
+                                    mat-button
+                                    color="primary"
+                                    [disabled]="processing"
+                                    class="remove-button"
+                                    (click)="onRemoveForm3Document()">
+                                    <div class="button-label">
+                                        <mat-icon>clear</mat-icon>
+                                        <span> Remove Document </span>
+                                    </div>
+                                </button>
+                            </div>
+        
+                            <div  *ngIf="documentForm3 && documentForm3.Base64" class="uploaded-document" matTooltip="Open Document" (click)="onReadDocument(documentForm3)">
+                                <img src="./assets/img/pdf.png" alt="">
+        
+                                <span>Document: {{ documentForm3.Name }} <span *ngIf="documentForm3.Size">  -  {{ documentForm3.Size }} Mbs</span> </span>
+                            </div>
+
+                            <p class="no-document-found" *ngIf="documentForm3 && !documentForm3.Base64">No document found. Please attach</p>
+        
+                        </section>
+        
+                        <hr class="full-width" />
+        
+                        <section class="expand-section reduced-properties table-wrapper margin documents">
+                            <h1 class="full-width step-header">Attach Proof of Payment</h1>
+        
+                            <div class="buttons" *ngIf="!isViewOnly || (_hasRequestMoreInfo && _updateProofOfPayment)">
+                                <button *ngIf="!isViewOnly || (_hasRequestMoreInfo && _updateProofOfPayment)"
+                                    mat-button
+                                    color="primary"
+                                    [disabled]="processing"
+                                    class="add-item-button"
+                                    (click)="onUploadProofOfPayment()">
+                                    <div class="button-label">
+                                        <mat-icon>add</mat-icon>                            
+                                        <span> {{ proofOfPayment ? 'Replace Document' : 'Upload Proof of Payment' }} </span>
+                                    </div>
+                                </button>
+            
+                                <button 
+                                    mat-button
+                                    *ngIf="proofOfPayment && (!isViewOnly || (_hasRequestMoreInfo && _updateProofOfPayment))"
+                                    color="primary"
+                                    [disabled]="processing"
+                                    class="remove-button"
+                                    (click)="onRemoveProofOfPaymen()">
+                                    <div class="button-label">
+                                        <mat-icon>clear</mat-icon>
+                                        <span> Remove Document </span>
+                                    </div>
+                                </button>
+                            </div>
+        
+                            <div *ngIf="proofOfPayment && proofOfPayment.Base64" class="uploaded-document" matTooltip="Open Document" (click)="onReadDocument(proofOfPayment)">
+                                <img src="./assets/img/pdf.png" alt="">
+        
+                                <span>Document: {{ proofOfPayment.Name }} <span *ngIf="proofOfPayment.Size">  -  {{ proofOfPayment.Size }} Mbs</span> </span>
+                            </div>
+
+                            <p class="no-document-found" *ngIf="proofOfPayment && !proofOfPayment.Base64">No document found. Please attach</p>
+        
+                        </section>
+        
+                        <hr class="full-width" />
+        
+                        <mat-checkbox
+                            class="full-width selected-checkbox"
+                            color="primary"
+                            [checked]="true"                            
+                            formControlName="RegistrationConsent"
+                            color="primary">
+                            I certify that the above information is correct and complete and here by apply to be registered as 
+                            data collector/ data processor / data controller (This shall be based on th category selected) 
+                            under the data Protection and Privacy Act.
+                            <mat-error *ngIf="formSecurityMeasures.get('RegistrationConsent').invalid">{{ getCheckboxErrorMessage() }}</mat-error>   
+                        </mat-checkbox>  
+                        
+                        
+                        
+                        <mat-form-field class="full-width" hintLabel="The person authorized to complete and submit this application on the behalf of the applicant organization">
+                            <mat-label>Name and title of person submitting the application<span class="required-field">required</span></mat-label>
+                            <input appUppercase #RegistrationDoneByInput matInput maxlength="50" formControlName="RegistrationDoneBy">  
+                            <mat-error *ngIf="formSecurityMeasures.get('RegistrationDoneBy').invalid">{{ getRegistrationDoneByErrorMessage() }}</mat-error>                             
+                            <mat-hint align="end">{{ RegistrationDoneByInput.value.length }} / 50</mat-hint>    
+                        </mat-form-field>     
+
+                        <h1 class="full-width step-header">Review Comments</h1>
+                        
+                        <mat-form-field *ngIf="isOfficer" class="full-width" hintLabel="Comments from the technical team" >
+                            <mat-label>Technical Comments</mat-label>
+                            <textarea matInput formControlName="TechnicalComments" disabled class="textarea-small"></textarea>
+                        </mat-form-field>   
+                        
+                        <mat-form-field *ngIf="isOfficer" class="full-width" hintLabel="Comments from the legal team">
+                            <mat-label>Legal Comments</mat-label>
+                            <textarea matInput formControlName="LegalComments" disabled class="textarea-small"></textarea>
+                        </mat-form-field>      
+
+                        <mat-form-field *ngIf="isOfficer" class="full-width" hintLabel="Comments from the director">
+                            <mat-label>Director Comments</mat-label>
+                            <textarea matInput formControlName="DirectorComments" disabled class="textarea-small"></textarea>
+                        </mat-form-field>      
+                        
+        
+                    </form>
+        
+                    <div class="button-wrapper">
+                        <button mat-button class="back-btn" matStepperPrevious>Back</button>
+
+                        <!-- <button *ngIf="!isViewOnly"
+                            mat-button 
+                            color="primary" >
+                            Save as Draft
+                        </button>  -->
+                      
+
+                        <div class="buttons">
+                            <button  *ngIf="!isViewOnly"
+                                mat-button
+                                color="primary" 
+                                [disabled]="formGeneralInformation.invalid || formOrganisationDetails.invalid || formPersonalDataHeld.invalid || formPurposeRetention.invalid || formThirdParties.invalid || formSecurityMeasures.invalid || processing || securityMeasures.length === 0 || !documentForm3 || !proofOfPayment" 
+                                class="download" 
+                                matTooltip="Keep a copy of the information you have filled in"
+                                (click)="onPreviewForm(true)">
+                                <div class="button-label">
+                                    <mat-icon>sim_card_download</mat-icon>
+                                    <span>Download Form</span>
+                                </div>
+                            </button>
+        
+                            <button
+                                mat-button  *ngIf=" !isViewOnly"
+                                color="primary" 
+                                [disabled]="formGeneralInformation.invalid || formOrganisationDetails.invalid || formPersonalDataHeld.invalid || formPurposeRetention.invalid || formThirdParties.invalid || formSecurityMeasures.invalid || processing || securityMeasures.length === 0 || !documentForm3 || !proofOfPayment" 
+                                class="preview" 
+                                matTooltip="Have a look at all the information you have filled in before sending."
+                                (click)="onPreviewForm(false)">
+                                <div class="button-label">
+                                    <mat-icon>visibility</mat-icon>
+                                    <span>Preview Form</span>
+                                </div>
+                            </button>
+        
+                        
+                            <button  *ngIf="!isViewOnly"
+                                mat-button 
+                                class="next-btn submit-btn" 
+                                [disabled]="formGeneralInformation.invalid || formOrganisationDetails.invalid || formPersonalDataHeld.invalid || formPurposeRetention.invalid || formThirdParties.invalid || formSecurityMeasures.invalid || processing || securityMeasures.length === 0 || !documentForm3 || !proofOfPayment" 
+                                [ngClass]="{'inline-processing-btn': processing}" 
+                                color="primary" 
+                                (click)="onSubmit()">
+                                <app-inline-mat-spinner *ngIf="processing"></app-inline-mat-spinner>                  
+                                <span>Send Application</span>                    
+                            </button>                
+                        
+                            <!-- For submitting Request for more information -->
+                            <!-- <button *ngIf="_hasRequestMoreInfo"
+                                mat-button 
+                                class="next-btn submit-btn" 
+                                [disabled]="formGeneralInformation.invalid || formOrganisationDetails.invalid || formPersonalDataHeld.invalid || formPurposeRetention.invalid || formThirdParties.invalid || formSecurityMeasures.invalid || securityMeasures.length === 0" 
+                                color="primary" 
+                                (click)="onSubmitRequestedInfor()">
+                                <span>Submit Changes Application</span>                    
+                            </button>                 -->
+
+                            <button *ngIf="_hasRequestMoreInfo && !isOfficer"
+                                mat-button 
+                                class="next-btn submit-btn" 
+                                color="primary" 
+                                (click)="onSubmitRequestedInfor()">
+                                <span>Submit Changes Application</span>                    
+                            </button>                
+                        </div>
+                    </div>
+                </mat-step>
+        
+                <!-- <mat-step [stepControl]="form">
+                    <ng-template matStepLabel>
+                        <h3>Legal <br /> Details</h3>
+                    </ng-template>
+        
+                    <form [formGroup]="form">
+                        
+                    </form>
+        
+                    <div class="button-wrapper">
+                        <button mat-button class="back-btn" matStepperPrevious>Back</button>
+        
+                        <button 
+                            mat-button 
+                            [disabled]="form.invalid || processing" 
+                            class="next-btn" 
+                            color="primary" 
+                            matStepperNext>
+                            Next
+                        </button>
+                    </div>
+                </mat-step> -->
+        
+                <!-- <mat-step [stepControl]="formChildrenData">
+                    <ng-template matStepLabel>
+                        <h3>Children <br /> Data</h3>
+                    </ng-template>
+        
+                    <form [formGroup]="formChildrenData">
+                        
+                        <div class="grouped-items">
+                            <h3>Do you collect personal data relating to Children?</h3>
+            
+                            <mat-radio-group color="primary" aria-label="Pick one" formControlName="CollectChildrenData">
+                                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                <mat-radio-button value="No">No</mat-radio-button>
+                            </mat-radio-group>        
+                        </div>  
+        
+                        <mat-form-field>
+                            <mat-label>Please indicate who gave the consent <span class="required-field">required</span></mat-label>
+                            <mat-select formControlName="ChildDataConsentor">
+                                <mat-option value="1">Parents / Guardian</mat-option>
+                                <mat-option value="2">Relevant Authority</mat-option>
+                            </mat-select>    
+                        </mat-form-field>                  
+        
+                        <mat-form-field>
+                            <mat-label>Purpose for collection <span class="required-field">required</span></mat-label>
+                            <mat-select formControlName="PurposeForCollectingChildData">
+                                <mat-option value="1">Comply with the Law</mat-option>
+                                <mat-option value="2">Research or Statistical Purposes</mat-option>
+                            </mat-select>    
+                        </mat-form-field>      
+                        
+                        <mat-form-field>
+                            <mat-label>Indicate the law being complied with <span class="required-field">required</span></mat-label>
+                            <mat-select formControlName="ChildLawPurpose">
+                                <mat-option value="1">Child Law</mat-option>
+                            </mat-select>    
+                        </mat-form-field>                   
+                        
+                        <mat-form-field>
+                            <mat-label>Indicate the research beign carried out.<span class="required-field">required</span></mat-label>
+                            <textarea #CaseTitleInput matInput maxlength="1000" formControlName="ChildResearchPurpose"></textarea>
+                            <mat-hint align="end">{{ CaseTitleInput.value.length }} / 1000</mat-hint>
+                        </mat-form-field>                     
+        
+                    </form>
+        
+                    <div class="button-wrapper">
+                        <button mat-button class="back-btn" matStepperPrevious>Back</button>
+        
+                        <button 
+                            mat-button 
+                            [disabled]="formChildrenData.invalid || processing" 
+                            class="next-btn" 
+                            color="primary" 
+                            (click)="onSubmit()"
+                            matStepperNext>
+                            Submit
+                        </button>
+                    </div>
+                </mat-step> -->
+        
+                <!-- <mat-step>
+                    <ng-template matStepLabel>
+                        <h3>Payment</h3>          
+                    </ng-template>
+        
+                    <form>
+                        <h1 class="full-width step-header">Show payment options.</h1>  
+                    </form>
+        
+                    <div class="button-wrapper single-button-start">
+                        <button mat-button class="back-btn" matStepperPrevious>Back</button>
+        
+                        <button 
+                            mat-raised-button 
+                            color="primary" 
+                            [ngClass]="{'inline-processing-btn': processing }" 
+                            [disabled]="processing"                      
+                            (click)="onSubmit()">
+                                <div class="btn-label">
+                                    <app-inline-mat-spinner *ngIf="processing"></app-inline-mat-spinner>                        
+                                    <span>Submit</span>
+                                </div>
+                        </button>
+                    </div>              
+                </mat-step> -->
+            </mat-horizontal-stepper>   
+        </main>
+    </fury-page-layout-content>
+</fury-page-layout>
+
+

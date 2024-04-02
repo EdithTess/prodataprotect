@@ -1,0 +1,100 @@
+<ng-container *ngIf="disclosePersonalData !== 'No'">
+
+    <fieldset>
+        <legend>ThirdParties</legend>
+        <ng-container *ngIf="!isViewOnly">
+            <form [formGroup]="thirdPartyFormGroup">
+                <ng-template matStepLabel>ThirdParties</ng-template>
+
+                <div class="content" fxLayout="column" fxLayoutGap="8px">
+                    <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+                        <mat-form-field fxFlex="auto">
+                            <mat-label>ThirdParty Name</mat-label>
+                            <input formControlName="thirdPartyName" matInput>
+                            <mat-hint></mat-hint>
+                        </mat-form-field>
+
+                        <mat-form-field fxFlex="auto">
+                            <mat-label>Email Address</mat-label>
+                            <input formControlName="purposeOfDisclosure" matInput>
+                            <mat-hint></mat-hint>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </form>
+            <div style="text-align: right; padding-top: 5px; padding-bottom: 5px;">
+                <button mat-raised-button
+                        (click)="addOrUpdateThirdParties(isEditingThirdParty?2:1)" color="primary"
+                        [disabled]="!isValidForm()">
+                    <mat-icon>{{buttonIcon}}</mat-icon>
+                    <span>{{buttonLabel}}</span>
+                </button>&nbsp;
+                <span class="example-spacer"></span>
+                <button mat-raised-button (click)="resetControl()" color="warn">
+                    <mat-icon>cancel</mat-icon>
+                    <span>Cancel</span>
+                </button>
+            </div>
+        </ng-container>
+
+        <div class="table-responsive" fxLayout="column" fxLayoutGap="8px">
+            <table mat-table [dataSource]="list" >
+                <ng-container matColumnDef="nber">
+                    <th mat-header-cell *matHeaderCellDef style="width: 5%"
+                        class="tableFontSize firstColumnTable alignCenter">#
+                    </th>
+                    <td mat-cell *matCellDef="let element; let j=index;"
+                        class="tableFontSize firstColumnTable alignCenter">
+                        {{j + 1}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="ThirdPartyName">
+                    <th mat-header-cell *matHeaderCellDef class="tableFontSize " style="width: 20%">Title</th>
+                    <td mat-cell *matCellDef="let element"
+                        class="tableFontSize "> {{element.ThirdPartyName}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="purposeOfDisclosure">
+                    <th mat-header-cell *matHeaderCellDef class="tableFontSize " style="width: 20%"> Purpose of
+                        Disclosure
+                    </th>
+                    <td mat-cell *matCellDef="let element" class="tableFontSize "> {{element.EmailAddress}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef style="width: 5%">Actions</th>
+                    <td mat-cell *matCellDef="let element; let j=index" class="actions">
+                        <ng-container>
+                            <a class="link" (click)="manageControl(2,j)" *ngIf="!isViewOnly">
+                                <mat-icon color="primary" class="material-icons-outlined" matTooltip="Edit item">edit
+                                </mat-icon>
+                            </a>&nbsp;&nbsp;
+                            <a class="link" (click)="deleteItem(j)" *ngIf="!isViewOnly">
+                                <mat-icon color="warn" class="material-icons-outlined" matTooltip="Delete item">delete
+                                </mat-icon>
+                            </a>
+                        </ng-container>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="noData">
+                    <td mat-footer-cell *matFooterCellDef colspan="7">
+                        There is no data!
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayColumns;sticky:true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayColumns;"></tr>
+                <tr mat-footer-row *matFooterRowDef="['noData']" [ngClass]="{'hide':!(list?.data.length==0)}"></tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                           showFirstLastButtons
+                           aria-label="Select page of periodic elements">
+            </mat-paginator>
+        </div>
+    </fieldset>
+
+</ng-container>
+
+
+<!-- LIST OF ITEMS -->
+

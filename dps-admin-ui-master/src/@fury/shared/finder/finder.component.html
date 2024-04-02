@@ -1,0 +1,128 @@
+<div mat-dialog-title>{{data.title}}</div>
+<form #searchForm>
+    <mat-dialog-content>
+        <table class="search-fields-table">
+            <tbody>
+            <tr *ngFor="let field of searchFields; let idx = index;">
+                <!-- Label -->
+                <td class="search-field-title"><label class="control-label">{{field.label}}</label></td>
+                <!-- Operator -->
+                <td class="search-field-filter">
+                    <mat-select (selectionChange)="toggleValueField($event, idx);" class="filter-ops"
+                                [name]="'operator_' + idx" [(ngModel)]="searchExpressions[idx].operation" disableRipple>
+                        <mat-option *ngFor="let filter of field.operators" [value]="filter.operator">{{filter.name}}
+                        </mat-option>
+                    </mat-select>
+                </td>
+                <!-- Input field for datatype TEXT -->
+                <td class="search-field-value" *ngIf="field.dataType === dataType.TEXT && !field.multiple">
+                    <input class="control-field field-background" [name]="searchExpressions[idx].fieldName" type="text"
+                           [(ngModel)]="searchExpressions[idx].values[0]" [readonly]="!field.active"/>
+                </td>
+                <!-- Input field for datatype BOOLEAN -->
+                <td class="search-field-value" *ngIf="field.dataType === dataType.BOOLEAN">
+                    <mat-select
+                            [name]="searchExpressions[idx].fieldName"
+                            [(ngModel)]="searchExpressions[idx].values[0]" [disabled]="!field.active">
+                        <mat-option value="true">Yes</mat-option>
+                        <mat-option value="false">No</mat-option>
+                    </mat-select>
+                </td>
+                <!-- Input field for datatype TEXT and Lookup options available -->
+                <td class="search-field-value"
+                    *ngIf="(field.dataType === dataType.TEXT && field.multiple) ">
+                    <mat-select multiple
+                                [name]="searchExpressions[idx].fieldName"
+                                [(ngModel)]="searchExpressions[idx].values" [disabled]="!field.active">
+                        <mat-option *ngFor="let option of field.lookupOptions" [value]="option.key">{{option.value}}
+                        </mat-option>
+                    </mat-select>
+                </td>
+                <!-- Input field for datatype NUMBER, DECIMAL, INTEGER -->
+                <td class="search-field-value"
+                    *ngIf="(field.dataType === dataType.DECIMAL) ||
+            (field.dataType === dataType.INTEGER)">
+                    <input class="control-field field-background" [name]="searchExpressions[idx].fieldName"
+                           type="number"
+                           [(ngModel)]="searchExpressions[idx].values[0]" [readonly]="!field.active"/>
+                </td>
+                <!-- Input field for datatype ENUMERATION -->
+                <td class="search-field-value"
+                    *ngIf="(field.dataType === dataType.ENUMERATION) ">
+                    <mat-select
+                            [name]="searchExpressions[idx].fieldName"
+                            [(ngModel)]="searchExpressions[idx].values[0]" [disabled]="!field.active">
+                        <mat-option *ngFor="let option of field.lookupOptions" [value]="option.key">{{option.value}}
+                        </mat-option>
+                    </mat-select>
+                </td>
+                <!-- Input field for datatype DATE, DATETIME -->
+                <td class="search-field-value finder-date-field"
+                    *ngIf="(field.dataType === dataType.DATE) ||
+            (field.dataType === dataType.DATETIME) ||
+            (field.dataType === dataType.UDATE) ||
+            (field.dataType === dataType.TIME)">
+                    <input matInput
+                           [matDatepicker]="picker"
+                           placeholder="Choose Date"
+                           [min]="minDateFrom"
+                           [max]="maxDateFrom"
+                           (ngModelChange)="setMinDate($event)"
+                           value="dateValue"
+                           [(ngModel)]="searchExpressions[idx].values[0]"
+                           [name]="searchExpressions[idx].fieldName + '_1'"
+                           class="control-field"
+                           [readonly]="!field.active"/>
+                    <mat-datepicker-toggle matSuffix [for]="picker" [disabled]="!field.active">
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </td>
+                <!-- Input field for datatype DATE, DATETIME and operator BETWEEN -->
+                <td class="search-field-value finder-date-field"
+                    *ngIf="(field.dataType === dataType.DATE) ||
+            (field.dataType === dataType.DATETIME) ||
+            (field.dataType === dataType.UDATE) ||
+            (field.dataType === dataType.TIME)">
+                    <input matInput
+                           [matDatepicker]="picker2"
+                           placeholder="Choose Date"
+                           [min]="minDateTo"
+                           [max]="maxDateTo"
+                           (ngModelChange)="setMaxDate($event)"
+                           value="dateValue"
+                           [(ngModel)]="searchExpressions[idx].values[1]"
+                           [name]="searchExpressions[idx].fieldName + '_2'"
+                           class="control-field"
+                           [readonly]="!field.active && searchExpressions[idx].operation !== dataTypeOperation.BETWEEN"/>
+                    <mat-datepicker-toggle
+                            matSuffix [for]="picker2"
+                            [disabled]="!field.active && searchExpressions[idx].operation !== dataTypeOperation.BETWEEN">
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #picker2></mat-datepicker>
+                </td>
+                <!-- Dummy field for operators different from BETWEEN -->
+                <td class="search-field-value"
+                    *ngIf="field.dataType !==  dataType.DATE &&
+              field.dataType !==  dataType.DATETIME &&
+              field.dataType !==  dataType.UDATE &&
+              field.dataType !==  dataType.TIME">
+                    <input class="control-field field-background"
+                           [name]="searchExpressions[idx].fieldName + '_dummyField'"
+                           type="text" readonly/>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </mat-dialog-content>
+    <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center">
+        <button mat-raised-button class="fury-column-filter" type="button" color="primary">
+            <mat-icon>search</mat-icon>
+            SEARCH
+        </button>
+        <button mat-raised-button class="fury-column-filter" type="button" (click)="closeDialog()" color="primary">
+            <mat-icon>cancel</mat-icon>
+            CANCEL
+        </button>
+    </mat-dialog-actions>
+    <br>
+</form>

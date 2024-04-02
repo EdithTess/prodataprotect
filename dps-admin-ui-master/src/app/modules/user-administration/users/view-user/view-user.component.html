@@ -1,0 +1,45 @@
+<fury-page-layout mode="card">
+    <fury-page-layout-header>
+        <fury-breadcrumbs [@fadeInRight] [crumbs]="['Account Details']"
+                          current="View"></fury-breadcrumbs>
+    </fury-page-layout-header>
+
+    <fury-page-layout-content [fxLayoutGap]="gap" fxLayout="column">
+        <div [fxLayoutGap]="gap" fxFlex="noshrink" fxLayout="column" fxLayout.gt-sm="row"
+             fxLayoutAlign.gt-sm="start stretch">
+            <fury-card [fxFlex.gt-sm]="col2"
+                       class="basic-forms route-animations-elements"
+                       [@fadeInUp]
+                       fxFlex="grow">
+                <fury-card-header>
+                    <fury-card-header-heading>Account Information</fury-card-header-heading>
+                </fury-card-header>
+                <fury-card-content fxLayout="column" class="form-padding">
+
+                    <form [formGroup]="UserForm">
+                        <fieldset>
+                            <legend>Account Details</legend>
+                            <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+
+                                <mat-form-field fxFlex="2 1 auto">
+                                    <mat-label>User First Name</mat-label>
+                                    <input formControlName="UserFirstName" matInput>
+                                </mat-form-field>
+
+                                <mat-form-field fxFlex="2 1 auto">
+                                    <mat-label>User Last Name</mat-label>
+                                    <input formControlName="UserLastName" matInput>
+                                </mat-form-field>
+
+                                <mat-form-field fxFlex="2 1 auto">
+                                    <mat-label>User Email</mat-label>
+                                    <input formControlName="UserEmailAddress" matInput>
+                                </mat-form-field>
+                            </div>
+                        </fieldset>
+                    </form>
+                </fury-card-content>
+            </fury-card>
+        </div>
+    </fury-page-layout-content>
+</fury-page-layout>

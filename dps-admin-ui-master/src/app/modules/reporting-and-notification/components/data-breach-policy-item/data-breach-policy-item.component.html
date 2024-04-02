@@ -1,0 +1,110 @@
+<ng-container >
+
+    <fieldset>
+        <legend>Policies in place related to the incidence</legend>
+        <ng-container *ngIf="!isViewOnly">
+            <form [formGroup]="policyForm">
+                <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+                    <mat-form-field fxFlex="auto">
+                        <mat-label>Policy or Procedure</mat-label>
+                        <input formControlName="policy" matInput>
+                        <mat-hint>Policy considered relevant to this incident</mat-hint>
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex="2 2 auto" appearance="fill">
+                        <mat-label>Explanation</mat-label>
+                        <textarea matInput
+                                  cdkTextareaAutosize
+                                  #autosize="cdkTextareaAutosize"
+                                  cdkAutosizeMinRows="1"
+                                  formControlName="explanation"
+                                  cdkAutosizeMaxRows="5"></textarea>
+                        <mat-hint>Explain the mentioned policy or procedure in existence at the time of this
+                            incident.
+                        </mat-hint>
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex="">
+                        <mat-label>Select date of policy/procedure implementation</mat-label>
+                        <input (click)="formDatepickerRef2.open()"
+                               (focus)="formDatepickerRef2.open()"
+                               [matDatepicker]="formDatepickerRef2"
+                               formControlName="implementationDate"
+                               matInput
+                               readonly>
+                        <mat-datepicker-toggle [for]="formDatepickerRef2" matSuffix></mat-datepicker-toggle>
+                        <mat-hint>Date of implementation.</mat-hint>
+                        <mat-datepicker #formDatepickerRef2></mat-datepicker>
+                    </mat-form-field>
+                </div>
+            </form>
+            <div *ngIf="!isViewOnly" style="text-align: right; padding-top: 5px; padding-bottom: 5px;">
+                <button mat-raised-button
+                        (click)="addOrUpdatePolicy(isEditingPolicy?2:1)" color="primary"
+                        [disabled]="!isValidForm()">
+                    <mat-icon>{{buttonIcon}}</mat-icon>
+                    <span>{{buttonLabel}}</span>
+                </button>&nbsp;
+                <span class="example-spacer"></span>
+                <button mat-raised-button (click)="resetPolicy()" color="warn">
+                    <mat-icon>cancel</mat-icon>
+                    <span>Cancel</span>
+                </button>
+            </div>
+        </ng-container>
+        <div class="content" fxLayout="column" fxLayoutGap="8px">
+            <table mat-table [dataSource]="list">
+                <ng-container matColumnDef="nber">
+                    <th mat-header-cell *matHeaderCellDef style="width: 5%"
+                        class="tableFontSize firstColumnTable alignCenter">#
+                    </th>
+                    <td mat-cell *matCellDef="let element; let j=index;"
+                        class="tableFontSize firstColumnTable alignCenter">
+                        {{j+1}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="policy">
+                    <th mat-header-cell *matHeaderCellDef class="tableFontSize " style="width: 20%"> Policy</th>
+                    <td mat-cell *matCellDef="let element" class="tableFontSize "> {{element.policy}}</td>
+                </ng-container>
+                <ng-container matColumnDef="dataOfImplementation">
+                    <th mat-header-cell *matHeaderCellDef class="tableFontSize " style="width: 20%"> Implementation Date
+                    </th>
+                    <td mat-cell *matCellDef="let element" class="tableFontSize "> {{element.implementationDate}}</td>
+                </ng-container>
+                <ng-container matColumnDef="explanation">
+                    <th mat-header-cell *matHeaderCellDef class="tableFontSize " style="width: 20%"> Explanation</th>
+                    <td mat-cell *matCellDef="let element" class="tableFontSize "> {{element.explanation}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef style="width: 5%"></th>
+                    <td mat-cell *matCellDef="let element; let j=index" class="actions">
+                        <ng-container *ngIf="!isViewOnly">
+                            <a class="link" (click)="managePolicy(2,j)">
+                                <mat-icon color="primary" class="material-icons-outlined" matTooltip="Edit item">edit
+                                </mat-icon>
+                            </a>&nbsp;&nbsp;
+                            <a class="link" (click)="deleteItem(j)">
+                                <mat-icon color="warn" class="material-icons-outlined" matTooltip="Delete item">delete
+                                </mat-icon>
+                            </a>
+                        </ng-container>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="noData">
+                    <td mat-footer-cell *matFooterCellDef colspan="7">
+                        There is no data!
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr mat-footer-row *matFooterRowDef="['noData']" [ngClass]="{'hide':!(list?.length==0)}"></tr>
+            </table>
+        </div>
+    </fieldset>
+</ng-container>
+
+
+<!-- LIST OF ITEMS -->
+

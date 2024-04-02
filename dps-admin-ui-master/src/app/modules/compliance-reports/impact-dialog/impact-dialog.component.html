@@ -1,0 +1,20 @@
+<h2 mat-dialog-title>Add Data Protection Impact Assessment Record</h2>
+<div class="dialog-container">
+  <form [formGroup]="ImpactForm" (ngSubmit)="onSubmit()">
+    
+    <mat-form-field>
+        <mat-label>Data collection/processing activity </mat-label>
+        <textarea matInput placeholder="Data collection/processing activity " formControlName="data_or_activity" rows="5"></textarea>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Date Data Protection Impact assessment concluded </mat-label>
+        <input matInput type="date" placeholder="Date Impact assessment concluded " formControlName="date_concluded" [max]="maxDate">
+    </mat-form-field>
+    
+    
+    <div class="button-container">
+      <button mat-button type="button" (click)="onCancel()">Cancel</button>
+      <button mat-raised-button color="primary" type="submit">Add Impact Assessment Record</button>
+    </div>
+  </form>
+</div>

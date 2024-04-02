@@ -1,0 +1,50 @@
+<main>
+    <button mat-button class="close-window-btn" (click)="onCloseWindow()">
+        <mat-icon>clear</mat-icon>
+    </button>
+
+    <article
+            style="width: 100%; margin: 0px 0px 30px; position: relative;"
+            id="letterBodyContainer">
+
+        <button
+                *ngIf="!downloading"
+                mat-button
+                color="primary"
+                [disabled]="downloading"
+                class="download-button"
+                (click)="onDownloadLetter()">
+            <div class="button-label">
+                <mat-icon>cloud_download</mat-icon>
+                <span>Download </span>
+            </div>
+        </button>
+
+        <div class="image-wrapper" [ngStyle]="{'margin': downloading ? '10px auto 40px' : '30px auto 40px', 'width': '200px', 'overflow': 'hidden'}">
+            <img src="./assets/icons/Final-logos-28.png" style="width: 100%; " alt="">
+        </div>
+
+        <section class="letter-body" style="padding: 0px 40px 45px;">
+            <div style="position:absolute;left:0px;top:0px">
+                <img src="./assets/img/background1.jpg" style="width:841px; height:595px" alt="">
+            </div>
+            <div style="position:absolute;left:113.50px;top:59.40px" class="cls_003"><span class="cls_003">Regulation 19(2)</span></div>
+            <div style="position:absolute;left:113.50px;top:75.00px" class="cls_003"><span class="cls_003">FORM 4</span></div>
+            <div style="position:absolute;left:269.94px;top:167.49px" class="cls_002"><span class="cls_002">CERTIFICATE OF REGISTRATION</span></div>
+            <div style="position:absolute;left:352.45px;top:218.12px" class="cls_004"><span class="cls_004">I CERTIFY THAT</span></div>
+            <div style="position:absolute;left:119.76px;top:256.17px" class="cls_004"><span class="cls_004">………………………………………</span> <b> </b></div>
+            <div style="position:absolute;left:475.80px;top:256.17px" class="cls_004"><span class="cls_004">……………………………………………...</span></div>
+            <div style="position:absolute;left:315.83px;top:294.21px" class="cls_004"><span class="cls_004">has this day been registered as</span></div>
+            <div style="position:absolute;left:233.56px;top:313.22px" class="cls_005"><span class="cls_005">a data collector/data processor/data controller </span><span class="cls_004">under</span></div>
+            <div style="position:absolute;left:212.22px;top:332.24px" class="cls_004"><span class="cls_004">the Data Protection and Privacy Act, 2019 under the following</span></div>
+            <div style="position:absolute;left:149.82px;top:370.28px" class="cls_004"><span class="cls_004">registration number…………………………………<b></b>………………………………</span></div>
+            <div style="position:absolute;left:204.77px;top:389.29px" class="cls_004"><span class="cls_004">This certificate is valid for twelve months from the date of issue.</span></div>
+            <div style="position:absolute;left:166.46px;top:427.33px" class="cls_004"><span class="cls_004">Dated this………<b></b>………day of…………<b></b>……………the year…………<b></b>…………</span></div>
+            <div style="position:absolute;left:268.90px;top:478.98px" class="cls_004"><span class="cls_004">……………………………………………………</span></div>
+            <div style="position:absolute;left:270.92px;top:502.54px" class="cls_005"><span class="cls_005">National Personal Data Protection Director</span></div>
+            <div style="position:absolute;left:177.83px;top:557.48px" class="cls_006"><span class="cls_006">This certificate shall remain in force unless revoked by the Personal Data Protection Office</span></div>
+
+        </section>
+
+    </article>
+</main>

@@ -1,0 +1,60 @@
+<main>
+    <header>
+        <h1>{{ data === null ? 'Add A Data Protection Officer' : 'Make Changes To The Information' }}</h1>
+
+        <button mat-button (click)="onCloseDialog()">
+            <mat-icon>clear</mat-icon>
+        </button>
+    </header>
+
+    <form [formGroup]="form">
+
+        <mat-form-field appearance="outline">
+            <mat-label>Name <span class="required-field">required</span></mat-label>
+            <input appRemoveSpaces matInput formControlName="Name">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Physical Address <span class="optional-field">optional</span></mat-label>
+            <input appRemoveSpaces matInput formControlName="PhysicalAddress">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Telephone Number <span class="required-field">required</span></mat-label>
+            <input appRemoveSpaces matInput maxlength="14" formControlName="PhoneNumber">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Email Address <span class="required-field">required</span></mat-label>
+            <input appRemoveSpaces matInput formControlName="EmailAddress">
+        </mat-form-field>        
+
+        <!-- <mat-form-field appearance="outline" hintLabel="">
+            <mat-label>Title Held <span class="required-field">required</span></mat-label>
+            <input appRemoveSpaces matInput formControlName="EmailAddress">
+        </mat-form-field>         -->
+
+        <mat-form-field class="full-width" hintLabel="Any other title held apart from DPO (Data Protection Officer).">
+            <mat-label>Title Held <span class="required-field">required</span></mat-label>
+            <textarea #PositionInput matInput maxlength="1000" formControlName="PositionInOrganisation"></textarea>
+            <mat-hint align="end">{{ PositionInput.value.length }} / 1000</mat-hint>
+        </mat-form-field>         
+        
+    </form>
+
+    <section>
+        <button color="warn" mat-button (click)="form.reset()" [disabled]="processing">
+            Clear Form
+        </button>
+
+        <button 
+            [ngClass]="{'inline-processing-btn': processing}" 
+            color="primary" 
+            mat-raised-button 
+            (click)="onSave()" 
+            [disabled]="form.invalid || processing">
+            <app-inline-mat-spinner *ngIf="processing"></app-inline-mat-spinner>                  
+            <span> {{ data === null ? 'Save' : 'Save  Changes'  }} </span>
+        </button>
+    </section>
+</main>

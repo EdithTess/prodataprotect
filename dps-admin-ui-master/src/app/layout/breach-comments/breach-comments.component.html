@@ -1,0 +1,92 @@
+<div style="padding:10px">
+    <div mat-dialog-title>Make Comments</div>
+    <fieldset>
+        <legend>Forwarded Comments</legend>
+        <div>
+            <div>
+                <mat-form-field fxFlex="2 1 auto">
+                    <mat-label>Technical Comments</mat-label>
+                    <input formControlName="TechnicalForwardedComments" matInput [readonly]="true">
+                </mat-form-field>
+            </div>
+            
+            <div>
+                <mat-form-field fxFlex="2 1 auto">
+                    <mat-label>Legal Comments</mat-label>
+                    <input formControlName="LegalForwardedComments" matInput [readonly]="true">
+                </mat-form-field>
+            </div>
+        </div> 
+    </fieldset>
+    
+
+    <form [formGroup]="BreachCommentsFormGroup">
+        <mat-dialog-content>
+            <div class="content" fxLayout="column" fxLayoutGap="8px">
+                
+                <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px"
+                     fxLayoutGap.gt-xs="24px">
+                    <mat-form-field fxFlex="2 2 auto" appearance="fill">
+                        <mat-label>Provide Comments</mat-label>
+                        <textarea matInput
+                                  cdkTextareaAutosize
+                                  cdkAutosizeMinRows="6"
+                                  formControlName="comments"
+                                  cdkAutosizeMaxRows="10"
+                                  formControlName="Comments"></textarea>
+                        <mat-hint>Review Comments</mat-hint>
+                    </mat-form-field>
+                </div>
+            </div>
+        </mat-dialog-content>
+
+        <section>
+        
+            <div class="buttons">
+                <button 
+                    mat-button
+                    color="primary"
+                    class="add-item-button"
+                    (click)="onUploadAttachments()"
+                    [ngStyle]="{'margin-bottom': '20px', 'margin-top': '20px', 'background-color':'#ABC334', 'color': '#000'}">
+                    <div class="button-label">
+                        <!-- <mat-icon [ngStyle]="{'background-color':'red','padding-top': '-20px'}">add</mat-icon>                             -->
+                        <span> {{ evidenceDocument ? 'Replace Document' : 'Upload A Document' }} </span>
+                    </div>
+                </button>
+
+                <button 
+                    mat-button
+                    *ngIf="evidenceDocument?.Name"
+                    color="primary"
+
+                    class="remove-button"
+                    (click)="onRemoveDocument()">
+                    <div class="button-label">
+                        <mat-icon>clear</mat-icon>
+                        <span> Remove Document </span>
+                    </div>
+                </button>
+            </div>
+            <div *ngIf="evidenceDocument?.Base64" class="uploaded-document" matTooltip="Open Document" (click)="onReadDocument(evidenceDocument)">
+                <img src="./assets/images/pdf.png" alt="">
+
+                <span>{{ evidenceDocument?.Name }} <span>  -  {{ evidenceDocument?.Size }} Mbs</span></span>
+            </div>
+
+        </section>
+
+        <!-- <button *ngIf="parent_data.Status === 4" mat-raised-button (click)="onPreview()" color="primary">
+            <span>Preview Letter</span>
+        </button>&nbsp; -->
+
+        
+
+        <button mat-raised-button (click)="onSubmit()"
+                color="primary">
+            
+            <span>Submit</span>
+        </button>&nbsp;
+        
+    </form>
+</div>

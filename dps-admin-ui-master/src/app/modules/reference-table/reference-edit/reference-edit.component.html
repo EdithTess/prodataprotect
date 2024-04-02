@@ -1,0 +1,10 @@
+<mat-card>
+    <mat-card-title>{{cardTitle}}</mat-card-title>
+    <mat-card-content>
+        <fury-dynamic-form [fields]="regConfig" (submit)="submit($event)" *ngIf="formLoaded" (changeValidity)="changeValidDate($event)">
+        </fury-dynamic-form >
+    </mat-card-content>
+</mat-card>
+<div class="form-loading-shade" *ngIf="isProcessing">
+    <mat-spinner *ngIf="isProcessing"></mat-spinner>
+</div>

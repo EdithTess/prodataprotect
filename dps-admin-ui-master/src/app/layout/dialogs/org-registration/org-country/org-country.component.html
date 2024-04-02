@@ -1,0 +1,48 @@
+<main>
+    <header>
+        <h1>{{ data === null ? 'Add A Country' : 'Make Changes To The Information' }}</h1>
+
+        <button mat-button (click)="onCloseDialog()">
+            <mat-icon>clear</mat-icon>
+        </button>
+    </header>
+
+    <form [formGroup]="form">
+        <mat-form-field class="full-width">
+        <mat-label>Country<span class="required-field">required</span></mat-label>
+        <mat-select formControlName="Country">
+            <mat-option *ngFor="let country of countries" [value]="country.CountryID">
+                {{ country.Name }}
+            </mat-option>
+        </mat-select>
+        </mat-form-field>        
+
+        <mat-form-field class="full-width">
+            <mat-label>Purpose of Transfer<span class="required-field">required</span></mat-label>
+            <textarea #PositionInput matInput maxlength="1000" formControlName="Purpose"></textarea>
+            <mat-hint align="end">{{ PositionInput.value.length }} / 1000</mat-hint>
+        </mat-form-field>  
+
+        <mat-form-field class="full-width" hintLabel="A brief Description of data transfered">
+            <mat-label>Brief Description<span class="required-field">required</span></mat-label>
+            <textarea #PositionInput matInput maxlength="1000" formControlName="Description"></textarea>
+            <mat-hint align="end">{{ PositionInput.value.length }} / 1000</mat-hint>
+        </mat-form-field>  
+    </form>
+
+    <section>
+        <button color="warn" mat-button (click)="form.reset()" [disabled]="processing">
+            Clear Form
+        </button>
+
+        <button 
+            [ngClass]="{'inline-processing-btn': processing}" 
+            color="primary" 
+            mat-raised-button 
+            (click)="onSave()" 
+            [disabled]="form.invalid || processing">
+            <app-inline-mat-spinner *ngIf="processing"></app-inline-mat-spinner>                  
+            <span> {{ data === null ? 'Save' : 'Save  Changes'  }} </span>
+        </button>
+    </section>
+</main>

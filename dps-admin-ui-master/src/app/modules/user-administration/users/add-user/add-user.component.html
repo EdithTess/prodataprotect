@@ -1,0 +1,91 @@
+<fury-page-layout>
+    <fury-page-layout-header>
+        <fury-breadcrumbs [@fadeInRight]  current="Account Creation"></fury-breadcrumbs>
+    </fury-page-layout-header>
+    <fury-page-layout-content>
+        <div [@fadeInUp] class="">
+            <mat-horizontal-stepper
+                labelPosition="top">
+ 
+                <mat-step>
+                    
+                    <form [formGroup]="formCreateAccount">
+                        <div>
+                            <mat-form-field fxFlex="2 2 auto" [ngStyle]="{'margin-right': '20px'}">
+                                <mat-label>First Name <span class="required-field">required</span></mat-label>
+                                <input appRemoveSpaces matInput maxlength="15" formControlName="FirstName">
+                                <mat-error *ngIf="formCreateAccount.get('FirstName').invalid">{{ getFirstNameErrorMessage() }}</mat-error>
+                            </mat-form-field>   
+            
+                            <mat-form-field fxFlex="2 2 auto" [ngStyle]="{'margin-right': '20px'}">
+                                <mat-label>Last Name <span class="required-field">required</span></mat-label>
+                                <input appRemoveSpaces matInput maxlength="15" formControlName="LastName">                            
+                                <mat-error *ngIf="formCreateAccount.get('LastName').invalid">{{ getLastNameErrorMessage() }}</mat-error>
+                            </mat-form-field> 
+        
+                            <mat-form-field fxFlex="2 2 auto" [ngStyle]="{'margin-right': '20px'}">
+                            <mat-label>User Roles <span class="required-field">required</span></mat-label>
+                            <mat-select formControlName="Roles">
+                                <mat-option 
+                                        *ngFor="let type of KeycloakRoles"
+                                        (onSelectionChange)="onChangeOfRole($event,type )" 
+                                        [value]="type.RoleID">{{ type.RoleName }}
+                                        
+                                </mat-option>
+                            </mat-select>
+                            <mat-hint>Please select the role this user is attached to
+                            </mat-hint>
+                            </mat-form-field>
+                        </div><br>
+
+                        <div class="grouped-items">
+                            <h3>Gender:<span class="required-field">required</span></h3>
+            
+                            <mat-radio-group color="primary" formControlName="Gender">
+                                <mat-radio-button value="Male">Male</mat-radio-button>
+                                <mat-radio-button value="Female">Female</mat-radio-button>
+                            </mat-radio-group>
+
+                        </div><br>
+        
+                        <div class="telephone-code-number-wrapper">
+                            <mat-form-field fxFlex="2 2 auto" [ngStyle]="{'margin-right': '20px'}">
+                                <mat-label>Telephone Number of Organisation<span class="required-field">required</span></mat-label>
+                                <textarea matInput
+                                                cdkTextareaAutosize
+                                                #autosize="cdkTextareaAutosize"
+                                                cdkAutosizeMinRows="1"
+                                                formControlName="PhoneNumberCode"
+                                                cdkAutosizeMaxRows="5"></textarea>             
+                            </mat-form-field>
+                            <mat-form-field fxFlex="2 2 auto" [ngStyle]="{'margin-right': '20px'}">
+                                <mat-label>Email Address <span class="required-field">required</span></mat-label>
+                                <input matInput maxlength="100" formControlName="EmailAddress">    
+                                <mat-error *ngIf="formCreateAccount.get('EmailAddress').invalid">{{ getEmailAddressErrorMessage() }}</mat-error>                        
+                            </mat-form-field>
+                            <mat-form-field fxFlex="2 2 auto" [ngStyle]="{'margin-right': '20px'}">
+                                <mat-label>Physical Address <span class="required-field">required</span></mat-label>
+                                <input matInput maxlength="255"  formControlName="PhysicalAddress">  
+                              
+                            </mat-form-field>
+                        </div>       
+                    </form>
+     
+                    <div class="buttons" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="8px">
+                        <button
+                            mat-button 
+                            color="primary" 
+                            [ngClass]="{'inline-processing-btn': processing }"      
+                            class="next-btn submit-btn"                 
+                            (click)="onSubmit()"
+                            mat-raised-button>                        
+                                <span>Submit</span>
+                        </button>
+                    </div>
+                                
+                </mat-step>
+            </mat-horizontal-stepper>    
+        </div>
+    </fury-page-layout-content>   
+</fury-page-layout>
+ 

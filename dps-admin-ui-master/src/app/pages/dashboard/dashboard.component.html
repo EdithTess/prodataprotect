@@ -1,0 +1,181 @@
+<fury-page-layout>
+  <fury-page-layout-header>
+    <fury-breadcrumbs [@fadeInRight]
+                      current="Dashboard">
+    </fury-breadcrumbs>
+  </fury-page-layout-header>
+  <!-- Company Registration Start -->
+  <div class="page-body">
+    <div class="registration" *ngIf="isOfficer">
+      <h3 style="text-align:center;" >Company Registration</h3>
+      <mat-grid-list cols="2" gutterSize="5px" rowHeight="100px">
+  
+        <mat-grid-tile *ngIf="isOfficer">
+          <fury-quick-info-widget 
+            class="route-animations-elements" 
+            fxFlex="grow"
+            value={{organisationsRegistered}}
+            label="Companies Registered"
+            [background]="'#009688'" 
+            color="white">
+            
+          </fury-quick-info-widget>
+        </mat-grid-tile>
+  
+        <mat-grid-tile *ngIf="isOfficer">
+          <fury-quick-info-widget 
+            class="route-animations-elements" 
+            fxFlex="grow"
+            value={{organisationsUnderReview}} 
+            label="Companies Under Review"
+            [background]="'#009688'" 
+            color="white">
+          </fury-quick-info-widget>
+        </mat-grid-tile>
+  
+        <mat-grid-tile *ngIf="isOfficer">
+          <fury-quick-info-widget 
+            class="route-animations-elements" 
+            fxFlex="grow"
+            value={{registrationAverageTimeTaken}} 
+            label="Average Time Taken To Review"
+            [background]="'#009688'" 
+            color="white">
+          </fury-quick-info-widget>
+        </mat-grid-tile>
+  
+        <mat-grid-tile *ngIf="isOfficer">
+          <fury-quick-info-widget 
+            class="route-animations-elements" 
+            fxFlex="grow" 
+            value={{amountOfMoneyGenerated}} 
+            label="Amount of Money Generated"
+            [background]="'#009688'" 
+            color="white">
+          </fury-quick-info-widget>
+        </mat-grid-tile>
+  
+      </mat-grid-list>
+    </div>
+    <!-- Company Registration End -->
+  
+    <!-- Graph Start -->
+    <div>
+      <mat-grid-list cols="2" gutterSize="15px" *ngIf="isOfficer">
+  
+        <mat-grid-tile>
+          <div class="container">
+            <fury-bar-chart-widget   
+            [height]="'360px'"
+            [data]="totalMonthlyApplications"
+            [options]="totalMonthlyApplicationsOptions">
+          </fury-bar-chart-widget>
+          </div>
+        
+        </mat-grid-tile>
+        
+        <mat-grid-tile>
+          <div class="container">
+            <fury-donut-chart-widget
+            [data]="top5CategoriesData$ | async"
+            [options]="top5CategoriesOptions"
+            class="route-animations-elements">
+          </fury-donut-chart-widget>
+          </div>
+         
+        </mat-grid-tile>
+        
+      </mat-grid-list>
+    </div>
+    <!-- Graph End -->
+  
+    <!-- Complaints Start -->
+    <div *ngIf="isOfficer">
+      <h3 style="text-align:center;" >Complaint</h3>
+      <mat-grid-list cols="3" rowHeight="100px" gutterSize="5px">
+  
+        <mat-grid-tile *ngIf="isOfficer">
+          <fury-quick-info-widget 
+            class="route-animations-elements" 
+            fxFlex="grow"
+            value={{complaintsReported}}
+            label="Complaints Reported"
+            [background]="'#009688'" 
+            color="white">
+            
+          </fury-quick-info-widget>
+        </mat-grid-tile>
+  
+        <mat-grid-tile *ngIf="isOfficer">
+          <fury-quick-info-widget 
+            class="route-animations-elements" 
+            fxFlex="grow"
+            value={{complaintsUnderReview}} 
+            label="Complaints Under Review"
+            [background]="'#009688'" 
+            color="white">
+          </fury-quick-info-widget>
+        </mat-grid-tile>
+  
+        <mat-grid-tile *ngIf="isOfficer">
+          <fury-quick-info-widget 
+            class="route-animations-elements" 
+            fxFlex="grow"
+            value={{complaintAverageTimeTaken}} 
+            label="Average Time Taken To Review"
+            [background]="'#009688'" 
+            color="white">
+          </fury-quick-info-widget>
+        </mat-grid-tile>
+  
+      </mat-grid-list>
+    </div>
+    <!-- Complaints End -->
+  
+    <!-- Breaches Start -->
+    <div *ngIf="isOfficer">
+      <h3 style="text-align:center;" >Breaches</h3>
+      <mat-grid-list cols="3" rowHeight="100px" gutterSize="5px">
+  
+        <mat-grid-tile *ngIf="isOfficer">
+          <fury-quick-info-widget 
+            class="route-animations-elements" 
+            fxFlex="grow"
+            value={{breachesReported}}
+            label="Companies Registered"
+            [background]="'#009688'" 
+            color="white">
+            
+          </fury-quick-info-widget>
+        </mat-grid-tile>
+  
+        <mat-grid-tile *ngIf="isOfficer">
+          <fury-quick-info-widget 
+            class="route-animations-elements" 
+            fxFlex="grow"
+            value={{breachesUnderReview}} 
+            label="Companies Under Review"
+            [background]="'#009688'" 
+            color="white">
+          </fury-quick-info-widget>
+        </mat-grid-tile>
+  
+        <mat-grid-tile *ngIf="isOfficer">
+          
+            <fury-quick-info-widget 
+              class="route-animations-elements" 
+              fxFlex="grow"
+              value={{breachesAverageTimeTaken}} 
+              label="Average Time Taken To Review"
+              [background]="'#009688'" 
+              color="white">
+            </fury-quick-info-widget>
+          
+        </mat-grid-tile>
+  
+      </mat-grid-list>
+    </div>
+    <!-- Breaches End -->
+  </div>
+    
+</fury-page-layout>

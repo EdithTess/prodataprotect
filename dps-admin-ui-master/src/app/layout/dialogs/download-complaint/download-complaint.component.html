@@ -1,0 +1,169 @@
+<main style="border: 1px solid red; ">
+    <button mat-button class="close-window-btn" (click)="onCloseWindow()">
+        <mat-icon>clear</mat-icon>
+    </button>    
+
+    <article
+        style="width: 100%; margin: 0px 0px 30px; position: relative;"
+        id="letterBodyContainer">
+
+        <button 
+            *ngIf="!downloading"
+            mat-button
+            color="primary"
+            [disabled]="downloading"
+            class="download-button"
+            (click)="onDownloadLetter()">
+            <div class="button-label">
+                <mat-icon>cloud_download</mat-icon>
+                <span>Download </span>
+            </div>
+        </button>
+
+      <!--  <div class="image-wrapper" [ngStyle]="{'margin': downloading ? '10px auto 40px' : '30px auto 40px', 'width': '200px', 'overflow': 'hidden'}">
+            <img src="./assets/icons/Final-logos-28.png" style="width: 100%; " alt="">
+        </div>        -->
+        
+        <section class="letter-body" style="padding: 0px 40px 45px;">
+            <div style="margin-bottom: 20px;">
+                <h1 style="font-weight: 700; font-size: 14px; text-transform: uppercase; text-align: center; color: #000; margin-top: 0px;margin: -30px 0px 25px 0px;">
+                    Complaint Information
+                </h1>
+            </div>
+            
+            <div>
+                <h3 style="font-weight: 700; letter-spacing: 1px; font-size: 14px; text-transform: uppercase; text-align: left; color: #000; margin: 0px 0px -10px 0px;">
+                    Complaint Information
+                </h3>
+            </div>   
+
+            <div>
+                <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Source of complaint</span>
+                    <b style="font-weight: 600;">{{ data.row.ComplaintSourceName}}</b>
+                </p>
+            </div>
+
+            <div>
+                <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Complaint Tracking Number</span>
+                    <b style="font-weight: 600;">{{ data.row.ComplaintTrackingNo}}</b>
+                </p>
+            </div>
+
+            <div>
+                <h3 style="font-weight: 700; letter-spacing: 1px; font-size: 14px; text-transform: uppercase; text-align: left; color: #000; margin: 0px 0px -10px 0px;">
+                    Complainant Details
+                </h3>
+            </div>
+
+            <div style="margin: 15px 0px; display: grid; grid-template-columns: repeat(auto-fit,minmax(200px, 1fr)); gap: 20px 25px;">
+
+                <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Name of Complainant</span>
+                    <b style="font-weight: 600;">{{ data.row.FirstName}} {{data.row.LastName}}</b>
+                </p>
+
+                <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Email Address of Complainant</span>
+                    <b style="font-weight: 600;">{{ data.row.EmailAddress}}</b>
+                </p>
+
+                <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Contact of Complainant</span>
+                    <b style="font-weight: 600;">{{ data.row.PhoneNumber}}</b>
+                </p>
+
+                <h3 style="font-weight: 700; letter-spacing: 1px; font-size: 14px; text-transform: uppercase; text-align: left; color: #000; margin: 0px 0px -10px 0px;">
+                    Organisation Complained To
+                </h3>
+
+                <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                    <span>Organisation</span>
+                    <b style="font-weight: 600;">{{ data.row.OrganisationComplainedToName}}</b>
+                </p>
+
+                <h3 style="font-weight: 700; letter-spacing: 1px; font-size: 14px; text-transform: uppercase; text-align: left; color: #000; margin: 0px 0px -10px 0px;">
+                    Organisation Contact Person Details
+                </h3>
+                    <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                        <span>Name of contact person</span>
+                        <b style="font-weight: 600;">{{ data.row.ContactPersonFirstName}} {{data.row.ContactPersonLastName}}</b>
+                    </p>
+
+                    <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                        <span>Email Address of contact person</span>
+                        <b style="font-weight: 600;">{{ data.row.ContactPersonEmailAddress}}</b>
+                    </p>
+
+                    <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                        <span>Contact of contact person</span>
+                        <b style="font-weight: 600;">{{ data.row.ContactPersonPhoneNumber}}</b>
+                    </p>
+
+                    <h3 style="font-weight: 700; letter-spacing: 1px; font-size: 14px; text-transform: uppercase; text-align: left; color: #000; margin: 0px 0px -10px 0px;">
+                        Type of complaint
+                    </h3>
+
+                    <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                        
+                        <b style="font-weight: 600;">{{ data.row.FormName}}</b>
+                    </p>
+
+
+                    <h3 style="font-weight: 700; letter-spacing: 1px; font-size: 14px; text-transform: uppercase; text-align: left; color: #000; margin: 0px 0px -10px 0px;">
+                        Reasons for complaint
+                    </h3>
+
+                    <p style="grid-column: 1/-1; font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+
+                        <b style="font-weight: 600;margin-left: 3px;text-align: justify;">
+                            <span *ngFor="let row of data.row.ReasonsForComplaint; let i = index">
+                                <span style="margin-left: -3px;">{{ i > 0 ? ',' : '' }}</span> {{ row.ComplaintReasonName }}
+                            </span>
+                        </b>                        
+                    </p>
+
+
+                    <h3 style="font-weight: 700; letter-spacing: 1px; font-size: 14px; text-transform: uppercase; text-align: left; color: #000; margin: 0px 0px -10px 0px;">
+                        Personal Data Affected
+                    </h3>
+
+                    <p style="grid-column: 1/-1; font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+
+                        <b style="font-weight: 600;margin-left: 3px;text-align: justify;">
+                            <span *ngFor="let row of data.row.PersonalDataAffected; let i = index">
+                                <span style="margin-left: -3px;">{{ i > 0 ? ',' : '' }}</span> {{ row.DataSubCategoryName }}
+                            </span>
+                        </b>                        
+                    </p>
+
+                    <h3 style="font-weight: 700; letter-spacing: 1px; font-size: 14px; text-transform: uppercase; text-align: left; color: #000; margin: 0px 0px -10px 0px;">
+                        Details of complaint
+                    </h3>
+
+                    <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                        <span>Full details of complaint</span>
+                        <b style="font-weight: 600;">{{ data.row.FullDetailsOfComplaint}}</b>
+                    </p>
+
+
+                    <h3 style="font-weight: 700; letter-spacing: 1px; font-size: 14px; text-transform: uppercase; text-align: left; color: #000; margin: 0px 0px -10px 0px;">
+                        Comments
+                    </h3>
+                        <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                            <span>Technical comments</span>
+                            <b style="font-weight: 600;">{{ data.row.TechnicalComments}}</b>
+                        </p>
+
+                        <p style="font-size: 11px; line-height: 14px; font-weight: 400; color: #000; text-align: left; display: flex; flex-direction: column; gap: 3px; margin: 0px;">
+                            <span>Legal comments</span>
+                            <b style="font-weight: 600;">{{ data.row.LegalComments}}</b>
+                        </p>
+
+            </div>               
+
+        </section>
+
+    </article>
+</main>

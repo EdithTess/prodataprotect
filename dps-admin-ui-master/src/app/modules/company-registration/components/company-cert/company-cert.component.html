@@ -1,0 +1,77 @@
+<main>
+        <div class="mat-progress-bar-container">
+                <mat-progress-bar *ngIf="downloading" mode="indeterminate"></mat-progress-bar>
+        </div>
+
+        <button [disabled]="downloading" mat-raised-button class="download-button" (click)="openPdf()" color="primary">Generate Certificate</button>
+
+        <article #pdfContainer id="letterBodyContainer"
+                style="overflow-y: auto; width: 100%; margin: 0px 0px 0px; position: relative; padding: 0px;  background-image: url('/assets/img/background2.fw.png'); background-size: 1122px; background-repeat: no-repeat; background-position: -7px 20px;height: fit-content;">
+
+                <section style="float: right; margin-top: 50px;">
+                        <qrcode [qrdata]="QRCode" [width]="256" [errorCorrectionLevel]="'M'"></qrcode>
+                </section>
+
+                <section style=" margin: 320px 0px 0px 0px;">
+
+                        <section>
+
+                                <h1 style="text-align: center; font-size: 22px; text-transform: uppercase; font-weight: 500; color: #000; width: 100%;font-family: serif; letter-spacing: 1px;">
+                                        Certificate of Registration
+                                </h1>
+
+                                <h2 style="font-size: 19px; text-transform: uppercase; font-weight: 300; color: #474747;text-align: center;width: 100%">
+                                        I certify that
+                                </h2>
+
+                                <div
+                                        style="border-bottom: 2px dotted; font-size: 15px; text-align: center; width: calc(100% - 35%); margin: 20px auto 0px; font-weight: 700; font-style: italic;padding-bottom: 4px;color: #000;"
+                                        [innerHTML]="certificateData.OrganizationID">
+                                </div>
+
+                                <p style="color: #000; width: 100%; text-align: center; font-size: 17px; line-height: 22px; margin: 28px 0px 25px; font-weight: 300;">
+                                        has this day been registered as <br />
+
+                                        <b style="font-weight: 700;">a data collector/data processor/data controller</b> under <br />
+
+                                        the Data Protection and Privacy Act, 2019 under the following
+                                </p>
+
+                                <div style="color: #000; width: 100%; font-size: 16px; line-height: 22px; margin: 30px 0px 25px; display: flex; flex-direction: row; align-content: center; justify-content: center; align-items: flex-start;">
+                                        registration number
+                                        <div
+                                                style="text-align: center; font-size: 16px;  border-bottom: 2px dotted; padding: 0px 8px 0px; color: #000; margin: -8px 7px 0px; height: 25px; font-style: italic; font-weight: 700; min-width: 243px;"
+                                                [innerHTML]="certificateData.OrgRegNumber">
+                                        </div>
+                                </div>
+
+                                <p style="color: #000; width: 100%;text-align: center;font-size: 17px;line-height: 25px;margin: -25px 0px 25px;font-weight: 300;">
+                                        This certificate is valid for twelve months from the date of issue.
+                                </p>
+
+                                <div style="color: #000; width: 100%; font-size: 16px; line-height: 27px; margin: 33px 0px 25px; display: flex; flex-direction: row; align-content: center; justify-content: center; align-items: flex-start;">
+                                        Dated this <div style="font-size: 16px; border-bottom: 2px dotted; padding: 0px 20px 0px; color: #000;   font-style: italic; font-weight: bold;margin: -11px 7px 0px;height: 28px;">{{ certificateData.IssueDate | date : 'dd' }} <sup style="font-size: 16px;font-family: none;">{{ getDateSuperscript() }}</sup></div>
+                                        day of <i style="font-size: 16px; border-bottom: 2px dotted; padding: 0px 20px 0px; color: #000; font-style: italic; font-weight: bold; margin: -8px 7px 0px;height: 25px;">{{ certificateData.IssueDate | date : 'MMMM' }}</i>
+                                        the year <i style="font-size: 16px; border-bottom: 2px dotted; padding: 0px 20px 0px; color: #000;   font-style: italic; font-weight: bold;margin: -8px 7px 0px;height: 25px;">{{ certificateData.IssueDate | date : 'YYYY' }}</i>
+                                </div>
+
+                                <div style="color: #000; width: 100%; font-size: 16px; display: flex; flex-direction: column; align-items: center; margin: 40px 0px 0px; text-align: center;">
+                                        <div style="min-width: 240px; text-align: center;border-bottom: 2px dotted;margin: 0px auto 0px;font-weight: 700;font-style: italic;padding-bottom: 4px;color: #000;">
+                                                <img src="/assets/img/Stella Alibateese.png" style="height: 30px;" alt="">
+                                        </div>
+                                        <p style="font-size: 16px;  color: #000; margin: 8px 0px 1px 0px;font-weight: 600;">National Personal Data Protection Director</p>
+                                </div>
+
+                                <p style="font-size: 14px; width: calc(100% - 68px); text-align: center; color: #000; font-weight: 400; margin: 40px 0px 25px;">
+                                        This certificate shall remain in force unless revoked by the Personal Data Protection Office
+
+                                </p>
+
+                        </section>
+
+                </section>
+
+        </article>
+</main>
+
+

@@ -1,0 +1,61 @@
+main {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 56px;
+        margin-bottom: -10px;
+        margin-top: 10px;
+        
+        h1 {
+            font-size: 20px;
+            margin: 0px;
+            font-weight: 200;  
+        }
+
+        button {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            border-radius: 0px;
+            width: 44px;
+            height: 44px;
+            min-width: 0px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0px;    
+            
+            mat-icon {
+                font-size: 20px !important;
+            }
+        }
+    }
+
+    article {
+        border: 1px solid red;
+    }
+    
+    section {
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+        padding: 5px 20px 20px;    
+        justify-content: space-between;
+        
+        button {
+            border-radius: 0px;
+            width: 130px;     
+            
+            &:first-child {
+                background-color: #ebebeb;
+                color: #333;                
+            }
+        }
+    }
+}

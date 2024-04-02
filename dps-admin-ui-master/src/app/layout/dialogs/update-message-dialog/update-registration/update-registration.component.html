@@ -1,0 +1,25 @@
+<div>
+    
+        <mat-dialog-content>
+            <div class="content" fxLayout="column" fxLayoutGap="8px" [ngStyle]="{'text-align': 'center'}">
+                <p>Confirm Changes?</p>
+            </div>
+        </mat-dialog-content>
+
+        <div [ngStyle]="{'text-align': 'center'}">
+
+            <button mat-raised-button (click)="onCancel()"
+                color="primary">
+            
+                <span>Cancel</span>
+            </button>&nbsp;
+
+            <button mat-raised-button (click)="onSubmit()"
+                    color="primary">
+                
+                <span>Confirm</span>
+            </button>&nbsp;
+
+        </div>
+    
+</div>

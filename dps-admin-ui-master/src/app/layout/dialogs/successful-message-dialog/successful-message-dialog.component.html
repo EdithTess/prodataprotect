@@ -1,0 +1,19 @@
+<main [ngClass]="{'status-true': data.status === true, 'status-false': data.status === false}">
+    <div class="mat-progress-bar-container">
+        <mat-progress-bar *ngIf="processing" mode="indeterminate"></mat-progress-bar>
+    </div>
+
+    <header>
+        <h1 [innerHTML]="data.title"></h1>
+
+        <button mat-button (click)="onCloseDialog()">
+            <mat-icon>clear</mat-icon>
+        </button>
+    </header>
+    
+    <section>
+
+        <p [innerHTML]="data.message"></p>
+
+    </section>   
+</main>

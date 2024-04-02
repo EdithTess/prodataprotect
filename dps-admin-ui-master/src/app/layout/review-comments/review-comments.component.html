@@ -1,0 +1,168 @@
+<div style="padding:10px" *ngIf="!isRequestForMoreInfo">
+    <div mat-dialog-title>Review Comments</div>
+    <fieldset *ngIf="dirChecklist.length > 0">
+        <legend>CheckList</legend>
+        <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px"
+             fxLayoutGap.gt-xs="24px" *ngFor="let element of dirChecklist" >
+            <mat-checkbox formControlName="checkListed"  disabled="true" checked="true"
+                          color="primary"
+            >
+                {{ element.CheckListName }}
+            </mat-checkbox>
+        </div>
+    </fieldset>
+
+    <form [formGroup]="reviewCommentFormGroup" (ngSubmit)="submitComment()">
+        <mat-dialog-content>
+            <div class="content" fxLayout="column" fxLayoutGap="8px">
+                <fieldset *ngIf="_checklist.length > 0">
+                    <legend>{{ data.action.ActionName === 'Technical Review' ? 'Security' : 'Legal' }} CheckList</legend>
+                    <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px"
+                         fxLayoutGap.gt-xs="24px" *ngFor="let element of _checklist">
+                        <mat-checkbox formControlName="checkList"
+                                      color="primary"
+                                      (change)="onChangeSubCategory($event,element)"
+                        >
+                            {{ element.ChecklistName }}
+                        </mat-checkbox>
+                    </div>
+                </fieldset>
+                <br>
+                <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px"
+                     fxLayoutGap.gt-xs="24px">
+                    <mat-form-field fxFlex="2 2 auto" appearance="fill">
+                        <mat-label>Provide Comments</mat-label>
+                        <textarea matInput
+                                  cdkTextareaAutosize
+                                  cdkAutosizeMinRows="6"
+                                  formControlName="comments"
+                                  cdkAutosizeMaxRows="10"></textarea>
+                        <mat-hint>Review Comments</mat-hint>
+                    </mat-form-field>
+                </div>
+            </div>
+        </mat-dialog-content>
+        <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center">
+            <button mat-raised-button color="primary" [disabled]="reviewCommentFormGroup.invalid">
+                <mat-icon>rate_review</mat-icon>
+                <span> {{ data.action && data.action.ActionName === 'Approve / Issue Certificate' ? data.action.ActionName : 'Submit Review' }} </span>
+            </button>
+        </mat-dialog-actions>
+    </form>
+</div>
+
+<div style="padding:10px" *ngIf="isRequestForMoreInfo">
+    <p>Request more infor</p>
+    <form [formGroup]="requestMoreFormGroup" *ngIf="isRequestForMoreInfo">
+        <mat-dialog-content>
+            <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px"
+                 fxLayoutGap.gt-xs="24px">
+                <mat-form-field hintLabel="Choose Application Section To Request For More Info." fxFlex="2 1 auto">
+                    <mat-label>Select Application Section</mat-label>
+                    <mat-select formControlName="section" (selectionChange)="onSelectSection($event.value)">
+                        <mat-option *ngFor="let section of _applicationSectionFR"
+                                    [value]="section">
+                            {{ section.SectionName }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+
+                <mat-form-field hintLabel="Choose Fields Under Application Section To Request For More Info."
+                                fxFlex="2 1 auto">
+                    <mat-label>Select Section Form Fields</mat-label>
+                    <mat-select formControlName="field" (selectionChange)="onSelectField($event.value)">
+                        <mat-option *ngFor="let field of _formFields;"
+                                    [value]="field">
+                            {{ field.FieldName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px"
+                 fxLayoutGap.gt-xs="24px">
+                <mat-form-field fxFlex="2 2 auto" appearance="fill">
+                    <mat-label>Provide Comments</mat-label>
+                    <textarea matInput
+                              cdkTextareaAutosize
+                              cdkAutosizeMinRows="6"
+                              formControlName="comments"
+                              cdkAutosizeMaxRows="10"></textarea>
+                    <mat-hint>Review Comments</mat-hint>
+                </mat-form-field>
+            </div>
+        </mat-dialog-content>
+        <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center">
+            <button mat-raised-button
+                    (click)="addOrUpdateRequestField(isEditingRequestedField?2:1)" color="primary"
+                    [disabled]="!isValidForm()">
+                <mat-icon>{{buttonIcon}}</mat-icon>
+                <span>{{buttonLabel}}</span>
+            </button>&nbsp;
+            <span class="example-spacer"></span>
+            <button mat-raised-button (click)="resetControl()" color="warn">
+                <mat-icon>cancel</mat-icon>
+                <span>Cancel</span>
+            </button>
+            <br>
+        </mat-dialog-actions>
+        <button mat-raised-button (click)="submitRequestMoreInfo()"
+                color="primary">
+            <mat-icon>rate_review</mat-icon>
+            <span>Submit Review</span>
+        </button>&nbsp;
+    </form>
+
+    <fieldset style="padding-top:10px;">
+        <legend>Requested More Info Fields</legend>
+    <div class="content" fxLayout="column" fxLayoutGap="8px">
+        <table mat-table [dataSource]="list">
+            <ng-container matColumnDef="nber">
+                <th mat-header-cell *matHeaderCellDef style="width: 5%"
+                    class="tableFontSize firstColumnTable alignCenter">#
+                </th>
+                <td mat-cell *matCellDef="let element; let j=index;"
+                    class="tableFontSize firstColumnTable alignCenter">
+                    {{j + 1}}
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="Section">
+                <th mat-header-cell *matHeaderCellDef class="tableFontSize " style="width: 20%">Section</th>
+                <td mat-cell *matCellDef="let element" class="tableFontSize "> {{element.SectionID.SectionName}}</td>
+            </ng-container>
+            <ng-container matColumnDef="Field">
+                <th mat-header-cell *matHeaderCellDef class="tableFontSize " style="width: 20%">Field</th>
+                <td mat-cell *matCellDef="let element" class="tableFontSize "> {{element.FieldID.FieldName}}</td>
+            </ng-container>
+            <ng-container matColumnDef="Comment">
+                <th mat-header-cell *matHeaderCellDef class="tableFontSize " style="width: 20%">Comment</th>
+                <td mat-cell *matCellDef="let element" class="tableFontSize "> {{element.Comment}}</td>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef style="width: 5%">Actions</th>
+                <td mat-cell *matCellDef="let element; let j=index" class="actions">
+                    <ng-container>
+                        <a class="link" (click)="manageRequestedField(2,j)">
+                            <mat-icon color="primary" class="material-icons-outlined" matTooltip="Edit item">edit
+                            </mat-icon>
+                        </a>&nbsp;&nbsp;
+                        <a class="link" (click)="deleteItem(j)">
+                            <mat-icon color="warn" class="material-icons-outlined" matTooltip="Delete item">delete
+                            </mat-icon>
+                        </a>
+                    </ng-container>
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="noData">
+                <td mat-footer-cell *matFooterCellDef colspan="7">
+                    There is no data!
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayColumns;sticky:true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayColumns;"></tr>
+            <tr mat-footer-row *matFooterRowDef="['noData']" [ngClass]="{'hide':!(list?.length==0)}"></tr>
+        </table>
+    </div>
+
+    </fieldset>
+</div>

@@ -1,0 +1,39 @@
+<main>
+    <header>
+        <h1>{{ data === null ? 'Add A Person / Bodies' : 'Make Changes To The Information' }}</h1>
+
+        <button mat-button (click)="onCloseDialog()">
+            <mat-icon>clear</mat-icon>
+        </button>
+    </header>
+
+    <form [formGroup]="form">
+        <mat-form-field class="full-width">
+            <mat-label>Person / Body<span class="required-field">required</span></mat-label>
+            <textarea #PositionInput matInput maxlength="1000" formControlName="ThirdPartyName"></textarea>
+            <mat-hint align="end">{{ PositionInput.value.length }} / 1000</mat-hint>
+        </mat-form-field> 
+
+        <mat-form-field class="full-width">
+            <mat-label>Purpose for Disclosure<span class="required-field">required</span></mat-label>
+            <textarea #PositionInput matInput maxlength="1000" formControlName="Purpose"></textarea>
+            <mat-hint align="end">{{ PositionInput.value.length }} / 1000</mat-hint>
+        </mat-form-field>  
+    </form>
+
+    <section>
+        <button color="warn" mat-button (click)="form.reset()" [disabled]="processing">
+            Clear Form
+        </button>
+
+        <button 
+            [ngClass]="{'inline-processing-btn': processing}" 
+            color="primary" 
+            mat-raised-button 
+            (click)="onSave()" 
+            [disabled]="form.invalid || processing">
+            <app-inline-mat-spinner *ngIf="processing"></app-inline-mat-spinner>                  
+            <span> {{ data === null ? 'Save' : 'Save  Changes'  }} </span>
+        </button>
+    </section>
+</main>

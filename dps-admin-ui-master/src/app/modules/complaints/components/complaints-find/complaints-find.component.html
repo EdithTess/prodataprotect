@@ -1,0 +1,61 @@
+<fury-page-layout mode="card">
+    <fury-page-layout-header>
+        <fury-breadcrumbs [@fadeInRight] [crumbs]="['Complaints']" current="Find"></fury-breadcrumbs>
+    </fury-page-layout-header>
+
+    <fury-page-layout-content [@fadeInUp]>
+        <fury-list name="Complaints" [columns]="columns" (filterChange)="onFilterChange($event)"
+                   finderDialogTitle="Complaints Finder"
+                   [searchFields]="searchFields">
+            <table [dataSource]="dataSource" mat-table matSort>
+                <ng-container matColumnDef="checkbox">
+                    <th *matHeaderCellDef class="actions-cell" mat-header-cell>
+                        <mat-checkbox color="primary" (click)="$event.stopPropagation()"></mat-checkbox>
+                    </th>
+                    <td *matCellDef="let row" class="actions-cell" mat-cell>
+                        <mat-checkbox color="primary" (click)="$event.stopPropagation()"></mat-checkbox>
+                    </td>
+                </ng-container>
+
+                <!-- fullName Column -->
+                <ng-container *ngFor="let column of columns">
+                    <ng-container *ngIf="column.isModelProperty" [matColumnDef]="column.property">
+                        <th *matHeaderCellDef mat-header-cell mat-sort-header> {{ column.name }}</th>
+                        <td *matCellDef="let row" mat-cell>
+                            {{ row[column.property] }}
+                        </td>
+                    </ng-container>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <th *matHeaderCellDef class="actions-cell" mat-header-cell mat-sort-header></th>
+                    <td *matCellDef="let row" class="actions-cell" mat-cell>
+                        <button type="button" mat-icon-button [matMenuTriggerFor]="actionsMenu"
+                                (click)="$event.stopPropagation()">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+
+                        <mat-menu #actionsMenu="matMenu" yPosition="below" xPosition="before">
+                            <!-- <button (click)="viewComplaint(row)"  mat-menu-item
+                                routerLinkActive="router-link-active">
+                                <mat-icon>visibility</mat-icon>
+                                <span>View</span>
+                            </button> -->
+                            <button (click)="manageComplaint(row, $event)" mat-menu-item routerLinkActive="router-link-active">
+                                <mat-icon>settings</mat-icon>
+                                <span>Manage</span>
+                            </button>
+                        </mat-menu>
+                    </td>
+                </ng-container>
+                <tr *matHeaderRowDef="visibleColumns" mat-header-row></tr>
+                <tr
+                        *matRowDef="let row; columns: visibleColumns;"
+                        class="clickable route-animations-elements"
+                        mat-row></tr>
+            </table>
+            <mat-paginator  [pageSize]="pageSize" (page)="onPaginateChange($event)"></mat-paginator>
+        </fury-list>
+    </fury-page-layout-content>
+</fury-page-layout>
+

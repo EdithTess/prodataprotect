@@ -1,0 +1,27 @@
+/* your-dialog.component.scss */
+
+/* Style the form container */
+.dialog-container {
+    padding: 20px;
+    width: 300px;
+  }
+  
+  /* Style the form fields */
+  .mat-form-field {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  /* Style the buttons */
+  .button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+  
+  /* Add some padding to the buttons */
+  button.mat-button,
+  button.mat-raised-button {
+    margin-right: 10px;
+  }
+  

@@ -1,0 +1,15 @@
+/* General Dialog Dialog Styles */
+.dialog-header {
+  padding: .3em 1em;
+}
+
+.default-header {
+  background-color: mat-color($primary);
+  color: mat-color($foreground, text);
+}
+
+.alert-header {
+  background-color: mat-color($primary);
+  color: mat-color($foreground, text);
+}
+

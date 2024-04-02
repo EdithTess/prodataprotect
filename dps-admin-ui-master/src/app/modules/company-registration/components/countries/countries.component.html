@@ -1,0 +1,108 @@
+<ng-container *ngIf="storeDataOutSideCountry !== 'No'">
+
+    <fieldset>
+        <legend>Countries</legend>
+        <ng-container *ngIf="!isViewOnly">
+            <form [formGroup]="countryFormGroup">
+                <ng-template matStepLabel>Countries</ng-template>
+
+                <div class="content" fxLayout="column" fxLayoutGap="8px">
+                    <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="8px" fxLayoutGap.gt-xs="24px">
+                        <mat-form-field class="full-width">
+                            <mat-label>Country<span class="required-field">required</span></mat-label>
+                            <mat-select formControlName="Country">
+                                <mat-option *ngFor="let country of $countries" [value]="country.CountryID">
+                                    {{ country.Name }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field class="full-width">
+                            <mat-label>Purpose of Transfer<span class="required-field">required</span></mat-label>
+                            <textarea #PositionInput matInput maxlength="1000" formControlName="Purpose"></textarea>
+                            <mat-hint align="end">{{ PositionInput.value.length }} / 1000</mat-hint>
+                        </mat-form-field>
+
+                        <mat-form-field class="full-width" hintLabel="A brief Description of data transfered">
+                            <mat-label>Brief Description<span class="required-field">required</span></mat-label>
+                            <textarea #PositionInput matInput maxlength="1000" formControlName="Description"></textarea>
+                            <mat-hint align="end">{{ PositionInput.value.length }} / 1000</mat-hint>
+                        </mat-form-field>
+
+                    </div>
+                </div>
+            </form>
+            <div *ngIf="!isViewOnly" style="text-align: right; padding-top: 5px; padding-bottom: 5px;">
+                <button mat-raised-button
+                        (click)="addOrUpdateCountry(isEditingCountry?2:1)" color="primary"
+                        [disabled]="!isValidForm()">
+                    <mat-icon>{{buttonIcon}}</mat-icon>
+                    <span>{{buttonLabel}}</span>
+                </button>&nbsp;
+                <span class="example-spacer"></span>
+                <button mat-raised-button (click)="resetCountry()" color="warn">
+                    <mat-icon>cancel</mat-icon>
+                    <span>Cancel</span>
+                </button>
+            </div>
+        </ng-container>
+
+        <div class="content" fxLayout="column" fxLayoutGap="8px">
+            <table mat-table [dataSource]="list">
+                <ng-container matColumnDef="nber">
+                    <th mat-header-cell *matHeaderCellDef style="width: 5%"
+                        class="tableFontSize firstColumnTable alignCenter">#
+                    </th>
+                    <td mat-cell *matCellDef="let element; let j=index;"
+                        class="tableFontSize firstColumnTable alignCenter">
+                        {{j + 1}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="country" *ngIf="isViewOnly">
+                    <th mat-header-cell *matHeaderCellDef class="tableFontSize " style="width: 20%"> Country</th>
+                    <td mat-cell *matCellDef="let element" class="tableFontSize ">
+                        {{element.Country}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="purpose" *ngIf="isViewOnly">
+                    <th mat-header-cell *matHeaderCellDef class="tableFontSize " style="width: 20%"> Purpose</th>
+                    <td mat-cell *matCellDef="let element" class="tableFontSize ">
+                        {{element.Description}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="description">
+                    <th mat-header-cell *matHeaderCellDef class="tableFontSize " style="width: 20%">Description</th>
+                    <td mat-cell *matCellDef="let element" class="tableFontSize "> {{element.Description}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef style="width: 5%">Actions</th>
+                    <td mat-cell *matCellDef="let element; let j=index" class="actions">
+                        <ng-container *ngIf="!isViewOnly">
+                            <a class="link" (click)="manageCountry(2,j)">
+                                <mat-icon color="primary" class="material-icons-outlined" matTooltip="Edit item">edit
+                                </mat-icon>
+                            </a>&nbsp;&nbsp;
+                            <a class="link" (click)="deleteItem(j)">
+                                <mat-icon color="warn" class="material-icons-outlined" matTooltip="Delete item">delete
+                                </mat-icon>
+                            </a>
+                        </ng-container>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="noData">
+                    <td mat-footer-cell *matFooterCellDef colspan="7">
+                        There is no data!
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayColumns;sticky:true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayColumns;"></tr>
+                <tr mat-footer-row *matFooterRowDef="['noData']" [ngClass]="{'hide':!(list?.data.length==0)}"></tr>
+            </table>
+        </div>
+    </fieldset>
+</ng-container>
+
+
+<!-- LIST OF ITEMS -->
+

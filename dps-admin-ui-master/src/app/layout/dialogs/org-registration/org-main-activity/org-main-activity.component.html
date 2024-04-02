@@ -1,0 +1,35 @@
+<main>
+    <header>
+        <h1>{{ data === null ? 'Add A Main Activity' : 'Make Changes To The Information' }}</h1>
+
+        <button mat-button (click)="onCloseDialog()">
+            <mat-icon>clear</mat-icon>
+        </button>
+    </header>
+
+    <form [formGroup]="form">
+
+        <mat-form-field>
+            <mat-label>Enter here<span class="required-field">required</span></mat-label>
+            <textarea #MainActivityInput matInput maxlength="1000" formControlName="Activity"></textarea>
+            <mat-hint align="end">{{ MainActivityInput.value.length }} / 1000</mat-hint>
+        </mat-form-field> 
+        
+    </form>
+
+    <section>
+        <button color="warn" mat-button (click)="form.reset()" [disabled]="processing">
+            Clear Form
+        </button>
+
+        <button 
+            [ngClass]="{'inline-processing-btn': processing}" 
+            color="primary" 
+            mat-raised-button 
+            (click)="onSave()" 
+            [disabled]="form.invalid || processing">
+            <app-inline-mat-spinner *ngIf="processing"></app-inline-mat-spinner>                  
+            <span> {{ data === null ? 'Save' : 'Save  Changes'  }} </span>
+        </button>
+    </section>
+</main>
