@@ -57,30 +57,37 @@ export class CompanyCertComponent extends BaseFuryForm implements OnInit, OnChan
 
     }
 
-    // getDateSuperscript(): string {
-    //     return this.service.getDateSuperscript(parseInt(this.datePipe.transform(this.certificateData.IssueDate, 'd')));
-        
-    // }
-    
+//     getDateSuperscript(): string {        
+
+//        return this.service.getDateSuperscript(parseInt(this.datePipe.transform(this.certificateData.IssueDate, 'd')));
+          
+//    }
+
 
     getDateSuperscript(): string {
-        const issueDate = new Date(this.certificateData.IssueDate);
-    
-        // Check if it's the first registration (issue date is null or undefined)
-        if (!issueDate || isNaN(issueDate.getTime())) {
+         this.data = {
+            IssueDate: null // Assuming initial IssueDate is null
+        };
 
-             // Renewal: Change the year while keeping the date constant
-             const currentDate = new Date(issueDate);
-             currentDate.setFullYear(new Date().getFullYear());
-             return this.service.getDateSuperscript(parseInt(this.datePipe.transform(currentDate, 'd')));
+             
+       
+        const issueDate = new Date(this.data.IssueDate);
+            const currentDate = new Date(); // Assuming approval date is current date
 
-        } else {
-          // Return date for first registration
-        return this.service.getDateSuperscript(parseInt(this.datePipe.transform(issueDate, 'd')));
-        }
-    
+            // Check if it's the first registration (issue date is null or undefined)
+            if (!issueDate || isNaN(issueDate.getTime())) {
+                // Set issue date to current date for first registration
+                this.data.IssueDate = currentDate;
+                return this.service.getDateSuperscript(parseInt(this.datePipe.transform(currentDate, 'd')));
+            } else {
+                // Renewal: Change the year while keeping the date constant
+                const newDate = new Date(issueDate);
+                newDate.setFullYear(currentDate.getFullYear());
+                return this.service.getDateSuperscript(parseInt(this.datePipe.transform(newDate, 'd')));
+            }
         
     }
+        
 
    
 

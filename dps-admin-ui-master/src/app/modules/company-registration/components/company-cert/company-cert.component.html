@@ -49,11 +49,17 @@
                                         This certificate is valid for twelve months from the date of issue.
                                 </p>
 
-                                <div style="color: #000; width: 100%; font-size: 16px; line-height: 27px; margin: 33px 0px 25px; display: flex; flex-direction: row; align-content: center; justify-content: center; align-items: flex-start;">
+                                <!-- <div style="color: #000; width: 100%; font-size: 16px; line-height: 27px; margin: 33px 0px 25px; display: flex; flex-direction: row; align-content: center; justify-content: center; align-items: flex-start;">
                                         Dated this <div style="font-size: 16px; border-bottom: 2px dotted; padding: 0px 20px 0px; color: #000;   font-style: italic; font-weight: bold;margin: -11px 7px 0px;height: 28px;">{{ certificateData.IssueDate | date : 'dd' }} <sup style="font-size: 16px;font-family: none;">{{ getDateSuperscript() }}</sup></div>
-                                        day of <i style="font-size: 16px; border-bottom: 2px dotted; padding: 0px 20px 0px; color: #000; font-style: italic; font-weight: bold; margin: -8px 7px 0px;height: 25px;">{{ certificateData.IssueDate | date : 'MMMM' }}</i>
-                                        the year <i style="font-size: 16px; border-bottom: 2px dotted; padding: 0px 20px 0px; color: #000;   font-style: italic; font-weight: bold;margin: -8px 7px 0px;height: 25px;">{{ certificateData.IssueDate | date : 'YYYY' }}</i>
+                                        day of <i style="font-size: 16px; border-bottom: 2px dotted; padding: 0px 20px 0px; color: #000; font-style: italic; font-weight: bold; margin: -8px 7px 0px;height: 25px;">{{ certificateData.IssueDate | date : 'MMMM' }} </i>
+                                        the year <i style="font-size: 16px; border-bottom: 2px dotted; padding: 0px 20px 0px; color: #000;   font-style: italic; font-weight: bold;margin: -8px 7px 0px;height: 25px;">{{ certificateData.IssueDate | date : 'YYYY' }} </i>
+                                </div> -->
+                                <div style="color: #000; width: 100%; font-size: 16px; line-height: 27px; margin: 33px 0px 25px; display: flex; flex-direction: row; align-content: center; justify-content: center; align-items: flex-start;">
+                                        Dated this <div style="font-size: 16px; border-bottom: 2px dotted; padding: 0px 20px 0px; color: #000;   font-style: italic; font-weight: bold;margin: -11px 7px 0px;height: 28px;">{{ certificateData.IssueDate | date : 'dd' }} <sup style="font-size: 16px;font-family: none;">Superscript Date: {{ getDateSuperscript() }}</sup></div>
+                                        day of <i style="font-size: 16px; border-bottom: 2px dotted; padding: 0px 20px 0px; color: #000; font-style: italic; font-weight: bold; margin: -8px 7px 0px;height: 25px;">{{ certificateData.IssueDate | date : 'MMMM' }} <sup style="font-size: 16px;font-family: none;">Superscript Date: {{ getDateSuperscript() }}</sup></i>
+                                        the year <i style="font-size: 16px; border-bottom: 2px dotted; padding: 0px 20px 0px; color: #000;   font-style: italic; font-weight: bold;margin: -8px 7px 0px;height: 25px;">{{ certificateData.IssueDate | date : 'YYYY' }} <sup style="font-size: 16px;font-family: none;">Superscript Date: {{ getDateSuperscript() }}</sup></i>
                                 </div>
+
 
                                 <div style="color: #000; width: 100%; font-size: 16px; display: flex; flex-direction: column; align-items: center; margin: 40px 0px 0px; text-align: center;">
                                         <div style="min-width: 240px; text-align: center;border-bottom: 2px dotted;margin: 0px auto 0px;font-weight: 700;font-style: italic;padding-bottom: 4px;color: #000;">
