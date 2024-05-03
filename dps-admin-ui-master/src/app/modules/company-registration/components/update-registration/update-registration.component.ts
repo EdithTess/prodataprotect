@@ -184,6 +184,7 @@ export class UpdateRegistrationComponent extends BaseFuryForm implements OnInit,
     @ViewChild('countryOfTransferPaginator', {static: false}) countryOfTransferPaginator: MatPaginator;
     @ViewChild('countryOfTransferMatSort', {static: false}) countryOfTransferMatSort: MatSort;
     @Input() checked: Boolean;
+    @Input() certificateData: CertificateDetails;
 
     OrganizationID: number;
     cat: number[] = [];
@@ -1829,9 +1830,12 @@ export class UpdateRegistrationComponent extends BaseFuryForm implements OnInit,
 
         this.performingAction(performedAction);
 
+
         if (action.ActionName === 'Approve / Issue Certificate') {
             this.generateCert(+this.application.OrganisationID, 'New');
+
         }
+              
     }
 
     // Perform Action Request More Info

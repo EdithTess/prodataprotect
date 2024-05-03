@@ -12,7 +12,7 @@ describe('RenewalsComponent', () => {
     })
     .compileComponents();
   });
-
+  
   beforeEach(() => {
     fixture = TestBed.createComponent(RenewalsComponent);
     component = fixture.componentInstance;

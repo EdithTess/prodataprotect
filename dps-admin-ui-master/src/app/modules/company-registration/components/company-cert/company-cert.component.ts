@@ -57,39 +57,31 @@ export class CompanyCertComponent extends BaseFuryForm implements OnInit, OnChan
 
     }
 
-//     getDateSuperscript(): string {        
+    getDateSuperscript(): string {        
 
-//        return this.service.getDateSuperscript(parseInt(this.datePipe.transform(this.certificateData.IssueDate, 'd')));
-          
-//    }
+       return this.service.getDateSuperscript(parseInt(this.datePipe.transform(this.data.IssueDate, 'd')));
 
+   }
 
-    getDateSuperscript(): string {
-         this.data = {
-            IssueDate: null // Assuming initial IssueDate is null
-        };
+   certificateController(): void{
+    
+    // Initialize the issued date as today's date
+    var today = new Date();
+    this.data.IssueDate = today.toDateString();
 
-             
-       
-        const issueDate = new Date(this.data.IssueDate);
-            const currentDate = new Date(); // Assuming approval date is current date
+    // Assuming the certificate expiration date is stored in a variable
+    var ExpiryDate = new Date('2024-04-24 23:43:27.857'); // Example expiration date
 
-            // Check if it's the first registration (issue date is null or undefined)
-            if (!issueDate || isNaN(issueDate.getTime())) {
-                // Set issue date to current date for first registration
-                this.data.IssueDate = currentDate;
-                return this.service.getDateSuperscript(parseInt(this.datePipe.transform(currentDate, 'd')));
-            } else {
-                // Renewal: Change the year while keeping the date constant
-                const newDate = new Date(issueDate);
-                newDate.setFullYear(currentDate.getFullYear());
-                return this.service.getDateSuperscript(parseInt(this.datePipe.transform(newDate, 'd')));
-            }
-        
+    // Check if the certificate is expired and due for renewal
+    if (today > ExpiryDate) {
+        // If expired, update the year for renewal
+        var newYear = today.getFullYear() + 1; // Incrementing the year by 1 for renewal
+        this.data.IssuedDate = this.data.IssuedDate.replace(today.getFullYear(), newYear);
     }
-        
+ 
+    };
 
-   
+
 
     openPdf(): void {
         this.downloading = true;
