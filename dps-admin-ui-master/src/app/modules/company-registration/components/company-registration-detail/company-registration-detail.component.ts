@@ -1243,9 +1243,6 @@ private getFormData(): any {
 }
 
 
-// Jordan New code here
-   
-//End of Jordan Code here
 
 onNatureOfBusinessCatSelected(NatureOfBusinessCatId): void {
   // tslint:disable-next-line:max-line-length

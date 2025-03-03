@@ -77,7 +77,7 @@ interface Audit {
 
 @Component({
   selector: 'fury-view-compliance-report',
-  templateUrl: './view-compliance-report.component.html',
+  templateUrl:'./view-compliance-report.component.html',
   styleUrls: ['./view-compliance-report.component.scss'],
   animations: [fadeInRightAnimation, fadeInUpAnimation]
 })
@@ -92,6 +92,7 @@ export class ViewComplianceReportComponent implements OnInit {
 
   orgName: string[] = [];
   changeParticulars: string = '';
+  // internationalday: string = '';
   dpoReporting: string = '';
   dpoJOBDESC: string = '';
   Reason: string = '';
@@ -200,6 +201,10 @@ export class ViewComplianceReportComponent implements OnInit {
     noOfAgents: '',
     haveThirdParty: ['']
   });
+  // internationaldayGroup = this._formBuilder.group({
+  //   internationaldayCtrl: ['',Validators.required],
+  //   selectedOption: ['yes']
+  // });
   complaintsGroup = this._formBuilder.group({
     yearOfCompliment: [''],
     statusOfCompliment: [''],
@@ -812,6 +817,10 @@ export class ViewComplianceReportComponent implements OnInit {
       DPOJobDescription: DPOJobDescription,
       DPOResponsibility: Reason
     };
+    // const internationalday = this.internationaldayGroup.get('internationaldayCtrl')?.value;
+    // const internationaldayPayload = {
+    //   Detail: internationalday
+    // };
     const conclusions = this.conclusionGroup.get('text')?.value;
     const nameofperson = this.conclusionGroup.get('NameOfPersonSubmitting')?.value;
     const titleofperson = this.conclusionGroup.get('TitleOfPersonSubmitting')?.value;
@@ -838,6 +847,7 @@ export class ViewComplianceReportComponent implements OnInit {
       dpo_training: DPOData,
       staff_training: StaffData,
       third_party_contractor: thirdData,
+      // internationalday: [internationaldayPayload],
       complaints: ComplaintsData,
       breaches: breachesData,
       impact_assessment: ImpactData,
